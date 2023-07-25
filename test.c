@@ -49,32 +49,32 @@ typedef struct IC {
     uint8_t ctrl_pins_read_h[2];
 } IC;
 
-IC WS57C49C = {
-    .name = "WS57C49C",
-    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 }
+IC ics[] = {
+    {
+        .name = "WS57C49C",
+        .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 }
+    },
+    {
+        .name = "MCM68764",
+        .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18, 21 }
+    },
+    {
+        .name = "2532",
+        .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
+        .ctrl_pins_read_h = { 21 }
+    },
+    {
+        .name = "2732",
+        .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 }
+    },
+    {
+        .name = "2716",
+        .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
+        .ctrl_pins_read_h = { 21 }
+    }
 };
 
-IC MCM68764 = {
-    .name = "MCM68764",
-    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18, 21 }
-};
-
-IC _2532 = {
-    .name = "2532",
-    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
-    .ctrl_pins_read_h = { 21 }
-};
-
-IC _2732 = {
-    .name = "2732",
-    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 }
-};
-
-IC _2716 = {
-    .name = "2716",
-    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
-    .ctrl_pins_read_h = { 21 }
-};
+uint8_t num_ics = sizeof(ics) / sizeof(ics[0]);
 
 void print_binary(uint8_t number) {
     printf("0b%d%d%d%d%d%d%d%d\n",
@@ -117,10 +117,10 @@ void set_adress_and_print_ports(IC *ic, uint16_t adress) {
 }
 
 void write_byte(uint8_t byte) {
-    uint8_t n = (byte & 0xF0U) >> 4; // high nybble
-    putchar(HEX_DIGIT(n));
-    n = byte & 0x0FU; // low nybble
-    putchar(HEX_DIGIT(n));
+    uint8_t high_nibble = byte >> 4;
+    uint8_t low_nibble = byte & 0x0FU;
+    putchar(HEX_DIGIT(high_nibble));
+    putchar(HEX_DIGIT(low_nibble));
 }
 
 void print_record(char *type, uint8_t *data, uint8_t length, uint16_t adress) {
@@ -146,7 +146,19 @@ void print_buffer() {
     print_record("S9", NULL, 0, 0);
 }
 
+void list_ics() {
+    for (uint8_t i = 0; i < num_ics; i++) {
+        printf("%u) %s\n", i, ics[i].name);
+    }
+}
+
 int main() {
+    IC WS57C49C = ics[0];
+    IC MCM68764 = ics[1];
+    IC _2532    = ics[2];
+    IC _2732    = ics[3];
+    IC _2716    = ics[4];
+
     set_adress_and_print_ports(&WS57C49C, 0);
     set_adress_and_print_ports(&WS57C49C, 1);
     set_adress_and_print_ports(&WS57C49C, 2);
@@ -186,6 +198,8 @@ int main() {
         sizeof(buffer));
     
     print_buffer();
+
+    list_ics();
     
     return 0;
 }

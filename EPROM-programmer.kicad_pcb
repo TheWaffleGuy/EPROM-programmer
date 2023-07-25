@@ -702,10 +702,15 @@
       (net 2 "GND") (pinfunction "Vss") (pintype "power_in") (tstamp bd04e778-5ab8-4f8b-a325-26430f5c2d70))
     (pad "8" thru_hole oval (at 7.62 0) (size 1.6 1.6) (drill 0.8) (layers "*.Cu" "*.Mask")
       (net 35 "/DAC_A") (pinfunction "VA") (pintype "output") (tstamp d4e952e0-2742-4d7d-a696-a2b8587cbd24))
-    (model "${KICAD6_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-8_W7.62mm_Socket.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-8_W7.62mm_Socket.wrl" hide
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
+    )
+    (model "${KIPRJMOD}/3D/dil_8-300_socket.wrl"
+      (offset (xyz 3.8 -3.8 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 90))
     )
   )
 
@@ -2056,10 +2061,15 @@
       (net 10 "/ZIF_P2") (pinfunction "PA1") (pintype "bidirectional") (tstamp 9dab021d-34b3-44c5-9338-7a372ca0aef8))
     (pad "40" thru_hole oval (at 15.24 0) (size 1.6 1.6) (drill 0.8) (layers "*.Cu" "*.Mask")
       (net 9 "/ZIF_P1") (pinfunction "PA0") (pintype "bidirectional") (tstamp 74ff4ae6-e09d-4e54-9cb5-11d7eb016849))
-    (model "${KICAD6_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-40_W15.24mm_Socket.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-40_W15.24mm_Socket.wrl" hide
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
+    )
+    (model "${KIPRJMOD}/3D/dil_40-600_socket.wrl"
+      (offset (xyz 7.6 -24.15 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 90))
     )
   )
 
@@ -2476,10 +2486,15 @@
       (net 38 "/D+") (pinfunction "D+") (pintype "bidirectional") (tstamp 177d4490-d88e-4534-8ab5-80b7659deeff))
     (pad "14" thru_hole oval (at 7.62 0) (size 1.6 1.6) (drill 0.8) (layers "*.Cu" "*.Mask")
       (net 2 "GND") (pinfunction "VSS") (pintype "power_in") (tstamp 3f6825e2-6440-4696-a78c-28c81a8a12c9))
-    (model "${KICAD6_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-14_W7.62mm_Socket.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Package_DIP.3dshapes/DIP-14_W7.62mm_Socket.wrl" hide
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
+    )
+    (model "${KIPRJMOD}/3D/dil_14-300_socket.wrl"
+      (offset (xyz 3.8 -7.6 0))
+      (scale (xyz 1 1 1))
+      (rotate (xyz 0 0 90))
     )
   )
 

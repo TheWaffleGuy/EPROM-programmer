@@ -64,6 +64,11 @@ IC ics[] = {
         .ctrl_pins_read_h = { 21 }
     },
     {
+        .name = "57C43",
+        .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
+        .ctrl_pins_read_h = { 18 }
+    },
+    {
         .name = "2732",
         .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 }
     },
@@ -156,8 +161,9 @@ int main() {
     IC WS57C49C = ics[0];
     IC MCM68764 = ics[1];
     IC _2532    = ics[2];
-    IC _2732    = ics[3];
-    IC _2716    = ics[4];
+    IC _57C43   = ics[3];
+    IC _2732    = ics[4];
+    IC _2716    = ics[5];
 
     set_adress_and_print_ports(&WS57C49C, 0);
     set_adress_and_print_ports(&WS57C49C, 1);
@@ -173,6 +179,10 @@ int main() {
     set_adress_and_print_ports(&_2732, 0);
     set_adress_and_print_ports(&_2732, 8191);
     set_adress_and_print_ports(&_2732, 4095);
+    set_adress_and_print_ports(&_2732, 2047);
+
+    set_adress_and_print_ports(&_57C43, 4095);
+    set_adress_and_print_ports(&_57C43, 2047);
 
     set_adress_and_print_ports(&_2532, 0);
     set_adress_and_print_ports(&_2532, 8191);

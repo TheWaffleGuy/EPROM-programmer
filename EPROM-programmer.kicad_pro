@@ -57,7 +57,8 @@
       ],
       "drc_exclusions": [
         "silk_edge_clearance|51285000|58420000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a2f64e72-85a7-4634-9502-21d7b999bf83",
-        "silk_edge_clearance|60475000|58420000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a4ba06b8-72f5-44e1-be31-6e872a4d4570"
+        "silk_edge_clearance|60475000|58420000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a4ba06b8-72f5-44e1-be31-6e872a4d4570",
+        "starved_thermal|52070000|72390000|dcb20467-f581-45d0-b60a-f18d71d1837c|3f6825e2-6440-4696-a78c-28c81a8a12c9|F.Cu"
       ],
       "meta": {
         "version": 2
@@ -418,7 +419,7 @@
     "classes": [
       {
         "bus_width": 12,
-        "clearance": 0.2,
+        "clearance": 0.15,
         "diff_pair_gap": 0.25,
         "diff_pair_via_gap": 0.25,
         "diff_pair_width": 0.2,

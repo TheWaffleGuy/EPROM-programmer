@@ -128,10 +128,17 @@ void write_byte(uint8_t byte) {
     putchar(HEX_DIGIT(low_nibble));
 }
 
-void print_record(char *type, uint8_t *data, uint8_t length, uint16_t adress) {
-    uint8_t chksum = length + 3 + (uint8_t) adress + (uint8_t) ( adress >> 8 );
-    printf("%s%02hX%04hX", type, length + 3, adress);
-    for (uint8_t i = 0; i < length; i++) {
+void print_record(char *type, uint8_t *data, uint8_t data_length, uint16_t adress) {
+    uint8_t record_length = data_length + 3; // 2 bytes for adress, 1 for checksum
+    uint8_t chksum = record_length + (uint8_t) adress + (uint8_t) ( adress >> 8 );
+    /*
+    printf(type);
+    write_byte(record_length);
+    write_byte((uint8_t) ( adress >> 8 ));
+    write_byte((uint8_t) adress);
+    */
+    printf("%s%02hX%04hX", type, record_length, adress);
+    for (uint8_t i = 0; i < data_length; i++) {
         write_byte(data[i]);
         chksum += data[i];
     }

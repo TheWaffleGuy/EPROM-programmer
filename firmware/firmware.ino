@@ -178,6 +178,8 @@ void select_device() {
   } else {
     Serial.println("\"t\" requires a numeric argument");
   }
+
+  Serial.println("OK!");
 }
 
 void print_device_info() {
@@ -224,11 +226,34 @@ void read_device() {
 
   portMode(2, INPUT); // Port C
 
-  uint16_t current_adress = 0;
-  for(uint16_t i = 0; i < 2^selected_ic_size; i++) {
+  for(uint16_t current_adress = 0; current_adress < 2^selected_ic_size; current_adress++) {
     set_adress(current_adress);
-    buffer[i] = portRead(2); // Port C
+    buffer[current_adress] = portRead(2); // Port C
   }
+
+  Serial.println("OK!");
+}
+
+void blank_check() {
+  uint8_t data;
+
+  if(selected_ic == NULL) {
+    Serial.println("No device selected. Select an device with \"t\"");
+    return;
+  }
+
+  portMode(2, INPUT); // Port C
+
+  for(uint16_t current_adress = 0; current_adress < 2^selected_ic_size; current_adress++) {
+    set_adress(current_adress);
+    data = portRead(2); // Port C
+    if(data != 0xFF) {
+      Serial.println("Device not blank!");
+      Serial.printf("%02hX read at adress: %04hX\n", data, current_adress);
+      return;
+    }
+  }
+  Serial.println("OK!");
 }
 
 void not_implemented() {
@@ -263,7 +288,7 @@ void loop() {
         not_implemented();
         break;
       case 'b':
-        not_implemented();
+        blank_check();
         break;
       case 't':
         select_device();

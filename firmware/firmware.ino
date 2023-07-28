@@ -161,7 +161,7 @@ void select_device() {
 
   arg = str.substring(1);
   arg.trim();
-  if (arg == "") {
+  if (arg.length() == 0) {
     Serial.println("\"t\" requires a numeric argument");
   } else if(is_numeric(arg)) {
     arg_num = arg.toInt();
@@ -287,41 +287,43 @@ void loop() {
   {
     str = Serial.readStringUntil('\n');
     str.trim();
-    switch(str[0]) {
-      case '?':
-        print_help();
-        break;
-      case 'l':
-        list_devices();
-        break;
-      case 'u':
-        not_implemented();
-        break;
-      case 'd':
-        print_buffer();
-        break;
-      case 'w':
-        not_implemented();
-        break;
-      case 'r':
-        read_device();
-        break;
-      case 'c':
-        compare_data();
-        break;
-      case 'b':
-        blank_check();
-        break;
-      case 't':
-        select_device();
-        break;
-      case 'i':
-        print_device_info();
-        break;
-      default:
-        Serial.printf("Unknown command: %c\n", str[0]);
-        print_help();
-        break;
+    if (str.length() > 0) {
+      switch(str[0]) {
+        case '?':
+          print_help();
+          break;
+        case 'l':
+          list_devices();
+          break;
+        case 'u':
+          not_implemented();
+          break;
+        case 'd':
+          print_buffer();
+          break;
+        case 'w':
+          not_implemented();
+          break;
+        case 'r':
+          read_device();
+          break;
+        case 'c':
+          compare_data();
+          break;
+        case 'b':
+          blank_check();
+          break;
+        case 't':
+          select_device();
+          break;
+        case 'i':
+          print_device_info();
+          break;
+        default:
+          Serial.printf("Unknown command: %c\n", str[0]);
+          print_help();
+          break;
+      }
     }
   }
 }

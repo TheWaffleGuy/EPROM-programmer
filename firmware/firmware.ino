@@ -85,6 +85,14 @@ uint8_t selected_ic_size = 0;
 
 void setup() {
   Serial.begin(9600);
+
+  portMode(0, OUTPUT); // Port A
+
+  //Upper 5 pins outputs Port D
+  uint8_t oldSREG = SREG;
+  cli();
+  DDRD |= 0b11111000;
+  SREG = oldSREG;
 }
 
 bool is_numeric(String string) {
@@ -207,12 +215,12 @@ void read_device() {
     return;
   }
 
-  DDRC = 0b00000000;
+  portMode(2, INPUT); // Port C
 
   uint16_t current_adress = 0;
   for(uint16_t i = 0; i < 2^selected_ic_size; i++) {
     set_adress(current_adress);
-    buffer[i] = PORTC;
+    buffer[i] = portRead(2); // Port C
   }
 }
 
@@ -242,7 +250,7 @@ void loop() {
         not_implemented();
         break;
       case 'r':
-        not_implemented();
+        read_device();
         break;
       case 'c':
         not_implemented();

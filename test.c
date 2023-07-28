@@ -157,6 +157,15 @@ void list_ics() {
     }
 }
 
+void ic_size(IC *ic) {
+    uint8_t i;
+    for(i = 0; i < sizeof(ic->adr_pins); i++) {
+        uint8_t adr_pin = ic->adr_pins[i];
+        if (adr_pin == 0) break;
+    }
+    printf("Device size: %u\n", i);
+}
+
 int main() {
     IC WS57C49C = ics[0];
     IC MCM68764 = ics[1];
@@ -210,6 +219,9 @@ int main() {
     print_buffer();
 
     list_ics();
+
+    ic_size(&WS57C49C);
+    ic_size(&_2532);
     
     return 0;
 }

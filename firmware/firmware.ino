@@ -256,6 +256,28 @@ void blank_check() {
   Serial.println("OK!");
 }
 
+void compare_data() {
+  uint8_t data;
+
+  if(selected_ic == NULL) {
+    Serial.println("No device selected. Select a device with \"t\"");
+    return;
+  }
+
+  portMode(2, INPUT); // Port C
+
+  for(uint16_t current_adress = 0; current_adress < 2^selected_ic_size; current_adress++) {
+    set_adress(current_adress);
+    data = portRead(2); // Port C
+    if(data != buffer[current_adress]) {
+      Serial.println("Device data does not match current buffer!");
+      Serial.printf("Device data: %02hX, buffer data: %02hX read at adress: %04hX\n", data, buffer[current_adress], current_adress);
+      return;
+    }
+  }
+  Serial.println("OK!");
+}
+
 void not_implemented() {
   Serial.println("This functionality is not yet implemented");
 }
@@ -285,7 +307,7 @@ void loop() {
         read_device();
         break;
       case 'c':
-        not_implemented();
+        compare_data();
         break;
       case 'b':
         blank_check();

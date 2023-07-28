@@ -318,6 +318,10 @@ void loop() {
       case 'i':
         print_device_info();
         break;
+      default:
+        Serial.printf("Unknown command: %c\n", str[0]);
+        print_help();
+        break;
     }
   }
 }

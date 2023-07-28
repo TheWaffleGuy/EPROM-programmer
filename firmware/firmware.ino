@@ -96,8 +96,7 @@ void setup() {
 }
 
 bool is_numeric(String string) {
-  for(auto character : string)
-  {
+  for(auto character : string) {
     if(!isDigit(character)) {
       return false;
     }
@@ -192,7 +191,7 @@ void print_device_info() {
 
 void set_adress(uint16_t adress) {
     port_a = 0;
-    port_d &= 0b00000111; //Upper 5 bits used for adress
+    port_d = 0;
 
     for(uint8_t i = 0; i < selected_ic_size; i++) {
         uint8_t adr_pin = selected_ic->adr_pins[i];
@@ -207,6 +206,14 @@ void set_adress(uint16_t adress) {
         pin p = pins[ctrl_pin - 1];
         *(p.port) |= 1 << p.index;
     }
+
+    portWrite(0, port_a);
+
+    uint8_t oldSREG = SREG;
+    cli();
+    PORTD &= 0b00000111; //Upper 5 bits used for adress
+    PORTD |= port_d;
+    SREG = oldSREG;
 }
 
 void read_device() {

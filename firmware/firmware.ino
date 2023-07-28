@@ -132,10 +132,11 @@ void write_byte(uint8_t byte) {
   Serial.print(HEX_DIGIT(low_nibble));
 }
 
-void print_record(char *type, uint8_t *data, uint8_t length, uint16_t adress) {
-  uint8_t chksum = length + 3 + (uint8_t) adress + (uint8_t) ( adress >> 8 );
-  Serial.printf("%s%02hX%04hX", type, length + 3, adress);
-  for (uint8_t i = 0; i < length; i++) {
+void print_record(char *type, uint8_t *data, uint8_t data_length, uint16_t adress) {
+  uint8_t record_length = data_length + 3; // 2 bytes for adress, 1 for checksum
+  uint8_t chksum = record_length + (uint8_t) adress + (uint8_t) ( adress >> 8 );
+  Serial.printf("%s%02hX%04hX", type, record_length, adress);
+  for (uint8_t i = 0; i < data_length; i++) {
     write_byte(data[i]);
     chksum += data[i];
   }
@@ -144,14 +145,16 @@ void print_record(char *type, uint8_t *data, uint8_t length, uint16_t adress) {
 }
 
 void print_buffer() {
+  uint8_t data_byte_count = 2^selected_ic_size;
+  uint8_t byte_per_record = 32;
   char header[] = "HDR";
   print_record("S0", (uint8_t*) header, sizeof(header) - 1, 0);
 
-  for (uint16_t i = 0; i < sizeof(buffer); i+=32) {
-    print_record("S1", buffer + i, 32, i);
+  for (uint16_t i = 0; i < data_byte_count; i+=byte_per_record) {
+    print_record("S1", buffer + i, byte_per_record, i);
   }
 
-  print_record("S5", NULL, 0, sizeof(buffer) / 32);
+  print_record("S5", NULL, 0, data_byte_count / byte_per_record);
   print_record("S9", NULL, 0, 0);
 }
 

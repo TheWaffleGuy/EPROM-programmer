@@ -184,7 +184,7 @@ void select_device() {
 
 void print_device_info() {
   if(selected_ic == NULL) {
-    Serial.println("No device selected. Select an device with \"t\"");
+    Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
 
@@ -220,7 +220,7 @@ void set_adress(uint16_t adress) {
 
 void read_device() {
   if(selected_ic == NULL) {
-    Serial.println("No device selected. Select an device with \"t\"");
+    Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
 
@@ -238,7 +238,7 @@ void blank_check() {
   uint8_t data;
 
   if(selected_ic == NULL) {
-    Serial.println("No device selected. Select an device with \"t\"");
+    Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
 

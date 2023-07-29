@@ -121,7 +121,9 @@ void print_help() {
 
 void list_devices() {
   for (uint8_t i = 0; i < num_ics; i++) {
-    Serial.printf("%u) %s\r\n", i, ics[i].name);
+    Serial.print(i, DEC);
+    Serial.print(") ");
+    Serial.println(ics[i].name);
   }
 }
 
@@ -183,7 +185,9 @@ void select_device() {
         if (adr_pin == 0) break;
       }
     } else {
-      Serial.printf("No device with id \"%hu\" exists\r\n", arg_num);
+      Serial.print("No device with id ");
+      Serial.print(arg_num, DEC);
+      Serial.println(" exists");
       Serial.println("Use l to list available devices");
       return;
     }
@@ -263,7 +267,10 @@ void blank_check() {
     data = portRead(2); // Port C
     if(data != 0xFF) {
       Serial.println("Device not blank!");
-      Serial.printf("%02hX read at adress: %04hX\r\n", data, current_adress);
+      write_byte(data);
+      Serial.print(" read at adress: ");
+      write_2byte(current_adress);
+      Serial.println();
       return;
     }
   }
@@ -285,7 +292,13 @@ void compare_data() {
     data = portRead(2); // Port C
     if(data != buffer[current_adress]) {
       Serial.println("Device data does not match current buffer!");
-      Serial.printf("Device data: %02hX, buffer data: %02hX read at adress: %04hX\r\n", data, buffer[current_adress], current_adress);
+      Serial.print("Device data: ");
+      write_byte(data);
+      Serial.print(", buffer data: ");
+      write_byte(buffer[current_adress]);
+      Serial.print(" read at adress: ");
+      write_2byte(current_adress);
+      Serial.println();
       return;
     }
   }

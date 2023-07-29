@@ -132,7 +132,7 @@ void write_byte(uint8_t byte) {
   Serial.print(HEX_DIGIT(low_nibble));
 }
 
- void __attribute__((always_inline)) write_2byte(uint16_t byte2) {
+ void __attribute__((always_inline)) inline write_2byte(uint16_t byte2) {
   write_byte((uint8_t) ( byte2 >> 8 ));
   write_byte((uint8_t) byte2);
  }
@@ -201,7 +201,8 @@ void print_device_info() {
     return;
   }
 
-  Serial.printf("Currently selected device is: %s\r\n", selected_ic->name);
+  Serial.print("Currently selected device is: ");
+  Serial.println(selected_ic->name);
 }
 
 void set_adress(uint16_t adress) {
@@ -333,7 +334,8 @@ void loop() {
           print_device_info();
           break;
         default:
-          Serial.printf("Unknown command: %c\r\n", str[0]);
+          Serial.print("Unknown command: ");
+          Serial.println(str[0]);
           print_help();
           break;
       }

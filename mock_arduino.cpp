@@ -11,6 +11,14 @@
 #define INPUT 0x0
 #define OUTPUT 0x1
 
+#define DEC 10
+#define HEX 16
+#define OCT 8
+#ifdef BIN // Prevent warnings if BIN is previously defined in "iotnx4.h" or similar
+#undef BIN
+#endif
+#define BIN 2
+
 //typedef std::string String;
 
 //Registers
@@ -170,6 +178,12 @@ public:
   size_t print(char c)
   {
     return write(c);
+  }
+  size_t println(char c)
+  {
+    size_t n = print(c);
+    n += println();
+    return n;
   }
   int available()
   {

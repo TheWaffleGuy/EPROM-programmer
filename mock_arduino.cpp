@@ -188,8 +188,7 @@ public:
     }
     return ret;
     */
-   std::getline (cin, ret);
-   cin >> ret;
+   std::getline (cin, ret, terminator);
    return ret;
   }
 };

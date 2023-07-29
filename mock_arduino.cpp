@@ -6,6 +6,7 @@
 #include <stdarg.h>
 #include <algorithm> 
 #include <conio.h>
+#include <math.h>
 
 #define INPUT 0x0
 #define OUTPUT 0x1

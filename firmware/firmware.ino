@@ -166,6 +166,7 @@ void select_device() {
   arg.trim();
   if (arg.length() == 0) {
     Serial.println("\"t\" requires a numeric argument");
+    return;
   } else if(is_numeric(arg)) {
     arg_num = arg.toInt();
     if(arg_num < num_ics) {
@@ -177,9 +178,11 @@ void select_device() {
     } else {
       Serial.printf("No device with id \"%hu\" exists\n", arg_num);
       Serial.println("Use l to list available devices");
+      return;
     }
   } else {
     Serial.println("\"t\" requires a numeric argument");
+    return;
   }
 
   Serial.println("OK!");

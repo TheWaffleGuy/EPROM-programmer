@@ -196,6 +196,8 @@ void select_device() {
     return;
   }
 
+  Serial.print("Selected: ");
+  Serial.println(selected_ic->name);
   Serial.println("OK!");
 }
 

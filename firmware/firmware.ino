@@ -121,7 +121,7 @@ void print_help() {
 
 void list_devices() {
   for (uint8_t i = 0; i < num_ics; i++) {
-    Serial.printf("%u) %s\n", i, ics[i].name);
+    Serial.printf("%u) %s\r\n", i, ics[i].name);
   }
 }
 
@@ -132,19 +132,23 @@ void write_byte(uint8_t byte) {
   Serial.print(HEX_DIGIT(low_nibble));
 }
 
+ void __attribute__((always_inline)) write_2byte(uint16_t byte2) {
+  write_byte((uint8_t) ( byte2 >> 8 ));
+  write_byte((uint8_t) byte2);
+ }
+
 void print_record(char *type, uint8_t *data, uint8_t data_length, uint16_t adress) {
   uint8_t record_length = data_length + 3; // 2 bytes for adress, 1 for checksum
   uint8_t chksum = record_length + (uint8_t) adress + (uint8_t) ( adress >> 8 );
   Serial.print(type);
   write_byte(record_length);
-  write_byte((uint8_t) ( adress >> 8 ));
-  write_byte((uint8_t) adress);
+  write_2byte(adress);
   for (uint8_t i = 0; i < data_length; i++) {
     write_byte(data[i]);
     chksum += data[i];
   }
   write_byte(~chksum);
-  Serial.print('\n');
+  Serial.println();
 }
 
 void print_buffer() {
@@ -179,7 +183,7 @@ void select_device() {
         if (adr_pin == 0) break;
       }
     } else {
-      Serial.printf("No device with id \"%hu\" exists\n", arg_num);
+      Serial.printf("No device with id \"%hu\" exists\r\n", arg_num);
       Serial.println("Use l to list available devices");
       return;
     }
@@ -197,7 +201,7 @@ void print_device_info() {
     return;
   }
 
-  Serial.printf("Currently selected device is: %s\n", selected_ic->name);
+  Serial.printf("Currently selected device is: %s\r\n", selected_ic->name);
 }
 
 void set_adress(uint16_t adress) {
@@ -258,7 +262,7 @@ void blank_check() {
     data = portRead(2); // Port C
     if(data != 0xFF) {
       Serial.println("Device not blank!");
-      Serial.printf("%02hX read at adress: %04hX\n", data, current_adress);
+      Serial.printf("%02hX read at adress: %04hX\r\n", data, current_adress);
       return;
     }
   }
@@ -280,7 +284,7 @@ void compare_data() {
     data = portRead(2); // Port C
     if(data != buffer[current_adress]) {
       Serial.println("Device data does not match current buffer!");
-      Serial.printf("Device data: %02hX, buffer data: %02hX read at adress: %04hX\n", data, buffer[current_adress], current_adress);
+      Serial.printf("Device data: %02hX, buffer data: %02hX read at adress: %04hX\r\n", data, buffer[current_adress], current_adress);
       return;
     }
   }
@@ -329,7 +333,7 @@ void loop() {
           print_device_info();
           break;
         default:
-          Serial.printf("Unknown command: %c\n", str[0]);
+          Serial.printf("Unknown command: %c\r\n", str[0]);
           print_help();
           break;
       }

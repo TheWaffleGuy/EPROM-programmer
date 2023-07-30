@@ -139,7 +139,7 @@ void write_byte(uint8_t byte) {
   write_byte((uint8_t) byte2);
  }
 
-void print_record(char *type, uint8_t *data, uint8_t data_length, uint16_t adress) {
+void print_record(const char *type, uint8_t *data, uint8_t data_length, uint16_t adress) {
   uint8_t record_length = data_length + 3; // 2 bytes for adress, 1 for checksum
   uint8_t chksum = record_length + (uint8_t) adress + (uint8_t) ( adress >> 8 );
   Serial.print(type);

@@ -4,8 +4,7 @@
 #include <iomanip>
 #include <string>
 #include <stdarg.h>
-#include <algorithm> 
-#include <conio.h>
+#include <algorithm>
 #include <math.h>
 
 #define INPUT 0x0

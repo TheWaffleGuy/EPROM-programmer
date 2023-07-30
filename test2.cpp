@@ -1,6 +1,7 @@
 #include "mock_arduino.cpp"
 
 #include "firmware/firmware.ino"
+#include "firmware/kk_srec.c"
 
 int main() {
     setup();

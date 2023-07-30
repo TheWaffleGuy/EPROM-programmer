@@ -1,3 +1,8 @@
+#define restrict __restrict__
+extern "C" {
+  #include "kk_srec.h"
+}
+
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
 uint8_t port_a;
@@ -108,15 +113,15 @@ bool is_numeric(String string) {
 void print_help() {
   Serial.println("Eprom programmer help");
   Serial.println("?: This help menu");
-  Serial.println("l: List devices");
-  Serial.println("u: Upload data to buffer");
-  Serial.println("d: Download data from buffer");
-  Serial.println("w: Write buffer to device");
-  Serial.println("r: Read device to buffer");
-  Serial.println("c: Compare buffer with device");
-  Serial.println("b: Blank-check the device");
-  Serial.println("t [device number]: Select type of device");
-  Serial.println("i: Info about currently selected device");
+  Serial.println("L: List devices");
+  Serial.println("S[srec data]: Upload SREC to buffer");
+  Serial.println("D: Download data from buffer");
+  Serial.println("W: Write buffer to device");
+  Serial.println("R: Read device to buffer");
+  Serial.println("C: Compare buffer with device");
+  Serial.println("B: Blank-check the device");
+  Serial.println("T [device number]: Select type of device");
+  Serial.println("I: Info about currently selected device");
 }
 
 void list_devices() {
@@ -311,50 +316,75 @@ void not_implemented() {
   Serial.println("This functionality is not yet implemented");
 }
 
+uint8_t srec_state = 0;
+
+void srec_data_read (struct srec_state *srec,
+                    srec_record_number_t record_type,
+                    srec_address_t address,
+                    uint8_t *data, srec_count_t length,
+                    srec_bool_t checksum_error) {
+  if (checksum_error || srec->length != srec->byte_count) {
+      // error in input data
+  } else if (SREC_IS_DATA(record_type)) {
+    //TODO buffer-overrun
+    memcpy(buffer + address, data, length);
+  } else if (SREC_IS_TERMINATION(record_type)) {
+    srec_state = 0;
+  }
+}
+
 void loop() {
+  struct srec_state srec;
   if(Serial.available() > 0)
   {
     str = Serial.readStringUntil('\n');
     str.trim();
     if (str.length() > 0) {
-      char first = str[0];
-      if (first >= 'A' && first <= 'Z' ) first -= ('A' - 'a');
-      switch(first) {
-        case '?':
-          print_help();
-          break;
-        case 'l':
-          list_devices();
-          break;
-        case 'u':
-          not_implemented();
-          break;
-        case 'd':
-          print_buffer();
-          break;
-        case 'w':
-          not_implemented();
-          break;
-        case 'r':
-          read_device();
-          break;
-        case 'c':
-          compare_data();
-          break;
-        case 'b':
-          blank_check();
-          break;
-        case 't':
-          select_device();
-          break;
-        case 'i':
-          print_device_info();
-          break;
-        default:
-          Serial.print("Unknown command: ");
-          Serial.println(str[0]);
-          print_help();
-          break;
+      if (!srec_state) {
+        char first = str[0];
+        if (first >= 'A' && first <= 'Z' ) first -= ('A' - 'a');
+        switch(first) {
+          case '?':
+            print_help();
+            break;
+          case 'l':
+            list_devices();
+            break;
+          case 's':
+            srec_begin_read(&srec);
+            srec_state = 1;
+            break;
+          case 'd':
+            print_buffer();
+            break;
+          case 'w':
+            not_implemented();
+            break;
+          case 'r':
+            read_device();
+            break;
+          case 'c':
+            compare_data();
+            break;
+          case 'b':
+            blank_check();
+            break;
+          case 't':
+            select_device();
+            break;
+          case 'i':
+            print_device_info();
+            break;
+          default:
+            Serial.print("Unknown command: ");
+            Serial.println(str[0]);
+            print_help();
+            break;
+        }
+      }
+
+      if (srec_state) {
+        srec_read_bytes(&srec, str.c_str(), str.length());
       }
     }
   }

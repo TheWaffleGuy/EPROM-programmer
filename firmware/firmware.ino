@@ -317,7 +317,9 @@ void loop() {
     str = Serial.readStringUntil('\n');
     str.trim();
     if (str.length() > 0) {
-      switch(str[0]) {
+      char first = str[0];
+      if (first >= 'A' && first <= 'Z' ) first -= ('A' - 'a');
+      switch(first) {
         case '?':
           print_help();
           break;

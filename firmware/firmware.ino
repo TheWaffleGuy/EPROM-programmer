@@ -159,7 +159,7 @@ void print_record(const char *type, uint8_t *data, uint8_t data_length, uint16_t
 }
 
 void print_buffer() {
-  uint16_t data_byte_count = 1 << selected_ic_size;
+  uint16_t data_byte_count = 1U << selected_ic_size;
   uint8_t byte_per_record = 32;
   char header[] = "HDR";
   print_record("S0", (uint8_t*) header, sizeof(header) - 1, 0);
@@ -251,7 +251,7 @@ void read_device() {
 
   portMode(2, INPUT); // Port C
 
-  for(uint16_t current_adress = 0; current_adress < 1 << selected_ic_size; current_adress++) {
+  for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
     set_adress(current_adress);
     buffer[current_adress] = portRead(2); // Port C
   }
@@ -269,7 +269,7 @@ void blank_check() {
 
   portMode(2, INPUT); // Port C
 
-  for(uint16_t current_adress = 0; current_adress < 1 << selected_ic_size; current_adress++) {
+  for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
     set_adress(current_adress);
     data = portRead(2); // Port C
     if(data != 0xFF) {
@@ -294,7 +294,7 @@ void compare_data() {
 
   portMode(2, INPUT); // Port C
 
-  for(uint16_t current_adress = 0; current_adress < 1 << selected_ic_size; current_adress++) {
+  for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
     set_adress(current_adress);
     data = portRead(2); // Port C
     if(data != buffer[current_adress]) {

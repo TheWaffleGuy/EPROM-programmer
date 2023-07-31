@@ -316,25 +316,44 @@ void not_implemented() {
   Serial.println("This functionality is not yet implemented");
 }
 
+struct srec_state srec;
 uint8_t srec_state = 0;
+uint16_t records_read = 0;
 
 void srec_data_read (struct srec_state *srec,
                     srec_record_number_t record_type,
                     srec_address_t address,
                     uint8_t *data, srec_count_t length,
                     srec_bool_t checksum_error) {
-  if (checksum_error || srec->length != srec->byte_count) {
-      // error in input data
-  } else if (SREC_IS_DATA(record_type)) {
+  records_read++;
+
+  if (srec->length != srec->byte_count) {
+    if (srec->byte_count > SREC_LINE_MAX_BYTE_COUNT) {
+      Serial.print("Error: Byte count too high on record: ");
+      Serial.println(records_read, DEC);
+    } else {
+      Serial.print("Error: Byte count mismatch on record: ");
+      Serial.println(records_read, DEC);
+    }
+    return;
+  }
+
+  if (checksum_error) {
+    Serial.print("Error: Checksum mismatch on record: ");
+    Serial.println(records_read, DEC);
+    return;
+  }
+
+  if (SREC_IS_DATA(record_type)) {
     //TODO buffer-overrun
     memcpy(buffer + address, data, length);
   } else if (SREC_IS_TERMINATION(record_type)) {
     srec_state = 0;
+    records_read = 0;
   }
 }
 
 void loop() {
-  struct srec_state srec;
   if(Serial.available() > 0)
   {
     str = Serial.readStringUntil('\n');

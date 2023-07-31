@@ -225,10 +225,25 @@ void read_device() {
 
 void blank_check() {
   uint8_t data;
+  uint8_t blank_value;
 
   if(selected_ic == NULL) {
     Serial.println("No device selected. Select a device with \"t\"");
     return;
+  }
+
+  if (!selected_ic->f_can_blank_check) {
+    Serial.print("Device ");
+    Serial.print(selected_ic->name);
+    Serial.println(" cannot be blank-checked.");
+    Serial.println("Initially, and after erasure, all bits are in an undefined state.");
+    return;
+  }
+
+  if (selected_ic->f_blank_check_value == 0) {
+    blank_value = 0;
+  } else {
+    blank_value = 0xFF;
   }
 
   portMode(2, INPUT); // Port C
@@ -236,7 +251,7 @@ void blank_check() {
   for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
     set_adress(current_adress);
     data = portRead(2); // Port C
-    if(data != 0xFF) {
+    if(data != blank_value) {
       Serial.println("Device not blank!");
       write_byte(data);
       Serial.print(" read at adress: ");

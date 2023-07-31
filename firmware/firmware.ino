@@ -345,7 +345,10 @@ void srec_data_read (struct srec_state *srec,
   }
 
   if (SREC_IS_DATA(record_type)) {
-    //TODO buffer-overrun
+    if(address + length > sizeof(buffer)) {
+      Serial.print("Error: Buffer overrun");
+      return;
+    }
     memcpy(buffer + address, data, length);
   } else if (SREC_IS_TERMINATION(record_type)) {
     srec_state = 0;

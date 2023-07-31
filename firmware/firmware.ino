@@ -89,6 +89,7 @@ void print_help() {
 
 void list_devices() {
   for (uint8_t i = 0; i < num_ics; i++) {
+    if (i < 10) Serial.print(" ");
     Serial.print(i, DEC);
     Serial.print(") ");
     Serial.println(ics[i].name);

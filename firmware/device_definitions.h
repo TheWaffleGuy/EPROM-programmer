@@ -2,6 +2,9 @@ typedef struct IC {
   char name[11];
   uint8_t adr_pins[13];
   uint8_t ctrl_pins_read_h[2];
+
+  uint8_t f_can_blank_check : 1;
+  uint8_t f_blank_check_value : 1;
 } IC;
 
 #if __GNUC__ > 11

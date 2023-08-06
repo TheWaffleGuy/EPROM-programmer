@@ -92,6 +92,8 @@ void list_devices() {
     if (i < 10) Serial.print(" ");
     Serial.print(i, DEC);
     Serial.print(") ");
+    Serial.print(ics[i].manufacturer);
+    Serial.print(" - ");
     Serial.println(ics[i].name);
   }
 }
@@ -166,6 +168,8 @@ void select_device() {
   }
 
   Serial.print("Selected: ");
+  Serial.print(selected_ic->manufacturer);
+  Serial.print(" - ");
   Serial.println(selected_ic->name);
   Serial.println("OK!");
 }
@@ -177,6 +181,8 @@ void print_device_info() {
   }
 
   Serial.print("Currently selected device is: ");
+  Serial.print(selected_ic->manufacturer);
+  Serial.print(" - ");
   Serial.println(selected_ic->name);
 }
 

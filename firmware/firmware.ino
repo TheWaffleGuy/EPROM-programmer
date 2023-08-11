@@ -52,7 +52,7 @@ uint8_t selected_ic_size = 0;
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(38400);
 
   portMode(0, OUTPUT); // Port A
 

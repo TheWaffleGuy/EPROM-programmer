@@ -4274,7 +4274,7 @@
     (property "Value" "10u" (at 83.82 154.94 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "Capacitor_THT:C_Rect_L4.6mm_W3.0mm_P2.50mm_MKS02_FKP02" (at 86.0552 165.1 0)
+    (property "Footprint" "Local:C_Rect_L4.6mm_W3.0mm_P2.50mm_MKS02_FKP02" (at 86.0552 165.1 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 85.09 161.29 0)

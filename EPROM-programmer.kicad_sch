@@ -4386,23 +4386,6 @@
     )
   )
 
-  (sheet (at 105.41 36.83) (size 45.72 13.97) (fields_autoplaced)
-    (stroke (width 0.1524) (type solid))
-    (fill (color 0 0 0 0.0000))
-    (uuid a7c1fe9b-548a-45fe-b1aa-74e44d81f670)
-    (property "Sheetname" "Power" (at 105.41 36.1184 0)
-      (effects (font (size 1.27 1.27)) (justify left bottom))
-    )
-    (property "Sheetfile" "power.kicad_sch" (at 105.41 51.3846 0)
-      (effects (font (size 1.27 1.27)) (justify left top))
-    )
-    (instances
-      (project "EPROM-programmer"
-        (path "/8c5576b1-cb3e-4456-837b-2f47818a03ab" (page "2"))
-      )
-    )
-  )
-
   (sheet_instances
     (path "/" (page "1"))
   )

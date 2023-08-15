@@ -55,16 +55,7 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [
-        "lib_footprint_mismatch|101346000|108031975|347b24b4-a25d-4765-9563-1f714018f245|00000000-0000-0000-0000-000000000000",
-        "lib_footprint_mismatch|124382500|96530000|35b01d27-ecb0-4496-a7ba-e04106d91757|00000000-0000-0000-0000-000000000000",
-        "lib_footprint_mismatch|48250000|79905000|c4b62d7d-b4da-490b-b81c-bb78c46b5a6e|00000000-0000-0000-0000-000000000000",
-        "lib_footprint_mismatch|55880000|60414500|e1e48d1a-9588-4dda-8caa-1782bd0e3a55|00000000-0000-0000-0000-000000000000",
-        "lib_footprint_mismatch|72395000|111760000|bd17088b-096f-49c2-aee2-2f7a5ee473e6|00000000-0000-0000-0000-000000000000",
-        "silk_edge_clearance|51285000|58420000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a2f64e72-85a7-4634-9502-21d7b999bf83",
-        "silk_edge_clearance|60475000|58420000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a4ba06b8-72f5-44e1-be31-6e872a4d4570",
-        "starved_thermal|52070000|72390000|dcb20467-f581-45d0-b60a-f18d71d1837c|3f6825e2-6440-4696-a78c-28c81a8a12c9|F.Cu"
-      ],
+      "drc_exclusions": [],
       "meta": {
         "version": 2
       },
@@ -438,6 +429,23 @@
         "via_diameter": 0.8,
         "via_drill": 0.4,
         "wire_width": 6
+      },
+      {
+        "bus_width": 12,
+        "clearance": 0.15,
+        "diff_pair_gap": 0.25,
+        "diff_pair_via_gap": 0.25,
+        "diff_pair_width": 0.2,
+        "line_style": 0,
+        "microvia_diameter": 0.3,
+        "microvia_drill": 0.1,
+        "name": "POWER_RAIL",
+        "pcb_color": "rgba(0, 0, 0, 0.000)",
+        "schematic_color": "rgba(0, 0, 0, 0.000)",
+        "track_width": 1.0,
+        "via_diameter": 0.8,
+        "via_drill": 0.4,
+        "wire_width": 6
       }
     ],
     "meta": {
@@ -445,7 +453,24 @@
     },
     "net_colors": null,
     "netclass_assignments": null,
-    "netclass_patterns": []
+    "netclass_patterns": [
+      {
+        "netclass": "POWER_RAIL",
+        "pattern": "+28V"
+      },
+      {
+        "netclass": "POWER_RAIL",
+        "pattern": "/28V_IN"
+      },
+      {
+        "netclass": "POWER_RAIL",
+        "pattern": "/AMP_VCC"
+      },
+      {
+        "netclass": "POWER_RAIL",
+        "pattern": "/ZIF_VCC"
+      }
+    ]
   },
   "pcbnew": {
     "last_paths": {

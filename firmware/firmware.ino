@@ -99,15 +99,17 @@ void list_devices() {
 }
 
 void write_byte(uint8_t byte) {
-  uint8_t high_nibble = byte >> 4;
-  uint8_t low_nibble = byte & 0x0FU;
-  Serial.print(HEX_DIGIT(high_nibble));
-  Serial.print(HEX_DIGIT(low_nibble));
+  union { uint8_t val; struct { uint8_t low_nibble: 4; uint8_t high_nibble: 4; } val_split; } data;
+  data.val = byte;
+  Serial.print(HEX_DIGIT(data.val_split.high_nibble));
+  Serial.print(HEX_DIGIT(data.val_split.low_nibble));
 }
 
  void __attribute__((always_inline)) inline write_2byte(uint16_t byte2) {
-  write_byte((uint8_t) ( byte2 >> 8 ));
-  write_byte((uint8_t) byte2);
+  union { uint16_t val; uint8_t val_split[2]; } data;
+  data.val = byte2;
+  write_byte(data.val_split[1]);
+  write_byte(data.val_split[0]);
  }
 
 void print_record(const char *type, uint8_t *data, uint8_t data_length, uint16_t adress) {

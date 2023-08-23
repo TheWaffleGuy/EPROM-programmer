@@ -344,15 +344,40 @@ void srec_data_read (struct srec_state *srec,
   }
 }
 
+String readSerialLine()
+{
+  String ret;
+  int c = 0;
+
+  while (c != '\n')
+  {
+    while((c = Serial.read()) < 0);
+
+    if (c == 8)
+    {
+      if (ret.length() > 0)
+      {
+        ret.remove(ret.length() - 1);
+      }
+    }
+    else
+    {
+      ret += (char)c;
+    }
+  }
+
+  return ret;
+}
+
 void loop() {
   if(Serial.available() > 0)
   {
-    str = Serial.readStringUntil('\n');
+    str = readSerialLine();
     str.trim();
     if (str.length() > 0) {
       if (!srec_state) {
         char first = str[0];
-        if (first >= 'A' && first <= 'Z' ) first -= ('A' - 'a');
+        first |= 0b00100000; //Force lower-case 
         switch(first) {
           case '?':
             print_help();

@@ -1,3 +1,7 @@
+#include <Arduino.h>
+#include <util/atomic.h>
+#include <SPI.h>
+
 #define restrict __restrict__
 extern "C" {
   #include "kk_srec.h"
@@ -5,6 +9,8 @@ extern "C" {
 #include "device_definitions.h"
 
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
+
+#define VOLT(a,b) ( ( a * 8 + (b * 8) / 10 ) << 4 )
 
 uint8_t port_a;
 uint8_t port_b;
@@ -50,17 +56,27 @@ String str;
 IC *selected_ic = NULL;
 uint8_t selected_ic_size = 0;
 
+void setVCC(uint16_t volt);
+
 
 void setup() {
   Serial.begin(38400);
 
+  SPI.begin();
+
   portMode(0, OUTPUT); // Port A
 
-  //Upper 5 pins outputs Port D
-  uint8_t oldSREG = SREG;
-  cli();
-  DDRD |= 0b11111000;
-  SREG = oldSREG;
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+  {
+    //Upper 5 pins outputs Port D
+    DDRD |= 0b11111000;
+    // Set SS for DAC high
+    PORTB |= 0b00010000;
+    // Set SS as output
+    DDRB |=  0b00010000;
+  };
+
+  setVCC(VOLT(5,0));
 }
 
 bool is_numeric(String string) {
@@ -367,6 +383,20 @@ String readSerialLine()
   }
 
   return ret;
+}
+
+void setVCC(uint16_t volt) {
+  union { uint16_t val; struct { uint16_t volt : 12; uint16_t shutdown : 1; uint16_t gain : 1; uint16_t ignore : 1; uint16_t a_b : 1; } val_split; } data;
+  data.val_split.a_b = 0;
+  data.val_split.gain = 1;
+  data.val_split.shutdown = 1;
+  data.val_split.volt = volt;
+
+  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= 0b11101111; }; // Set SS for DAC low
+  SPI.transfer16(data.val);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 0b00010000; }; // Set SS for DAC high
+  SPI.endTransaction();
 }
 
 void loop() {

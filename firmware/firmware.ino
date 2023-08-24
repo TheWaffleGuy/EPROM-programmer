@@ -10,7 +10,7 @@ extern "C" {
 
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
-#define VOLT(a,b) ( ( a * 8 + (b * 8) / 10 ) << 4 )
+#define VOLT(a,b) ( a * 8 + (b * 8) / 10 )
 
 uint8_t port_a;
 uint8_t port_b;
@@ -56,7 +56,7 @@ String str;
 IC *selected_ic = NULL;
 uint8_t selected_ic_size = 0;
 
-void setVCC(uint16_t volt);
+void setVCC(uint8_t volt);
 
 
 void setup() {
@@ -385,16 +385,12 @@ String readSerialLine()
   return ret;
 }
 
-void setVCC(uint16_t volt) {
-  union { uint16_t val; struct { uint16_t volt : 12; uint16_t shutdown : 1; uint16_t gain : 1; uint16_t ignore : 1; uint16_t a_b : 1; } val_split; } data;
-  data.val_split.a_b = 0;
-  data.val_split.gain = 1;
-  data.val_split.shutdown = 1;
-  data.val_split.volt = volt;
+void setVCC(uint8_t volt) {
+  uint16_t data = 0b0011000000000000 | (volt << 4);
 
   SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= 0b11101111; }; // Set SS for DAC low
-  SPI.transfer16(data.val);
+  SPI.transfer16(data);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 0b00010000; }; // Set SS for DAC high
   SPI.endTransaction();
 }

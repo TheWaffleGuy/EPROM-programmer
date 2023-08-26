@@ -11,6 +11,8 @@
 #include <termios.h>
 #include <stdio.h>
 
+#define ATOMIC_BLOCK(type) for (int __ToDo=1; __ToDo; __ToDo=0)
+
 static struct termios old, current;
 
 /* Initialize new terminal i/o settings */
@@ -375,3 +377,47 @@ size_t printNumber(unsigned long n, uint8_t base)
 };
 
 FakeSerial Serial;
+
+
+#include <bitset>
+
+#ifndef LSBFIRST
+#define LSBFIRST 0
+#endif
+#ifndef MSBFIRST
+#define MSBFIRST 1
+#endif
+
+#define SPI_MODE0 0x00
+#define SPI_MODE1 0x04
+#define SPI_MODE2 0x08
+#define SPI_MODE3 0x0C
+
+class SPISettings {
+public:
+  SPISettings(uint32_t clock, uint8_t bitOrder, uint8_t dataMode) {
+  }
+};
+
+class FakeSPI {
+public:
+  static void begin() {
+    std::cout << "SPI-debug: " << "begin" << std::endl;
+  }
+  static void beginTransaction(SPISettings settings) {
+    std::cout << "SPI-debug: " << "beginTransaction" << std::endl;
+  }
+  static void endTransaction() {
+    std::cout << "SPI-debug: " << "endTransaction" << std::endl;
+  }
+  static uint8_t transfer(uint8_t data) {
+    std::cout << "SPI-debug: " << "transfer: " << std::bitset<8>(data) << std::endl;
+    return data;
+  }
+  static uint16_t transfer16(uint16_t data) {
+    std::cout << "SPI-debug: " << "transfer: " << std::bitset<16>(data) << std::endl;
+    return data;
+  }
+};
+
+FakeSPI SPI;

@@ -1,6 +1,8 @@
+#ifdef ARDUINO_AVR_ATmega1284
 #include <Arduino.h>
 #include <util/atomic.h>
 #include <SPI.h>
+#endif
 
 #define restrict __restrict__
 extern "C" {

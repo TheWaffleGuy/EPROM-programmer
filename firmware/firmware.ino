@@ -68,8 +68,7 @@ void setup() {
 
   portMode(0, OUTPUT); // Port A
 
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-  {
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     //Upper 5 pins outputs Port D
     DDRD |= 0b11111000;
     // Set SS for DAC high
@@ -147,8 +146,8 @@ void print_record(const char *type, uint8_t *data, uint8_t data_length, uint16_t
 void print_buffer() {
   uint16_t data_byte_count = 1U << selected_ic_size;
   uint8_t byte_per_record = 32;
-  char header[] = "HDR";
-  print_record("S0", (uint8_t*) header, sizeof(header) - 1, 0);
+  char header[] = { 'H', 'D', 'R' };
+  print_record("S0", (uint8_t*) header, sizeof(header), 0);
 
   for (uint16_t i = 0; i < data_byte_count; i+=byte_per_record) {
     print_record("S1", buffer + i, byte_per_record, i);
@@ -226,11 +225,10 @@ void set_adress(uint16_t adress) {
 
     portWrite(0, port_a);
 
-    uint8_t oldSREG = SREG;
-    cli();
-    PORTD &= 0b00000111; //Upper 5 bits used for adress
-    PORTD |= port_d;
-    SREG = oldSREG;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+      PORTD &= 0b00000111; //Upper 5 bits used for adress
+      PORTD |= port_d;
+    }
 }
 
 void read_device() {

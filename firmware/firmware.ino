@@ -25,30 +25,30 @@ typedef struct pin {
 } pin;
 
 pin pins[] = {
-  { .port = &port_a, 0 },
-  { .port = &port_a, 1 },
-  { .port = &port_a, 2 },
-  { .port = &port_a, 3 },
-  { .port = &port_a, 4 },
-  { .port = &port_a, 5 },
-  { .port = &port_a, 6 },
-  { .port = &port_a, 7 },
-  { .port = &port_c, 0 }, //Data 0
-  { .port = &port_c, 1 }, //Data 1
-  { .port = &port_c, 2 }, //Data 2
-  { .port = NULL, 0 },    //GND
-  { .port = &port_c, 3 }, //Data 3
-  { .port = &port_c, 4 }, //Data 4
-  { .port = &port_c, 5 }, //Data 5
-  { .port = &port_c, 6 }, //Data 6
-  { .port = &port_c, 7 }, //Data 7
-  { .port = &port_d, 7 },
-  { .port = &port_d, 6 },
-  { .port = NULL, 0 },    //#OE
-  { .port = &port_d, 5 },
-  { .port = &port_d, 4 },
-  { .port = &port_d, 3 },
-  { .port = NULL, 0 },    //VCC
+  { .port = &port_a, 0 }, //ZIF 1
+  { .port = &port_a, 1 }, //ZIF 2
+  { .port = &port_a, 2 }, //ZIF 3
+  { .port = &port_a, 3 }, //ZIF 4
+  { .port = &port_a, 4 }, //ZIF 5
+  { .port = &port_a, 5 }, //ZIF 6
+  { .port = &port_a, 6 }, //ZIF 7
+  { .port = &port_a, 7 }, //ZIF 8
+  { .port = &port_c, 0 }, //ZIF 9  (Data 0)
+  { .port = &port_c, 1 }, //ZIF 10 (Data 1)
+  { .port = &port_c, 2 }, //ZIF 11 (Data 2)
+  { .port = NULL, 0 },    //ZIF 12 (GND)
+  { .port = &port_c, 3 }, //ZIF 13 (Data 3)
+  { .port = &port_c, 4 }, //ZIF 14 (Data 4)
+  { .port = &port_c, 5 }, //ZIF 15 (Data 5)
+  { .port = &port_c, 6 }, //ZIF 16 (Data 6)
+  { .port = &port_c, 7 }, //ZIF 17 (Data 7)
+  { .port = &port_d, 7 }, //ZIF 18
+  { .port = &port_d, 6 }, //ZIF 19
+  { .port = &port_d, 5 }, //ZIF 20 (#OE)
+  { .port = &port_d, 4 }, //ZIF 21
+  { .port = &port_d, 3 }, //ZIF 22
+  { .port = &port_d, 2 }, //ZIF 23
+  { .port = NULL, 0 },    //ZIF 24 (VCC)
 };
 
 
@@ -69,8 +69,8 @@ void setup() {
   portMode(0, OUTPUT); // Port A
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    //Upper 5 pins outputs Port D
-    DDRD |= 0b11111000;
+    //Upper 6 pins outputs Port D
+    DDRD |= 0b11111100;
     // Set SS for DAC high
     PORTB |= 0b00010000;
     // Set SS as output
@@ -226,7 +226,7 @@ void set_adress(uint16_t adress) {
     portWrite(0, port_a);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-      PORTD &= 0b00000111; //Upper 5 bits used for adress
+      PORTD &= 0b00000011; //Upper 6 bits used for adress
       PORTD |= port_d;
     }
 }

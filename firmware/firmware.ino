@@ -245,7 +245,7 @@ void read_device() {
   }
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT |= 1 << VCC_EN_PIN; }
-  delay(200);
+  delay(100);
 
   portMode(2, INPUT); // Port C
 

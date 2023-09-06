@@ -10,6 +10,12 @@ extern "C" {
 }
 #include "device_definitions.h"
 
+#define DAC_SS_PORT PORTB
+#define DAC_SS_PIN 4
+
+#define VCC_EN_PORT PORTB
+#define VCC_EN_PIN 0
+
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
 #define VOLT(a,b) ( a * 8 + (b * 8) / 10 )
@@ -71,10 +77,11 @@ void setup() {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     //Upper 6 pins outputs Port D
     DDRD |= 0b11111100;
-    // Set SS for DAC high
-    PORTB |= 0b00010000;
-    // Set SS as output
-    DDRB |=  0b00010000;
+
+    DAC_SS_PORT |= 1 << DAC_SS_PIN;
+    VCC_EN_PORT &= ~(1 << VCC_EN_PIN);
+    // Set SS, VCC_EN as output
+    DDRB |=  0b00010001;
   };
 
   setVCC(VOLT(5,0));
@@ -237,12 +244,17 @@ void read_device() {
     return;
   }
 
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT |= 1 << VCC_EN_PIN; }
+  delay(200);
+
   portMode(2, INPUT); // Port C
 
   for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
     set_adress(current_adress);
     buffer[current_adress] = portRead(2); // Port C
   }
+
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT &= ~(1 << VCC_EN_PIN); }
 
   Serial.println("OK!");
 }
@@ -388,10 +400,10 @@ String readSerialLine()
 void setVCC(uint8_t volt) {
   uint16_t data = 0b0011000000000000 | (volt << 4);
 
-  SPI.beginTransaction(SPISettings(20000000, MSBFIRST, SPI_MODE0));
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= 0b11101111; }; // Set SS for DAC low
+  SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT &= ~(1 << DAC_SS_PIN); };
   SPI.transfer16(data);
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 0b00010000; }; // Set SS for DAC high
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT |= 1 << DAC_SS_PIN; };
   SPI.endTransaction();
 }
 

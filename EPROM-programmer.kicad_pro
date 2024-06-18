@@ -517,6 +517,10 @@
       {
         "netclass": "POWER_RAIL",
         "pattern": "/ZIF_VCC"
+      },
+      {
+        "netclass": "POWER_RAIL",
+        "pattern": "/AMP_VPP"
       }
     ]
   },

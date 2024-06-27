@@ -521,6 +521,10 @@
       {
         "netclass": "POWER_RAIL",
         "pattern": "/AMP_VPP"
+      },
+      {
+        "netclass": "POWER_RAIL",
+        "pattern": "+9V"
       }
     ]
   },

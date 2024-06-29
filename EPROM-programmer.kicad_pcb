@@ -10561,7 +10561,7 @@
 				)
 			)
 		)
-		(property "Value" "R-78E9.0-0.5"
+		(property "Value" "R-78K9.0-0.5"
 			(at 2.54 3 90)
 			(layer "F.Fab")
 			(uuid "440ace7c-2e15-433c-bbd5-1042f6739487")
@@ -10585,7 +10585,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://www.recom-power.com/pdf/Innoline/R-78Exx-0.5.pdf"
+		(property "Datasheet" "https://www.recom-power.com/pdf/Innoline/R-78K-0.5.pdf"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -10598,7 +10598,7 @@
 				)
 			)
 		)
-		(property "Description" "500mA Step-Down DC/DC-Regulator, 12-28V input, 9V fixed Output Voltage, LM78xx replacement, -40°C to +85°C, SIP3"
+		(property "Description" "500mA Step-Down DC/DC-Regulator, 12-36V input, 9V fixed Output Voltage, LM78xx replacement, -40°C to +90°C, SIP3"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")

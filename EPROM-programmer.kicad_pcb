@@ -19285,7 +19285,7 @@
 			(pintype "passive")
 			(uuid "869d1190-24ed-45a8-897f-678bb03b4530")
 		)
-		(model "${KICAD6_3DMODEL_DIR}/LED_THT.3dshapes/LED_D3.0mm.wrl"
+		(model "${KICAD8_3DMODEL_DIR}/LED_THT.3dshapes/LED_D3.0mm_Yellow.wrl"
 			(offset
 				(xyz 0 0 -3)
 			)
@@ -24767,7 +24767,7 @@
 			(pintype "passive")
 			(uuid "6c3d0014-c0f2-42ac-a557-baa8804ef7db")
 		)
-		(model "${KICAD6_3DMODEL_DIR}/LED_THT.3dshapes/LED_D3.0mm.wrl"
+		(model "${KICAD8_3DMODEL_DIR}/LED_THT.3dshapes/LED_D3.0mm_Yellow.wrl"
 			(offset
 				(xyz 0 0 -3)
 			)

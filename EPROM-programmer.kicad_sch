@@ -12192,7 +12192,7 @@
 				)
 			)
 		)
-		(property "Value" "R-78E9.0-0.5"
+		(property "Value" "R-78K9.0-0.5"
 			(at 73.66 173.99 0)
 			(effects
 				(font
@@ -12211,7 +12211,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "https://www.recom-power.com/pdf/Innoline/R-78Exx-0.5.pdf"
+		(property "Datasheet" "https://www.recom-power.com/pdf/Innoline/R-78K-0.5.pdf"
 			(at 73.66 177.8 0)
 			(effects
 				(font
@@ -12220,7 +12220,7 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "500mA Step-Down DC/DC-Regulator, 12-28V input, 9V fixed Output Voltage, LM78xx replacement, -40°C to +85°C, SIP3"
+		(property "Description" "500mA Step-Down DC/DC-Regulator, 12-36V input, 9V fixed Output Voltage, LM78xx replacement, -40°C to +90°C, SIP3"
 			(at 73.66 177.8 0)
 			(effects
 				(font

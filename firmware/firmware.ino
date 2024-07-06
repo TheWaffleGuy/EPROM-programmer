@@ -18,7 +18,7 @@ extern "C" {
 
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
-#define VOLT(a,b) ( a * 8 + (b * 8) / 10 )
+#define VOLT(a,b) ( a * 8 + (b * 8) / 1000 )
 
 uint8_t port_a;
 uint8_t port_b;
@@ -84,7 +84,7 @@ void setup() {
     DDRB |=  0b00010001;
   };
 
-  setVCC(VOLT(5,0));
+  setVCC(VOLT(5, 0));
 }
 
 bool is_numeric(String string) {
@@ -398,6 +398,7 @@ String readSerialLine()
 }
 
 void setVCC(uint8_t volt) {
+  volt -= VOLT(1, 250);
   uint16_t data = 0b0011000000000000 | (volt << 4);
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));

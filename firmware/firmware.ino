@@ -87,6 +87,7 @@ void setup() {
   };
 
   setVCC(VOLT(5, 0));
+  setVPP(VOLT(1, 250));
 }
 
 bool is_numeric(String string) {

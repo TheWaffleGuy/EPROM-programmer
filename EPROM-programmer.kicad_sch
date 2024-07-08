@@ -6933,6 +6933,12 @@
 		(uuid "1d3c1346-c545-4518-8acd-b4ae31d2593a")
 	)
 	(junction
+		(at 147.32 168.91)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1dfa8877-64ac-4489-a8b2-4d07dd403a62")
+	)
+	(junction
 		(at 21.59 43.18)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -6973,12 +6979,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "3c55d2a8-7d1d-49d7-b3dd-b4a753049c70")
-	)
-	(junction
-		(at 144.78 176.53)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3da95d97-f208-4ad3-ac22-15de6fa1ed6e")
 	)
 	(junction
 		(at 120.65 157.48)
@@ -7173,12 +7173,6 @@
 		(uuid "b8c9ea65-f21e-4bb0-85be-b3cbc569277f")
 	)
 	(junction
-		(at 144.78 168.91)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b92c41df-cff3-4b93-af37-4592a31b3eeb")
-	)
-	(junction
 		(at 24.13 82.55)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7207,6 +7201,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "cc0e84c9-4459-429e-9324-ca7812e6bbf2")
+	)
+	(junction
+		(at 139.7 176.53)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "cec81d7b-f105-42d0-9692-48a3d653e070")
 	)
 	(junction
 		(at 120.65 31.75)
@@ -7239,12 +7239,6 @@
 		(uuid "db356e43-cd94-4382-9e01-5e6133af36b5")
 	)
 	(junction
-		(at 160.02 168.91)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "e3419e99-1d19-4879-8c3e-d04303bc5ade")
-	)
-	(junction
 		(at 148.59 102.87)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -7273,12 +7267,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "efbd80cb-2946-4278-b0b4-3fba07949a67")
-	)
-	(junction
-		(at 149.86 176.53)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "f0c4d97a-7010-446d-bb06-78f16ff3defe")
 	)
 	(junction
 		(at 154.94 31.75)
@@ -7662,16 +7650,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 168.91) (xy 160.02 168.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1b97c88d-d2c9-4b4e-a4f3-0de4eedc5cba")
-	)
-	(wire
-		(pts
 			(xy 19.05 59.69) (xy 41.91 59.69)
 		)
 		(stroke
@@ -8012,7 +7990,7 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 187.96) (xy 149.86 189.23)
+			(xy 139.7 187.96) (xy 139.7 189.23)
 		)
 		(stroke
 			(width 0)
@@ -8062,7 +8040,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 187.96) (xy 160.02 189.23)
+			(xy 147.32 187.96) (xy 147.32 189.23)
 		)
 		(stroke
 			(width 0)
@@ -8802,17 +8780,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 168.91) (xy 162.56 168.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7e5889dd-d99d-4447-8992-8bc4f867595d")
-	)
-	(wire
-		(pts
-			(xy 149.86 176.53) (xy 149.86 180.34)
+			(xy 139.7 176.53) (xy 139.7 180.34)
 		)
 		(stroke
 			(width 0)
@@ -8862,7 +8830,7 @@
 	)
 	(wire
 		(pts
-			(xy 133.35 168.91) (xy 144.78 168.91)
+			(xy 133.35 168.91) (xy 147.32 168.91)
 		)
 		(stroke
 			(width 0)
@@ -9162,6 +9130,16 @@
 	)
 	(wire
 		(pts
+			(xy 139.7 176.53) (xy 160.02 176.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "963c2f23-1423-4408-a1f2-13b676fd8385")
+	)
+	(wire
+		(pts
 			(xy 72.39 105.41) (xy 80.01 105.41)
 		)
 		(stroke
@@ -9382,7 +9360,7 @@
 	)
 	(wire
 		(pts
-			(xy 160.02 168.91) (xy 160.02 180.34)
+			(xy 147.32 168.91) (xy 147.32 180.34)
 		)
 		(stroke
 			(width 0)
@@ -9822,16 +9800,6 @@
 	)
 	(wire
 		(pts
-			(xy 149.86 176.53) (xy 162.56 176.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ca780e46-07f3-458c-98fb-2809c70803af")
-	)
-	(wire
-		(pts
 			(xy 16.51 113.03) (xy 22.86 113.03)
 		)
 		(stroke
@@ -9992,7 +9960,7 @@
 	)
 	(wire
 		(pts
-			(xy 133.35 176.53) (xy 144.78 176.53)
+			(xy 133.35 176.53) (xy 139.7 176.53)
 		)
 		(stroke
 			(width 0)
@@ -10352,16 +10320,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 176.53) (xy 149.86 176.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ebb6bfb8-8718-4c68-a5e5-2d3a3e1f4578")
-	)
-	(wire
-		(pts
 			(xy 72.39 118.11) (xy 80.01 118.11)
 		)
 		(stroke
@@ -10439,6 +10397,16 @@
 			(type default)
 		)
 		(uuid "ef172eb5-5ad4-49a4-9cc9-3e5a5c99f11f")
+	)
+	(wire
+		(pts
+			(xy 147.32 168.91) (xy 160.02 168.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "efa35ae0-42bf-41e3-b7c1-ef292b590bba")
 	)
 	(wire
 		(pts
@@ -10783,7 +10751,7 @@
 		)
 		(uuid "26bb3581-8dce-4f74-bddc-a54b943fea6c")
 	)
-	(label "AMP_VPP"
+	(label "VPP"
 		(at 238.76 31.75 0)
 		(fields_autoplaced yes)
 		(effects
@@ -10993,7 +10961,7 @@
 		(uuid "66fa8b82-2b4c-4541-b734-8d3421ac98fc")
 	)
 	(label "DAC_VCC"
-		(at 142.24 176.53 180)
+		(at 160.02 176.53 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11290,7 +11258,7 @@
 		(uuid "aed6ded9-402c-488e-b838-1b828863b177")
 	)
 	(label "DAC_VPP"
-		(at 142.24 168.91 180)
+		(at 160.02 168.91 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -11641,7 +11609,7 @@
 		)
 		(uuid "fa2b72cb-af28-48d4-b001-a229362778e1")
 	)
-	(label "AMP_VCC"
+	(label "VCC"
 		(at 144.78 31.75 0)
 		(fields_autoplaced yes)
 		(effects
@@ -14230,73 +14198,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 144.78 168.91 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "47de2ab4-baa7-489f-bafe-fe87748dc3fb")
-		(property "Reference" "TP1"
-			(at 147.32 164.338 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Value" "DAC_VPP_TP"
-			(at 147.32 166.878 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_2.0x2.0mm"
-			(at 149.86 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 149.86 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 144.78 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "f2a30286-e5d9-47c2-b9e0-7d269aea3fb6")
-		)
-		(instances
-			(project "EPROM-programmer"
-				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab"
-					(reference "TP1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 267.97 69.85 0)
 		(unit 1)
@@ -14368,7 +14269,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 149.86 189.23 0)
+		(at 139.7 189.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14377,7 +14278,7 @@
 		(fields_autoplaced yes)
 		(uuid "49cbddd1-20d0-4ccc-a318-ac4c72d75d12")
 		(property "Reference" "#PWR042"
-			(at 149.86 195.58 0)
+			(at 139.7 195.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14386,7 +14287,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 149.86 194.31 0)
+			(at 139.7 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14394,7 +14295,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 149.86 189.23 0)
+			(at 139.7 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14403,7 +14304,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 149.86 189.23 0)
+			(at 139.7 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14412,7 +14313,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 149.86 189.23 0)
+			(at 139.7 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15136,13 +15037,12 @@
 				)
 			)
 		)
-		(property "Value" "AMP_VPP"
+		(property "Value" "VPP"
 			(at 243.205 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(hide yes)
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
@@ -15869,7 +15769,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 160.02 184.15 0)
+		(at 147.32 184.15 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15878,7 +15778,7 @@
 		(fields_autoplaced yes)
 		(uuid "67e7ec93-4428-4486-bab3-2ce2039d2a6a")
 		(property "Reference" "C14"
-			(at 163.83 182.88 0)
+			(at 151.13 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15887,7 +15787,7 @@
 			)
 		)
 		(property "Value" "1u"
-			(at 163.83 185.42 0)
+			(at 151.13 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15896,7 +15796,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_THT:C_Rect_L4.6mm_W3.0mm_P2.50mm_MKS02_FKP02"
-			(at 160.9852 187.96 0)
+			(at 148.2852 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15905,7 +15805,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 160.02 184.15 0)
+			(at 147.32 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15914,7 +15814,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 160.02 184.15 0)
+			(at 147.32 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16100,7 +16000,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "AMP_VCC_TP"
+		(property "Value" "VCC_TP"
 			(at 157.48 22.0979 0)
 			(effects
 				(font
@@ -17317,71 +17217,6 @@
 	)
 	(symbol
 		(lib_id "Connector:Conn_01x01_Pin")
-		(at 167.64 176.53 0)
-		(mirror y)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "914b2de0-72e8-44eb-8a0f-5206ea5d25f5")
-		(property "Reference" "J4"
-			(at 167.005 171.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "DAC_VCC"
-			(at 167.005 173.99 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
-			(at 167.64 176.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 167.64 176.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 167.64 176.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "281fd0ba-efad-4549-b73b-8a7062c42899")
-		)
-		(instances
-			(project "EPROM-programmer"
-				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab"
-					(reference "J4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Connector:Conn_01x01_Pin")
 		(at 149.86 25.4 0)
 		(unit 1)
 		(exclude_from_sim no)
@@ -17397,7 +17232,7 @@
 				)
 			)
 		)
-		(property "Value" "AMP_VCC"
+		(property "Value" "VCC"
 			(at 150.495 22.86 0)
 			(effects
 				(font
@@ -17447,7 +17282,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 160.02 189.23 0)
+		(at 147.32 189.23 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -17456,7 +17291,7 @@
 		(fields_autoplaced yes)
 		(uuid "93c1f394-8cbf-4c5b-ba39-7553d14d379a")
 		(property "Reference" "#PWR043"
-			(at 160.02 195.58 0)
+			(at 147.32 195.58 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17465,7 +17300,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 160.02 194.31 0)
+			(at 147.32 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17473,7 +17308,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 160.02 189.23 0)
+			(at 147.32 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17482,7 +17317,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 160.02 189.23 0)
+			(at 147.32 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17491,7 +17326,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 160.02 189.23 0)
+			(at 147.32 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17615,7 +17450,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "AMP_VPP_TP"
+		(property "Value" "VPP_TP"
 			(at 250.19 22.0979 0)
 			(effects
 				(font
@@ -20894,73 +20729,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:TestPoint")
-		(at 144.78 176.53 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f728b65f-85d5-4ba1-ae36-d08b25c3cdd9")
-		(property "Reference" "TP2"
-			(at 147.32 171.9579 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Value" "DAC_VCC_TP"
-			(at 147.32 174.4979 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "TestPoint:TestPoint_Pad_2.0x2.0mm"
-			(at 149.86 176.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 149.86 176.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 144.78 176.53 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "8e816778-b8fd-48d5-b30c-c8b1e4931b8b")
-		)
-		(instances
-			(project "EPROM-programmer"
-				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab"
-					(reference "TP2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 85.09 182.88 0)
 		(unit 1)
@@ -21098,74 +20866,8 @@
 		)
 	)
 	(symbol
-		(lib_id "Connector:Conn_01x01_Pin")
-		(at 167.64 168.91 0)
-		(mirror y)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "fadb5eb9-3326-4b25-94c8-26a00e64d5c3")
-		(property "Reference" "J3"
-			(at 167.005 163.83 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "DAC_VPP"
-			(at 167.005 166.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x01_P2.54mm_Vertical"
-			(at 167.64 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 167.64 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 167.64 168.91 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "466fd4c9-7b60-486b-b510-d3095b420c26")
-		)
-		(instances
-			(project "EPROM-programmer"
-				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab"
-					(reference "J3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
-		(at 149.86 184.15 0)
+		(at 139.7 184.15 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -21173,7 +20875,7 @@
 		(dnp no)
 		(uuid "fb21850c-3da0-464b-bf31-3a1437f2a2cc")
 		(property "Reference" "C13"
-			(at 142.24 182.88 0)
+			(at 132.08 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21182,7 +20884,7 @@
 			)
 		)
 		(property "Value" "1u"
-			(at 142.24 185.42 0)
+			(at 132.08 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21191,7 +20893,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_THT:C_Rect_L4.6mm_W3.0mm_P2.50mm_MKS02_FKP02"
-			(at 150.8252 187.96 0)
+			(at 140.6652 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21200,7 +20902,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 149.86 184.15 0)
+			(at 139.7 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21209,7 +20911,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 149.86 184.15 0)
+			(at 139.7 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)

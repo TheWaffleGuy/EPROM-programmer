@@ -24636,17 +24636,6 @@
 				(xyz 0 0 0)
 			)
 		)
-		(model "${KIPRJMOD}/3D/USB4085-GF-A.stp"
-			(offset
-				(xyz 15 -4 1.5)
-			)
-			(scale
-				(xyz 1 1 1)
-			)
-			(rotate
-				(xyz -90 0 0)
-			)
-		)
 	)
 	(footprint "Package_TO_SOT_THT:TO-92_Inline_Wide"
 		(layer "F.Cu")

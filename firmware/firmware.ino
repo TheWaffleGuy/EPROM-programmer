@@ -66,6 +66,8 @@ uint8_t selected_ic_size = 0;
 
 void setVCC(uint8_t volt);
 
+void setVPP(uint8_t volt);
+
 
 void setup() {
   Serial.begin(38400);
@@ -400,6 +402,17 @@ String readSerialLine()
 void setVCC(uint8_t volt) {
   volt -= VOLT(1, 250);
   uint16_t data = 0b0011000000000000 | (volt << 4);
+
+  SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT &= ~(1 << DAC_SS_PIN); };
+  SPI.transfer16(data);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT |= 1 << DAC_SS_PIN; };
+  SPI.endTransaction();
+}
+
+void setVPP(uint8_t volt) {
+  volt -= VOLT(1, 250);
+  uint16_t data = 0b1011000000000000 | (volt << 4);
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT &= ~(1 << DAC_SS_PIN); };

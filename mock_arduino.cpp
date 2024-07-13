@@ -10,8 +10,15 @@
 #ifdef __linux__ 
 #include <termios.h>
 #include <stdio.h>
+#include <time.h>
 
-#define ATOMIC_BLOCK(type) for (int __ToDo=1; __ToDo; __ToDo=0)
+void delay(unsigned long milliseconds)
+{
+    struct timespec ts;
+    ts.tv_sec = milliseconds / 1000;
+    ts.tv_nsec = (milliseconds % 1000) * 1000000;
+    nanosleep(&ts, NULL);
+}
 
 static struct termios old, current;
 
@@ -58,9 +65,16 @@ char getche(void)
 }
 #elif _WIN32
 #include <conio.h>
-#else
-
+//#include <windows.h>
+void delay(unsigned long milliseconds)
+{
+//  Sleep(milliseconds);
+}
 #endif
+
+#define F_CPU 20000000L
+
+#define ATOMIC_BLOCK(type) for (int __ToDo=1; __ToDo; __ToDo=0)
 
 #define INPUT 0x0
 #define OUTPUT 0x1
@@ -199,7 +213,9 @@ public:
   void end() {}
 
   int read() {
-    return getche();
+    int c = getche();
+    if (c == '\r') return '\n';
+    return c;
   }
 
   size_t write(char c) {

@@ -25,6 +25,9 @@ uint8_t port_b;
 uint8_t port_c;
 uint8_t port_d;
 
+char line[80 + 1];
+uint8_t line_length = 0;
+
 typedef struct pin {
   uint8_t *port;
   uint8_t index;
@@ -60,7 +63,6 @@ pin pins[] = {
 
 uint8_t buffer[8192];
 
-String str;
 IC *selected_ic = NULL;
 uint8_t selected_ic_size = 0;
 
@@ -90,14 +92,11 @@ void setup() {
   setVPP(VOLT(1, 250));
 }
 
-bool is_numeric(String string) {
-  for(auto character : string) {
-    if(!isDigit(character)) {
-      return false;
-    }
-  }
+bool is_numeric(char *string) {
+  while(*string && isdigit(*string)) string++;
+  while(*string && isspace(*string)) string++;
 
-  return true;
+  return *string == '\0';
 }
 
 void print_help() {
@@ -168,31 +167,29 @@ void print_buffer() {
 }
 
 void select_device() {
-  String arg;
+  char *arg;
   uint16_t arg_num;
 
-  arg = str.substring(1);
-  arg.trim();
-  if (arg.length() == 0) {
+  arg = line + 1;
+  while(*arg && isspace(*arg)) arg++;
+
+  if (! *arg || !is_numeric(arg)) {
     Serial.println("\"t\" requires a numeric argument");
     return;
-  } else if(is_numeric(arg)) {
-    arg_num = arg.toInt();
-    if(arg_num < num_ics) {
-      selected_ic = ics + arg_num;
-      for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic->adr_pins); selected_ic_size++) {
-        uint8_t adr_pin = selected_ic->adr_pins[selected_ic_size];
-        if (adr_pin == 0) break;
-      }
-    } else {
-      Serial.print("No device with id ");
-      Serial.print(arg_num, DEC);
-      Serial.println(" exists");
-      Serial.println("Use l to list available devices");
-      return;
+  }
+
+  arg_num = atol(arg);
+  if(arg_num < num_ics) {
+    selected_ic = ics + arg_num;
+    for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic->adr_pins); selected_ic_size++) {
+      uint8_t adr_pin = selected_ic->adr_pins[selected_ic_size];
+      if (adr_pin == 0) break;
     }
   } else {
-    Serial.println("\"t\" requires a numeric argument");
+    Serial.print("No device with id ");
+    Serial.print(arg_num, DEC);
+    Serial.println(" exists");
+    Serial.println("Use l to list available devices");
     return;
   }
 
@@ -375,31 +372,6 @@ void srec_data_read (struct srec_state *srec,
   }
 }
 
-String readSerialLine()
-{
-  String ret;
-  int c = 0;
-
-  while (c != '\n')
-  {
-    while((c = Serial.read()) < 0);
-
-    if (c == 8)
-    {
-      if (ret.length() > 0)
-      {
-        ret.remove(ret.length() - 1);
-      }
-    }
-    else
-    {
-      ret += (char)c;
-    }
-  }
-
-  return ret;
-}
-
 void setVCC(uint8_t volt) {
   volt -= VOLT(1, 250);
   uint16_t data = 0b0011000000000000 | (volt << 4);
@@ -422,58 +394,77 @@ void setVPP(uint8_t volt) {
   SPI.endTransaction();
 }
 
-void loop() {
-  if(Serial.available() > 0)
-  {
-    str = readSerialLine();
-    str.trim();
-    if (str.length() > 0) {
-      if (!srec_state) {
-        char first = str[0];
-        first |= 0b00100000; //Force lower-case 
-        switch(first) {
-          case '?':
-            print_help();
-            break;
-          case 'l':
-            list_devices();
-            break;
-          case 's':
-            srec_begin_read(&srec);
-            srec_state = 1;
-            break;
-          case 'd':
-            print_buffer();
-            break;
-          case 'w':
-            not_implemented();
-            break;
-          case 'r':
-            read_device();
-            break;
-          case 'c':
-            compare_data();
-            break;
-          case 'b':
-            blank_check();
-            break;
-          case 't':
-            select_device();
-            break;
-          case 'i':
-            print_device_info();
-            break;
-          default:
-            Serial.print("Unknown command: ");
-            Serial.println(str[0]);
-            print_help();
-            break;
-        }
+uint8_t tryReadLine() {
+  int c;
+  while((c = Serial.read()) > 0) {
+    Serial.print(c);
+    if (c == '\n') {
+      if(line_length > 0) {
+        line[line_length] = '\0';
+        return 1;
       }
+    } else if (c == 8) {
+      if(line_length > 0) {
+        line_length--;
+      }
+    } else {
+      //TODO handle buffer overrun
+      line[line_length++] = (char)c;
+    }
+  }
 
-      if (srec_state) {
-        srec_read_bytes(&srec, str.c_str(), str.length());
+  return 0;
+}
+
+void loop() {
+  if(tryReadLine()) {
+    if (!srec_state) {
+      char first = line[0];
+      first |= 0b00100000; //Force lower-case 
+      switch(first) {
+        case '?':
+          print_help();
+          break;
+        case 'l':
+          list_devices();
+          break;
+        case 's':
+          srec_begin_read(&srec);
+          srec_state = 1;
+          break;
+        case 'd':
+          print_buffer();
+          break;
+        case 'w':
+          not_implemented();
+          break;
+        case 'r':
+          read_device();
+          break;
+        case 'c':
+          compare_data();
+          break;
+        case 'b':
+          blank_check();
+          break;
+        case 't':
+          select_device();
+          break;
+        case 'i':
+          print_device_info();
+          break;
+        default:
+          Serial.print("Unknown command: ");
+          Serial.println(line[0]);
+          print_help();
+          break;
       }
     }
+
+    if (srec_state) {
+      srec_read_bytes(&srec, line, line_length);
+    }
+
+    line_length = 0;
   }
 }

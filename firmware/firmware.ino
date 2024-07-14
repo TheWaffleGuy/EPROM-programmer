@@ -16,6 +16,10 @@ extern "C" {
 #define VCC_EN_PORT PORTB
 #define VCC_EN_PIN 0
 
+#define MAX_LINE_LENGTH 80
+#define DATA_BUFFER_SIZE 8192
+#define SERIAL_SPEED 38400
+
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
 #define VOLT(a,b) ( a * 8 + (b * 8) / 1000 )
@@ -25,7 +29,7 @@ uint8_t port_b;
 uint8_t port_c;
 uint8_t port_d;
 
-char line[80 + 1];
+char line[MAX_LINE_LENGTH + 1];
 uint8_t line_length = 0;
 
 typedef struct pin {
@@ -61,7 +65,7 @@ pin pins[] = {
 };
 
 
-uint8_t buffer[8192];
+uint8_t buffer[DATA_BUFFER_SIZE];
 
 IC *selected_ic = NULL;
 uint8_t selected_ic_size = 0;
@@ -72,7 +76,7 @@ void setVPP(uint8_t volt);
 
 
 void setup() {
-  Serial.begin(38400);
+  Serial.begin(SERIAL_SPEED);
 
   SPI.begin();
 
@@ -400,16 +404,27 @@ uint8_t tryReadLine() {
     Serial.print(c);
     if (c == '\n') {
       if(line_length > 0) {
-        line[line_length] = '\0';
-        return 1;
+        if(line_length < sizeof(line)) {
+          line[line_length] = '\0';
+          return 1;
+        } else {
+          Serial.print("Error: Line-length to long: ");
+          Serial.print(line_length, DEC);
+          Serial.print(", max length is: ");
+          Serial.println((unsigned long) sizeof(line) - 1, DEC);
+          line_length = 0;
+          return 0;
+        }
       }
     } else if (c == 8) {
       if(line_length > 0) {
         line_length--;
       }
     } else {
-      //TODO handle buffer overrun
-      line[line_length++] = (char)c;
+      if(line_length < sizeof(line) - 1) {
+        line[line_length] = (char)c;
+      }
+      line_length++;
     }
   }
 

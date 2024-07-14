@@ -65,10 +65,10 @@ char getche(void)
 }
 #elif _WIN32
 #include <conio.h>
-//#include <windows.h>
+#include <windows.h>
 void delay(unsigned long milliseconds)
 {
-//  Sleep(milliseconds);
+  Sleep(milliseconds);
 }
 #endif
 
@@ -213,7 +213,8 @@ public:
   void end() {}
 
   int read() {
-    int c = getche();
+    if(!available()) return -1;
+    int c = getch();
     if (c == '\r') return '\n';
     return c;
   }
@@ -358,7 +359,7 @@ public:
 
   int available()
   {
-    return true;
+    return kbhit();
   }
 
   String readStringUntil(char terminator)

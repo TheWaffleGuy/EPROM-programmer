@@ -59,11 +59,10 @@
         }
       ],
       "drc_exclusions": [
-        "silk_edge_clearance|39370000|145260000|b6fbe9e1-fc6b-476e-9291-8a2b9e366ea7|838db18d-9ded-4f5f-9bd0-cbed54a01f31",
-        "silk_edge_clearance|39370000|154460000|b6fbe9e1-fc6b-476e-9291-8a2b9e366ea7|c1025196-d71b-4173-a7d5-f6ff38f2ac35",
-        "silk_edge_clearance|51285000|58420000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a2f64e72-85a7-4634-9502-21d7b999bf83",
-        "silk_edge_clearance|60475000|58420000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a4ba06b8-72f5-44e1-be31-6e872a4d4570",
-        "starved_thermal|52070000|72390000|dcb20467-f581-45d0-b60a-f18d71d1837c|3f6825e2-6440-4696-a78c-28c81a8a12c9|F.Cu"
+        "silk_edge_clearance|130528000|38100000|f8316cf0-e040-4d9e-87c5-09c155c0d755|c1025196-d71b-4173-a7d5-f6ff38f2ac35",
+        "silk_edge_clearance|139728000|38100000|f8316cf0-e040-4d9e-87c5-09c155c0d755|838db18d-9ded-4f5f-9bd0-cbed54a01f31",
+        "silk_edge_clearance|46713000|38100000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a2f64e72-85a7-4634-9502-21d7b999bf83",
+        "silk_edge_clearance|55903000|38100000|f8316cf0-e040-4d9e-87c5-09c155c0d755|a4ba06b8-72f5-44e1-be31-6e872a4d4570"
       ],
       "meta": {
         "version": 2
@@ -504,27 +503,23 @@
     "netclass_patterns": [
       {
         "netclass": "POWER_RAIL",
-        "pattern": "+28V"
+        "pattern": "*/12V_IN"
       },
       {
         "netclass": "POWER_RAIL",
-        "pattern": "/28V_IN"
+        "pattern": "*/VCC"
       },
       {
         "netclass": "POWER_RAIL",
-        "pattern": "/AMP_VCC"
+        "pattern": "*/ZIF_VCC"
       },
       {
         "netclass": "POWER_RAIL",
-        "pattern": "/ZIF_VCC"
+        "pattern": "*/VPP"
       },
       {
         "netclass": "POWER_RAIL",
-        "pattern": "/AMP_VPP"
-      },
-      {
-        "netclass": "POWER_RAIL",
-        "pattern": "+9V"
+        "pattern": "+*V"
       }
     ]
   },
@@ -645,6 +640,14 @@
     [
       "8c5576b1-cb3e-4456-837b-2f47818a03ab",
       "Root"
+    ],
+    [
+      "0b2fec66-89be-42f9-89c9-882af0e02560",
+      "Power"
+    ],
+    [
+      "2706ec22-835d-4c9b-8b3d-6a044112ab7a",
+      "Programmer"
     ]
   ],
   "text_variables": {}

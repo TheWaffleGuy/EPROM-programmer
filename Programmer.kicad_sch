@@ -5707,6 +5707,12 @@
 		(uuid "00e61e28-d47b-4704-a2f6-7f5fec09463e")
 	)
 	(junction
+		(at 115.57 113.03)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "0bf75c32-efc4-409c-9cf1-cb2ea0bd958c")
+	)
+	(junction
 		(at 41.91 43.18)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5717,6 +5723,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "156a246f-a557-4845-9189-844ba72dc42f")
+	)
+	(junction
+		(at 104.14 120.65)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "19e7bb13-f14b-4930-94a2-51b9fd15352b")
 	)
 	(junction
 		(at 26.67 43.18)
@@ -5755,6 +5767,12 @@
 		(uuid "33813e1f-8121-45d3-8e19-ed21dc7df5a2")
 	)
 	(junction
+		(at 123.19 107.95)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "37c8c203-2e10-4c50-81ed-262c3f165288")
+	)
+	(junction
 		(at 157.48 134.62)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5783,6 +5801,18 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "476c3582-e811-4031-adda-86328f7be17b")
+	)
+	(junction
+		(at 96.52 125.73)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4c8826b2-b528-4016-a701-e53c1a66fe08")
+	)
+	(junction
+		(at 119.38 110.49)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "4dbc38cc-9ff6-4048-9834-3bff0e45b28a")
 	)
 	(junction
 		(at 124.46 46.99)
@@ -5851,6 +5881,12 @@
 		(uuid "93bf0ed6-268a-4a91-b092-15d448f588b7")
 	)
 	(junction
+		(at 100.33 123.19)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "961db2eb-61e9-4654-be4a-8bbb214f2308")
+	)
+	(junction
 		(at 109.22 74.93)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -5861,6 +5897,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "a55490a0-705f-40bb-8e90-5f1db366d06c")
+	)
+	(junction
+		(at 107.95 118.11)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "b01ba512-5767-4bcc-a400-f7631115e035")
 	)
 	(junction
 		(at 58.42 43.18)
@@ -5885,6 +5927,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "de317c96-bdd7-4949-9f40-4cdc2e65b487")
+	)
+	(junction
+		(at 111.76 115.57)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e0ab85a2-6e3b-4413-a6c8-91d9570c2e55")
 	)
 	(junction
 		(at 157.48 114.3)
@@ -5962,6 +6010,16 @@
 	)
 	(wire
 		(pts
+			(xy 140.97 110.49) (xy 149.86 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "013d3c6e-2c78-4356-8e19-3eaae914c8e2")
+	)
+	(wire
+		(pts
 			(xy 255.27 104.14) (xy 273.05 104.14)
 		)
 		(stroke
@@ -5972,7 +6030,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 120.65) (xy 111.76 120.65)
+			(xy 91.44 120.65) (xy 104.14 120.65)
 		)
 		(stroke
 			(width 0)
@@ -6212,7 +6270,7 @@
 	)
 	(wire
 		(pts
-			(xy 137.16 110.49) (xy 137.16 127)
+			(xy 119.38 110.49) (xy 119.38 127)
 		)
 		(stroke
 			(width 0)
@@ -6392,7 +6450,7 @@
 	)
 	(wire
 		(pts
-			(xy 124.46 115.57) (xy 124.46 127)
+			(xy 111.76 115.57) (xy 111.76 127)
 		)
 		(stroke
 			(width 0)
@@ -6409,6 +6467,16 @@
 			(type default)
 		)
 		(uuid "29719cea-6dbe-46b4-926b-d8c0084646af")
+	)
+	(wire
+		(pts
+			(xy 140.97 118.11) (xy 149.86 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "29ac71e0-60f3-458a-a862-3542175d9f53")
 	)
 	(wire
 		(pts
@@ -6462,6 +6530,16 @@
 	)
 	(wire
 		(pts
+			(xy 100.33 123.19) (xy 133.35 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2f806a41-a57c-4b0b-b4f4-544dd1f48897")
+	)
+	(wire
+		(pts
 			(xy 30.48 72.39) (xy 43.18 72.39)
 		)
 		(stroke
@@ -6492,6 +6570,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 115.57) (xy 133.35 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3467c633-0ca2-4a68-9c44-36e27160e3b4")
+	)
+	(wire
+		(pts
 			(xy 73.66 77.47) (xy 82.55 77.47)
 		)
 		(stroke
@@ -6519,6 +6607,16 @@
 			(type default)
 		)
 		(uuid "3579b184-ab70-4d2c-ae96-42d982eb9eb9")
+	)
+	(wire
+		(pts
+			(xy 140.97 113.03) (xy 149.86 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "364d1393-5a74-47a2-8aca-26ddf29dcf98")
 	)
 	(wire
 		(pts
@@ -6582,7 +6680,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 113.03) (xy 130.81 113.03)
+			(xy 91.44 113.03) (xy 115.57 113.03)
 		)
 		(stroke
 			(width 0)
@@ -6629,6 +6727,16 @@
 			(type default)
 		)
 		(uuid "3f044156-f3de-4089-a794-b9fc998c2604")
+	)
+	(wire
+		(pts
+			(xy 140.97 115.57) (xy 149.86 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3f3ebe78-bf67-4179-a5d4-6ae36b8fc0a5")
 	)
 	(wire
 		(pts
@@ -6682,7 +6790,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 110.49) (xy 137.16 110.49)
+			(xy 91.44 110.49) (xy 119.38 110.49)
 		)
 		(stroke
 			(width 0)
@@ -6779,6 +6887,16 @@
 			(type default)
 		)
 		(uuid "4f2e4119-a135-4d06-b8b2-f8bfb87aa285")
+	)
+	(wire
+		(pts
+			(xy 123.19 107.95) (xy 133.35 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "501b7437-4a82-40c6-badf-19b588d4dfc2")
 	)
 	(wire
 		(pts
@@ -6982,6 +7100,16 @@
 	)
 	(wire
 		(pts
+			(xy 140.97 123.19) (xy 149.86 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "66893881-8785-4370-9492-6df4afc2893a")
+	)
+	(wire
+		(pts
 			(xy 46.99 43.18) (xy 58.42 43.18)
 		)
 		(stroke
@@ -7009,6 +7137,16 @@
 			(type default)
 		)
 		(uuid "69185691-faf0-4598-937a-94efbcbe7c4c")
+	)
+	(wire
+		(pts
+			(xy 104.14 120.65) (xy 133.35 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "69ca80d2-38e6-49d8-9a13-6ebbc49b4212")
 	)
 	(wire
 		(pts
@@ -7082,6 +7220,16 @@
 	)
 	(wire
 		(pts
+			(xy 107.95 118.11) (xy 133.35 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6d9a3b64-e302-4dcd-a959-558388d72554")
+	)
+	(wire
+		(pts
 			(xy 157.48 76.2) (xy 157.48 85.09)
 		)
 		(stroke
@@ -7112,6 +7260,16 @@
 	)
 	(wire
 		(pts
+			(xy 140.97 125.73) (xy 149.86 125.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "735143fc-df16-4a0e-9bde-3a68cfa89bd8")
+	)
+	(wire
+		(pts
 			(xy 43.18 77.47) (xy 34.29 77.47)
 		)
 		(stroke
@@ -7119,6 +7277,16 @@
 			(type default)
 		)
 		(uuid "73f31748-024e-4095-9d20-6e4c80299f47")
+	)
+	(wire
+		(pts
+			(xy 119.38 110.49) (xy 133.35 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "765e037d-1779-4c17-9b95-8b20ef0ffe27")
 	)
 	(wire
 		(pts
@@ -7192,7 +7360,7 @@
 	)
 	(wire
 		(pts
-			(xy 130.81 113.03) (xy 130.81 127)
+			(xy 115.57 113.03) (xy 115.57 127)
 		)
 		(stroke
 			(width 0)
@@ -7229,6 +7397,16 @@
 			(type default)
 		)
 		(uuid "81db4fdb-d610-485f-b127-d2b4054f85fa")
+	)
+	(wire
+		(pts
+			(xy 96.52 125.73) (xy 133.35 125.73)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8455782e-bbc2-432a-840a-680dc702e13f")
 	)
 	(wire
 		(pts
@@ -7282,7 +7460,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 107.95) (xy 143.51 107.95)
+			(xy 91.44 107.95) (xy 123.19 107.95)
 		)
 		(stroke
 			(width 0)
@@ -7332,6 +7510,16 @@
 	)
 	(wire
 		(pts
+			(xy 115.57 113.03) (xy 133.35 113.03)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "93552916-94c1-453d-8677-a4f44c699182")
+	)
+	(wire
+		(pts
 			(xy 242.57 93.98) (xy 234.95 93.98)
 		)
 		(stroke
@@ -7342,7 +7530,7 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 120.65) (xy 111.76 127)
+			(xy 104.14 120.65) (xy 104.14 127)
 		)
 		(stroke
 			(width 0)
@@ -7352,7 +7540,7 @@
 	)
 	(wire
 		(pts
-			(xy 143.51 107.95) (xy 143.51 127)
+			(xy 123.19 107.95) (xy 123.19 127)
 		)
 		(stroke
 			(width 0)
@@ -7412,7 +7600,7 @@
 	)
 	(wire
 		(pts
-			(xy 118.11 118.11) (xy 118.11 127)
+			(xy 107.95 118.11) (xy 107.95 127)
 		)
 		(stroke
 			(width 0)
@@ -7662,7 +7850,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 123.19) (xy 105.41 123.19)
+			(xy 91.44 123.19) (xy 100.33 123.19)
 		)
 		(stroke
 			(width 0)
@@ -8022,7 +8210,7 @@
 	)
 	(wire
 		(pts
-			(xy 105.41 127) (xy 105.41 123.19)
+			(xy 100.33 127) (xy 100.33 123.19)
 		)
 		(stroke
 			(width 0)
@@ -8042,7 +8230,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 118.11) (xy 118.11 118.11)
+			(xy 91.44 118.11) (xy 107.95 118.11)
 		)
 		(stroke
 			(width 0)
@@ -8102,7 +8290,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 125.73) (xy 99.06 125.73)
+			(xy 91.44 125.73) (xy 96.52 125.73)
 		)
 		(stroke
 			(width 0)
@@ -8112,7 +8300,7 @@
 	)
 	(wire
 		(pts
-			(xy 91.44 115.57) (xy 124.46 115.57)
+			(xy 91.44 115.57) (xy 111.76 115.57)
 		)
 		(stroke
 			(width 0)
@@ -8212,6 +8400,16 @@
 	)
 	(wire
 		(pts
+			(xy 140.97 120.65) (xy 149.86 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f1181821-a394-4d26-88f2-504227fc3005")
+	)
+	(wire
+		(pts
 			(xy 241.3 121.92) (xy 242.57 121.92)
 		)
 		(stroke
@@ -8222,7 +8420,7 @@
 	)
 	(wire
 		(pts
-			(xy 99.06 127) (xy 99.06 125.73)
+			(xy 96.52 127) (xy 96.52 125.73)
 		)
 		(stroke
 			(width 0)
@@ -8319,6 +8517,28 @@
 			(type default)
 		)
 		(uuid "fc3974ac-f42a-4e12-9459-353c1c89ff4a")
+	)
+	(wire
+		(pts
+			(xy 140.97 107.95) (xy 149.86 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ffff9946-7103-41c1-adfe-d88e0e02b6da")
+	)
+	(text "8x\nD11-D18\n4v7"
+		(exclude_from_sim no)
+		(at 125.476 131.826 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+				(color 0 100 100 1)
+			)
+			(justify left)
+		)
+		(uuid "8e359b9e-783c-4cdf-b0b6-707e0d85e67e")
 	)
 	(label "MCU_P16"
 		(at 82.55 123.19 180)
@@ -8519,7 +8739,7 @@
 		(uuid "40e33055-c478-41a5-80e8-1af34cef9fe5")
 	)
 	(label "ZIF_P10"
-		(at 99.06 110.49 180)
+		(at 149.86 110.49 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8552,7 +8772,7 @@
 		(uuid "4360644f-3973-4459-a731-3c90adf9ad0d")
 	)
 	(label "ZIF_P16"
-		(at 99.06 123.19 180)
+		(at 149.86 123.19 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8640,7 +8860,7 @@
 		(uuid "5af0527a-4ec3-4289-933b-053d22d5e4eb")
 	)
 	(label "ZIF_P11"
-		(at 99.06 113.03 180)
+		(at 149.86 113.03 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8706,7 +8926,7 @@
 		(uuid "635ca23b-f804-47b2-824a-d9f3c3b96f3a")
 	)
 	(label "ZIF_P14"
-		(at 99.06 118.11 180)
+		(at 149.86 118.11 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -8948,7 +9168,7 @@
 		(uuid "a114f3c5-808b-4ac3-ae3e-848158811fc6")
 	)
 	(label "ZIF_P13"
-		(at 99.06 115.57 180)
+		(at 149.86 115.57 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9025,7 +9245,7 @@
 		(uuid "ba332455-453a-4125-ad87-de54a2a9c134")
 	)
 	(label "ZIF_P17"
-		(at 99.06 125.73 180)
+		(at 149.86 125.73 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9091,7 +9311,7 @@
 		(uuid "c85662ee-8bd8-4a34-b2f2-ded652c1b311")
 	)
 	(label "ZIF_P9"
-		(at 99.06 107.95 180)
+		(at 149.86 107.95 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9179,7 +9399,7 @@
 		(uuid "d95b318f-3d2c-4ab0-aa0f-297a4d501721")
 	)
 	(label "ZIF_P15"
-		(at 99.06 120.65 180)
+		(at 149.86 120.65 180)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -9461,7 +9681,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 111.76 129.54 270)
+		(at 104.14 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9469,25 +9689,27 @@
 		(dnp no)
 		(uuid "04d0b2f1-f37b-4e34-9da8-18e993402d0a")
 		(property "Reference" "D13"
-			(at 113.03 128.27 90)
+			(at 105.41 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 113.03 130.81 90)
+			(at 105.41 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 111.76 129.54 90)
+			(at 104.14 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9496,7 +9718,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 111.76 129.54 90)
+			(at 104.14 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9505,7 +9727,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 111.76 129.54 0)
+			(at 104.14 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9963,7 +10185,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 99.06 129.54 270)
+		(at 96.52 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -9971,25 +10193,27 @@
 		(dnp no)
 		(uuid "0d64ac03-3cc9-4ce0-b49a-70a911000180")
 		(property "Reference" "D11"
-			(at 100.33 128.27 90)
+			(at 97.79 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 100.33 130.81 90)
+			(at 97.79 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 99.06 129.54 90)
+			(at 96.52 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9998,7 +10222,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 99.06 129.54 90)
+			(at 96.52 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10007,7 +10231,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 99.06 129.54 0)
+			(at 96.52 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10033,7 +10257,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 130.81 132.08 0)
+		(at 115.57 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10041,7 +10265,7 @@
 		(dnp no)
 		(uuid "0da301d7-205c-458a-a5b0-805e6778b596")
 		(property "Reference" "#PWR057"
-			(at 130.81 138.43 0)
+			(at 115.57 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10050,7 +10274,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 130.81 135.89 0)
+			(at 115.57 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10058,7 +10282,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 130.81 132.08 0)
+			(at 115.57 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10067,7 +10291,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 130.81 132.08 0)
+			(at 115.57 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10076,7 +10300,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 130.81 132.08 0)
+			(at 115.57 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10689,6 +10913,179 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 118.11 270)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "23128189-00fc-4c4a-81d9-e4c3b8c54a11")
+		(property "Reference" "RN5"
+			(at 137.16 111.76 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 114.3 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 116.078 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "07baca33-0054-4cfe-bb7e-8eff2a093850")
+		)
+		(pin "4"
+			(uuid "94269b8c-819d-4b6d-b9cc-274b9056a9db")
+		)
+		(pin "7"
+			(uuid "ff2417fe-35a3-4aaa-b8e8-cb82e6439429")
+		)
+		(pin "3"
+			(uuid "5f2597ed-d734-4112-9d51-a323f6ae5bcc")
+		)
+		(pin "8"
+			(uuid "811c6285-a168-4fa2-8d37-13dbc304a676")
+		)
+		(pin "2"
+			(uuid "2f6c14de-324b-4c97-91b0-a6cb4e6f0a8a")
+		)
+		(pin "5"
+			(uuid "e5398550-ed1d-4c5f-a583-6b3fb88524fc")
+		)
+		(pin "6"
+			(uuid "b99a581f-239d-482b-98b9-a65042ab8743")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN5")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 125.73 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "26cfdd69-fec7-43a5-8e99-dd0130169948")
+		(property "Reference" "RN5"
+			(at 137.16 128.016 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 129.794 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 123.698 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 125.73 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "7ffa2c8f-d628-4ff5-b38d-4c4901c0573f")
+		)
+		(pin "4"
+			(uuid "94269b8c-819d-4b6d-b9cc-274b9056a9dc")
+		)
+		(pin "7"
+			(uuid "abd1c22c-3b58-46f3-8565-3b840222ecc8")
+		)
+		(pin "3"
+			(uuid "5f2597ed-d734-4112-9d51-a323f6ae5bcd")
+		)
+		(pin "8"
+			(uuid "2d61f13f-c884-46bc-9e3d-4d1608a5e788")
+		)
+		(pin "2"
+			(uuid "9f7f9a2d-b953-4134-a463-e2f0fa90550d")
+		)
+		(pin "5"
+			(uuid "e5398550-ed1d-4c5f-a583-6b3fb88524fd")
+		)
+		(pin "6"
+			(uuid "b99a581f-239d-482b-98b9-a65042ab8744")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector:Conn_01x01_Pin")
 		(at 270.51 82.55 90)
 		(mirror x)
@@ -10959,7 +11356,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 99.06 132.08 0)
+		(at 96.52 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10967,7 +11364,7 @@
 		(dnp no)
 		(uuid "386c17fc-3173-4a27-b26d-311fc5a8a554")
 		(property "Reference" "#PWR052"
-			(at 99.06 138.43 0)
+			(at 96.52 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10976,7 +11373,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 99.06 135.89 0)
+			(at 96.52 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10984,7 +11381,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 99.06 132.08 0)
+			(at 96.52 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10993,7 +11390,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 99.06 132.08 0)
+			(at 96.52 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11002,7 +11399,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 99.06 132.08 0)
+			(at 96.52 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11225,6 +11622,94 @@
 				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
 					(reference "D3")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 110.49 270)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "3e92e4cc-713f-458d-a255-7a4501c5170f")
+		(property "Reference" "RN4"
+			(at 137.16 104.14 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 106.68 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 108.458 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "6"
+			(uuid "26779fb7-ae75-415d-8e9b-3c550e3156c4")
+		)
+		(pin "4"
+			(uuid "8cd40b92-4375-4100-afe0-85fd4a84bc3d")
+		)
+		(pin "8"
+			(uuid "c30ac3bf-73f5-4161-8221-cf4d0296610f")
+		)
+		(pin "7"
+			(uuid "8b548db6-302f-49a6-83a4-09fe1e05dd15")
+		)
+		(pin "2"
+			(uuid "667166cc-2e1d-42c7-9d07-1a8bdd503cd4")
+		)
+		(pin "1"
+			(uuid "cb9c5d4e-1d79-49f1-a814-45bb00e59ac6")
+		)
+		(pin "3"
+			(uuid "193f1445-5014-40ca-b5e9-9a23c2e3a01e")
+		)
+		(pin "5"
+			(uuid "bfc75677-8650-4c56-b064-99f8333f9d73")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN4")
+					(unit 2)
 				)
 			)
 		)
@@ -11528,7 +12013,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 105.41 129.54 270)
+		(at 100.33 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11536,25 +12021,27 @@
 		(dnp no)
 		(uuid "43f8837d-064e-4c81-8303-01916c4d932d")
 		(property "Reference" "D12"
-			(at 106.68 128.27 90)
+			(at 101.6 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 106.68 130.81 90)
+			(at 101.6 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 105.41 129.54 90)
+			(at 100.33 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11563,7 +12050,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 105.41 129.54 90)
+			(at 100.33 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -11572,7 +12059,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 105.41 129.54 0)
+			(at 100.33 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12857,7 +13344,7 @@
 		(dnp no)
 		(uuid "754881d1-e3d0-4cb5-a253-f35a5bfb94c4")
 		(property "Reference" "U5"
-			(at 123.19 137.16 0)
+			(at 123.19 137.922 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -12865,7 +13352,7 @@
 			)
 		)
 		(property "Value" "ULN2003"
-			(at 123.19 139.7 0)
+			(at 123.19 140.208 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13028,7 +13515,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 143.51 132.08 0)
+		(at 123.19 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -13036,7 +13523,7 @@
 		(dnp no)
 		(uuid "76f87e9a-1d29-47e0-a8e9-239037d6a490")
 		(property "Reference" "#PWR059"
-			(at 143.51 138.43 0)
+			(at 123.19 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13045,7 +13532,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 143.51 135.89 0)
+			(at 123.19 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13053,7 +13540,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 143.51 132.08 0)
+			(at 123.19 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13062,7 +13549,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 143.51 132.08 0)
+			(at 123.19 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13071,7 +13558,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 143.51 132.08 0)
+			(at 123.19 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13401,9 +13888,97 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 113.03 270)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "88d55ea5-9cd8-43a4-b706-ad32e25933d4")
+		(property "Reference" "RN4"
+			(at 137.16 106.68 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 109.22 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 110.998 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "6"
+			(uuid "49e635f8-ba1f-4f68-be28-3b61509a4971")
+		)
+		(pin "4"
+			(uuid "60c8576a-e586-4468-af89-afef74d3dee1")
+		)
+		(pin "8"
+			(uuid "c30ac3bf-73f5-4161-8221-cf4d0296610e")
+		)
+		(pin "7"
+			(uuid "8b548db6-302f-49a6-83a4-09fe1e05dd14")
+		)
+		(pin "2"
+			(uuid "667166cc-2e1d-42c7-9d07-1a8bdd503cd3")
+		)
+		(pin "1"
+			(uuid "cb9c5d4e-1d79-49f1-a814-45bb00e59ac5")
+		)
+		(pin "3"
+			(uuid "094b391d-7ab8-495d-82b6-cb85ce2156d5")
+		)
+		(pin "5"
+			(uuid "25eb7c3c-306a-4ea1-aa52-7e2d1405f9a9")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN4")
+					(unit 3)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 111.76 132.08 0)
+		(at 104.14 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -13411,7 +13986,7 @@
 		(dnp no)
 		(uuid "8dfe8215-9ab7-4248-a9d6-4ea85c5e9d54")
 		(property "Reference" "#PWR054"
-			(at 111.76 138.43 0)
+			(at 104.14 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13420,7 +13995,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 111.76 135.89 0)
+			(at 104.14 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13428,7 +14003,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 111.76 132.08 0)
+			(at 104.14 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13437,7 +14012,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 111.76 132.08 0)
+			(at 104.14 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13446,7 +14021,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 111.76 132.08 0)
+			(at 104.14 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13826,6 +14401,94 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 123.19 270)
+		(unit 2)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "9d059497-9b6e-4d0c-98dc-cf52f83e085b")
+		(property "Reference" "RN5"
+			(at 137.16 116.84 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 119.38 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 121.158 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "07baca33-0054-4cfe-bb7e-8eff2a09384e")
+		)
+		(pin "4"
+			(uuid "c9e0bb75-9d9a-4b1e-87a9-461fa1c80f5f")
+		)
+		(pin "7"
+			(uuid "abd1c22c-3b58-46f3-8565-3b840222ecc5")
+		)
+		(pin "3"
+			(uuid "2844483e-8e5d-4cd8-826e-d76ad542bd23")
+		)
+		(pin "8"
+			(uuid "2d61f13f-c884-46bc-9e3d-4d1608a5e785")
+		)
+		(pin "2"
+			(uuid "2f6c14de-324b-4c97-91b0-a6cb4e6f0a88")
+		)
+		(pin "5"
+			(uuid "e5398550-ed1d-4c5f-a583-6b3fb88524fa")
+		)
+		(pin "6"
+			(uuid "b99a581f-239d-482b-98b9-a65042ab8741")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN5")
+					(unit 2)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R")
 		(at 133.35 60.96 0)
 		(unit 1)
@@ -14031,9 +14694,94 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 107.95 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "a804444a-2ab2-4858-bec5-0381a3245ce6")
+		(property "Reference" "RN4"
+			(at 137.16 104.394 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 105.918 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 105.918 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 107.95 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "6"
+			(uuid "26779fb7-ae75-415d-8e9b-3c550e3156c2")
+		)
+		(pin "4"
+			(uuid "60c8576a-e586-4468-af89-afef74d3dedf")
+		)
+		(pin "8"
+			(uuid "c30ac3bf-73f5-4161-8221-cf4d0296610d")
+		)
+		(pin "7"
+			(uuid "8b548db6-302f-49a6-83a4-09fe1e05dd13")
+		)
+		(pin "2"
+			(uuid "f34b5acf-e32d-4321-80db-3380dd66387d")
+		)
+		(pin "1"
+			(uuid "8461f60d-508b-49d9-b404-c6594fd83220")
+		)
+		(pin "3"
+			(uuid "094b391d-7ab8-495d-82b6-cb85ce2156d3")
+		)
+		(pin "5"
+			(uuid "bfc75677-8650-4c56-b064-99f8333f9d71")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 124.46 132.08 0)
+		(at 111.76 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14041,7 +14789,7 @@
 		(dnp no)
 		(uuid "ac6bd789-f7d7-4ced-9dca-9112a8e589be")
 		(property "Reference" "#PWR056"
-			(at 124.46 138.43 0)
+			(at 111.76 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14050,7 +14798,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 124.46 135.89 0)
+			(at 111.76 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14058,7 +14806,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 124.46 132.08 0)
+			(at 111.76 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14067,7 +14815,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 124.46 132.08 0)
+			(at 111.76 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14076,7 +14824,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 124.46 132.08 0)
+			(at 111.76 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14260,7 +15008,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 118.11 129.54 270)
+		(at 107.95 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14268,25 +15016,27 @@
 		(dnp no)
 		(uuid "b05f74ce-b126-4eb4-909a-a92a4c88d7b2")
 		(property "Reference" "D14"
-			(at 119.38 128.27 90)
+			(at 109.22 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 119.38 130.81 90)
+			(at 109.22 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 118.11 129.54 90)
+			(at 107.95 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14295,7 +15045,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 118.11 129.54 90)
+			(at 107.95 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14304,7 +15054,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 118.11 129.54 0)
+			(at 107.95 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14487,7 +15237,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 118.11 132.08 0)
+		(at 107.95 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14495,7 +15245,7 @@
 		(dnp no)
 		(uuid "b78c865f-e450-4b80-a671-ac83b4aad886")
 		(property "Reference" "#PWR055"
-			(at 118.11 138.43 0)
+			(at 107.95 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14504,7 +15254,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 118.11 135.89 0)
+			(at 107.95 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14512,7 +15262,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 118.11 132.08 0)
+			(at 107.95 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14521,7 +15271,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 118.11 132.08 0)
+			(at 107.95 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14530,7 +15280,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 118.11 132.08 0)
+			(at 107.95 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14831,7 +15581,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 143.51 129.54 270)
+		(at 123.19 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14839,25 +15589,27 @@
 		(dnp no)
 		(uuid "cc7c9217-f676-4135-9119-e56eba77ef20")
 		(property "Reference" "D18"
-			(at 144.78 128.27 90)
+			(at 124.46 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 144.78 130.81 90)
+			(at 124.46 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 143.51 129.54 90)
+			(at 123.19 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14866,7 +15618,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 143.51 129.54 90)
+			(at 123.19 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14875,7 +15627,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 143.51 129.54 0)
+			(at 123.19 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15230,7 +15982,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 137.16 129.54 270)
+		(at 119.38 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15238,25 +15990,27 @@
 		(dnp no)
 		(uuid "d8e3877b-9a86-4bc2-a332-dd4f2a6fcedc")
 		(property "Reference" "D17"
-			(at 138.43 128.27 90)
+			(at 120.65 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 138.43 130.81 90)
+			(at 120.65 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 137.16 129.54 90)
+			(at 119.38 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15265,7 +16019,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 137.16 129.54 90)
+			(at 119.38 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15274,7 +16028,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 137.16 129.54 0)
+			(at 119.38 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15386,6 +16140,94 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 115.57 270)
+		(unit 4)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e0b8415b-19ef-4d82-8486-3559e071bef4")
+		(property "Reference" "RN4"
+			(at 137.16 109.22 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 111.76 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 113.538 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "6"
+			(uuid "26779fb7-ae75-415d-8e9b-3c550e3156c3")
+		)
+		(pin "4"
+			(uuid "60c8576a-e586-4468-af89-afef74d3dee0")
+		)
+		(pin "8"
+			(uuid "b4834277-d229-4fa2-9e1c-bc77b5d791cf")
+		)
+		(pin "7"
+			(uuid "21d4ebe3-548d-410c-b1df-7ea6b7b5ea0a")
+		)
+		(pin "2"
+			(uuid "667166cc-2e1d-42c7-9d07-1a8bdd503cd2")
+		)
+		(pin "1"
+			(uuid "cb9c5d4e-1d79-49f1-a814-45bb00e59ac4")
+		)
+		(pin "3"
+			(uuid "094b391d-7ab8-495d-82b6-cb85ce2156d4")
+		)
+		(pin "5"
+			(uuid "bfc75677-8650-4c56-b064-99f8333f9d72")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN4")
+					(unit 4)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Connector_Generic:Conn_02x03_Odd_Even")
 		(at 29.21 118.11 0)
 		(unit 1)
@@ -15468,7 +16310,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 105.41 132.08 0)
+		(at 100.33 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15476,7 +16318,7 @@
 		(dnp no)
 		(uuid "e7494f80-374b-4279-8352-1560862d2ccc")
 		(property "Reference" "#PWR053"
-			(at 105.41 138.43 0)
+			(at 100.33 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15485,7 +16327,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 105.41 135.89 0)
+			(at 100.33 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15493,7 +16335,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 105.41 132.08 0)
+			(at 100.33 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15502,7 +16344,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 105.41 132.08 0)
+			(at 100.33 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15511,7 +16353,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 105.41 132.08 0)
+			(at 100.33 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15534,7 +16376,7 @@
 	(symbol
 		(lib_name "GND_1")
 		(lib_id "power:GND")
-		(at 137.16 132.08 0)
+		(at 119.38 132.08 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15542,7 +16384,7 @@
 		(dnp no)
 		(uuid "e75a7471-ec8c-42a3-9263-ee0fab4de579")
 		(property "Reference" "#PWR058"
-			(at 137.16 138.43 0)
+			(at 119.38 138.43 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15551,7 +16393,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 137.16 135.89 0)
+			(at 119.38 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15559,7 +16401,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 137.16 132.08 0)
+			(at 119.38 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15568,7 +16410,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 137.16 132.08 0)
+			(at 119.38 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15577,7 +16419,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 137.16 132.08 0)
+			(at 119.38 132.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15824,7 +16666,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 124.46 129.54 270)
+		(at 111.76 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15832,25 +16674,27 @@
 		(dnp no)
 		(uuid "f58d4ac3-9e89-4543-9297-5a623465fbb7")
 		(property "Reference" "D15"
-			(at 125.73 128.27 90)
+			(at 113.03 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 125.73 130.81 90)
+			(at 113.03 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 124.46 129.54 90)
+			(at 111.76 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15859,7 +16703,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 124.46 129.54 90)
+			(at 111.76 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15868,7 +16712,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 124.46 129.54 0)
+			(at 111.76 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15893,7 +16737,7 @@
 	)
 	(symbol
 		(lib_id "Device:D_Zener_Small")
-		(at 130.81 129.54 270)
+		(at 115.57 129.54 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15901,25 +16745,27 @@
 		(dnp no)
 		(uuid "f5d5846b-0f0c-4a51-98ed-fb86225c3472")
 		(property "Reference" "D16"
-			(at 132.08 128.27 90)
+			(at 116.84 128.27 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Value" "4v7"
-			(at 132.08 130.81 90)
+			(at 116.84 130.81 90)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
+				(hide yes)
 			)
 		)
 		(property "Footprint" "Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal"
-			(at 130.81 129.54 90)
+			(at 115.57 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15928,7 +16774,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 130.81 129.54 90)
+			(at 115.57 129.54 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15937,7 +16783,7 @@
 			)
 		)
 		(property "Description" "Zener diode, small symbol"
-			(at 130.81 129.54 0)
+			(at 115.57 129.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16162,6 +17008,94 @@
 				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
 					(reference "#PWR028")
 					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R_Pack04_SIP_Split")
+		(at 137.16 120.65 270)
+		(unit 3)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "fef4f461-a4d8-4bd5-91aa-724d224649dc")
+		(property "Reference" "RN5"
+			(at 137.16 114.3 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "120"
+			(at 137.16 116.84 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Array_SIP8"
+			(at 137.16 118.618 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "http://www.vishay.com/docs/31509/csc.pdf"
+			(at 137.16 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "4 resistor network, parallel topology, SIP package, split"
+			(at 137.16 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "07baca33-0054-4cfe-bb7e-8eff2a09384f")
+		)
+		(pin "4"
+			(uuid "94269b8c-819d-4b6d-b9cc-274b9056a9da")
+		)
+		(pin "7"
+			(uuid "abd1c22c-3b58-46f3-8565-3b840222ecc6")
+		)
+		(pin "3"
+			(uuid "5f2597ed-d734-4112-9d51-a323f6ae5bcb")
+		)
+		(pin "8"
+			(uuid "2d61f13f-c884-46bc-9e3d-4d1608a5e786")
+		)
+		(pin "2"
+			(uuid "2f6c14de-324b-4c97-91b0-a6cb4e6f0a89")
+		)
+		(pin "5"
+			(uuid "ac043957-a33b-405d-b15b-8e32804c06ce")
+		)
+		(pin "6"
+			(uuid "08c08ec2-0ebf-4f83-8677-6716924b8e17")
+		)
+		(instances
+			(project "EPROM-programmer"
+				(path "/8c5576b1-cb3e-4456-837b-2f47818a03ab/2706ec22-835d-4c9b-8b3d-6a044112ab7a"
+					(reference "RN5")
+					(unit 3)
 				)
 			)
 		)

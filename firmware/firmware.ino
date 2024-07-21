@@ -400,9 +400,11 @@ void setVPP(uint8_t volt) {
 
 uint8_t tryReadLine() {
   int c;
+  char c_char;
   while((c = Serial.read()) > 0) {
-    Serial.print(c);
-    if (c == '\n') {
+    c_char = (char)c;
+    Serial.print(c_char);
+    if (c_char == '\n') {
       if(line_length > 0) {
         if(line_length < sizeof(line)) {
           line[line_length] = '\0';
@@ -416,13 +418,13 @@ uint8_t tryReadLine() {
           return 0;
         }
       }
-    } else if (c == 8) {
+    } else if (c_char == 8) {
       if(line_length > 0) {
         line_length--;
       }
     } else {
       if(line_length < sizeof(line) - 1) {
-        line[line_length] = (char)c;
+        line[line_length] = c_char;
       }
       line_length++;
     }

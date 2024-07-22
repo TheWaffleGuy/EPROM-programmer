@@ -4686,7 +4686,7 @@
 		(descr "TO-92 leads in-line, wide, drill 0.75mm (see NXP sot054_po.pdf)")
 		(tags "to-92 sc-43 sc-43a sot54 PA33 transistor")
 		(property "Reference" "Q1"
-			(at 4.445 -3.535 90)
+			(at 7.62 0 180)
 			(layer "F.SilkS")
 			(uuid "d7a41451-57f2-4ddd-ac38-babf1f30706f")
 			(effects
@@ -24747,7 +24747,7 @@
 			)
 		)
 		(property "Value" "Reset"
-			(at 3.75 6.7 0)
+			(at 3.25 6.7 0)
 			(layer "F.SilkS")
 			(uuid "7a26962c-ab05-4b73-8d5e-b7cba7b17e94")
 			(effects

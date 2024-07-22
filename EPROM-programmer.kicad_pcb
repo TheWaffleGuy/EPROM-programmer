@@ -25454,7 +25454,7 @@
 		(descr "DC Barrel Jack")
 		(tags "Power Jack")
 		(property "Reference" "J6"
-			(at -8.45 5.75 90)
+			(at 3.452 0 180)
 			(layer "F.SilkS")
 			(uuid "e5ce6d94-a337-4505-953b-96db4f8e32b8")
 			(effects
@@ -33569,7 +33569,7 @@
 		(descr "16-lead though-hole mounted DIP package, row spacing 7.62 mm (300 mils)")
 		(tags "THT DIP DIL PDIP 2.54mm 7.62mm 300mil")
 		(property "Reference" "U5"
-			(at 5.832 -3.048 0)
+			(at 3.8 -3.048 0)
 			(layer "F.SilkS")
 			(uuid "a1169b82-d120-4f7f-a07d-87c6ca59234b")
 			(effects

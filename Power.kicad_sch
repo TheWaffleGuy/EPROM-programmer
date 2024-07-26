@@ -5432,7 +5432,7 @@
 		)
 		(uuid "703e40a3-5138-4bc3-8d8b-1e4eeed4e637")
 	)
-	(text "Max current:             204mA\nSwitching Freq:          93.6kHz\nVout 1.25(22100/1000+1): 28.875V"
+	(text "Max current:             ~200mA\nSwitching Freq:          ~93kHz\nVout 1.25(22100/1000+1): 28.875V"
 		(exclude_from_sim no)
 		(at 209.55 26.67 0)
 		(effects
@@ -6722,7 +6722,7 @@
 				)
 			)
 		)
-		(property "Value" "R270"
+		(property "Value" "R470"
 			(at 185.42 19.05 90)
 			(effects
 				(font
@@ -9459,7 +9459,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "220"
+		(property "Value" "180"
 			(at 158.75 90.17 0)
 			(effects
 				(font
@@ -9663,7 +9663,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "220"
+		(property "Value" "180"
 			(at 158.75 151.13 0)
 			(effects
 				(font

@@ -1665,7 +1665,7 @@
 			)
 		)
 		(property ki_fp_filters "SOIC*3.9x4.9mm*P1.27mm* DIP*W7.62mm* TO*99* OnSemi*Micro8* TSSOP*3x3mm*P0.65mm* TSSOP*4.4x3mm*P0.65mm* MSOP*3x3mm*P0.65mm* SSOP*3.9x4.9mm*P0.635mm* LFCSP*2x2mm*P0.5mm* *SIP* SOIC*5.3x6.2mm*P1.27mm*")
-		(path "/0b2fec66-89be-42f9-89c9-882af0e02560/3072ed0a-59ec-4bc0-8a86-876674201d96")
+		(path "/0b2fec66-89be-42f9-89c9-882af0e02560/ad0ffbab-90ad-4c57-b356-602323cccb22")
 		(sheetname "Power")
 		(sheetfile "Power.kicad_sch")
 		(attr through_hole)
@@ -14478,7 +14478,7 @@
 				)
 			)
 		)
-		(property "Value" "220"
+		(property "Value" "180"
 			(at 5.08 2.37 90)
 			(layer "F.Fab")
 			(uuid "4853b758-e773-4d6d-b5a2-a20b17386253")
@@ -18311,7 +18311,7 @@
 				)
 			)
 		)
-		(property "Value" "220"
+		(property "Value" "180"
 			(at 5.08 2.878 90)
 			(layer "F.Fab")
 			(uuid "510c2c41-3c1c-4385-9dd0-325bb626a630")
@@ -18586,7 +18586,7 @@
 				)
 			)
 		)
-		(property "Value" "R270"
+		(property "Value" "R470"
 			(at 5.08 2.37 90)
 			(layer "F.Fab")
 			(uuid "47ed162d-b8a3-46e4-bbfc-10b0e64052d4")

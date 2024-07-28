@@ -37023,7 +37023,7 @@
 				)
 			)
 		)
-		(property "Value" "5K1"
+		(property "Value" "1K"
 			(at 5.588 2.54 90)
 			(layer "F.Fab")
 			(uuid "0b34d291-d00d-4959-bbf7-abe9ac81c93a")

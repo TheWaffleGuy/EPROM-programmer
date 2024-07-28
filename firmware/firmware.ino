@@ -242,14 +242,24 @@ void set_adress(uint16_t adress) {
     }
 }
 
+void turn_device_on() {
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT |= 1 << VCC_EN_PIN; }
+  delay(100);
+}
+
+void turn_device_off() {
+  set_adress(0);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT &= ~(1 << VCC_EN_PIN); }
+  delay(100);
+}
+
 void read_device() {
   if(selected_ic == NULL) {
     Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
 
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT |= 1 << VCC_EN_PIN; }
-  delay(100);
+  turn_device_on();
 
   portMode(2, INPUT); // Port C
 
@@ -258,7 +268,7 @@ void read_device() {
     buffer[current_adress] = portRead(2); // Port C
   }
 
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT &= ~(1 << VCC_EN_PIN); }
+  turn_device_off();
 
   Serial.println("OK!");
 }
@@ -286,12 +296,15 @@ void blank_check() {
     blank_value = 0xFF;
   }
 
+  turn_device_on();
+
   portMode(2, INPUT); // Port C
 
   for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
     set_adress(current_adress);
     data = portRead(2); // Port C
     if(data != blank_value) {
+      turn_device_off();
       Serial.println("Device not blank!");
       write_byte(data);
       Serial.print(" read at adress: ");
@@ -300,6 +313,9 @@ void blank_check() {
       return;
     }
   }
+
+  turn_device_off();
+
   Serial.println("OK!");
 }
 
@@ -311,12 +327,15 @@ void compare_data() {
     return;
   }
 
+  turn_device_on();
+
   portMode(2, INPUT); // Port C
 
   for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
     set_adress(current_adress);
     data = portRead(2); // Port C
     if(data != buffer[current_adress]) {
+      turn_device_off();
       Serial.println("Device data does not match current buffer!");
       Serial.print("Device data: ");
       write_byte(data);
@@ -328,6 +347,9 @@ void compare_data() {
       return;
     }
   }
+
+  turn_device_off();
+
   Serial.println("OK!");
 }
 

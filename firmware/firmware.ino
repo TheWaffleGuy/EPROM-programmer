@@ -67,7 +67,7 @@ pin pins[] = {
 
 uint8_t buffer[DATA_BUFFER_SIZE];
 
-IC *selected_ic = NULL;
+IC selected_ic = {0};
 uint8_t selected_ic_size = 0;
 
 void setVCC(uint8_t volt);
@@ -122,9 +122,9 @@ void list_devices() {
     if (i < 10) Serial.print(" ");
     Serial.print(i, DEC);
     Serial.print(") ");
-    Serial.print(ics[i].manufacturer);
+    Serial.print(reinterpret_cast<const __FlashStringHelper *>(ics[i].manufacturer));
     Serial.print(" - ");
-    Serial.println(ics[i].name);
+    Serial.println(reinterpret_cast<const __FlashStringHelper *>(ics[i].name));
   }
 }
 
@@ -184,9 +184,9 @@ void select_device() {
 
   arg_num = atol(arg);
   if(arg_num < num_ics) {
-    selected_ic = ics + arg_num;
-    for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic->adr_pins); selected_ic_size++) {
-      uint8_t adr_pin = selected_ic->adr_pins[selected_ic_size];
+    memcpy_P(&selected_ic, &(ics[arg_num]), sizeof(ics[0]));
+    for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic.adr_pins); selected_ic_size++) {
+      uint8_t adr_pin = selected_ic.adr_pins[selected_ic_size];
       if (adr_pin == 0) break;
     }
   } else {
@@ -198,22 +198,22 @@ void select_device() {
   }
 
   Serial.print("Selected: ");
-  Serial.print(selected_ic->manufacturer);
+  Serial.print(selected_ic.manufacturer);
   Serial.print(" - ");
-  Serial.println(selected_ic->name);
+  Serial.println(selected_ic.name);
   Serial.println("OK!");
 }
 
 void print_device_info() {
-  if(selected_ic == NULL) {
+  if(selected_ic.name[0] == '\0') {
     Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
 
   Serial.print("Currently selected device is: ");
-  Serial.print(selected_ic->manufacturer);
+  Serial.print(selected_ic.manufacturer);
   Serial.print(" - ");
-  Serial.println(selected_ic->name);
+  Serial.println(selected_ic.name);
 }
 
 void set_adress(uint16_t adress) {
@@ -221,14 +221,14 @@ void set_adress(uint16_t adress) {
     port_d = 0;
 
     for(uint8_t i = 0; i < selected_ic_size; i++) {
-        uint8_t adr_pin = selected_ic->adr_pins[i];
+        uint8_t adr_pin = selected_ic.adr_pins[i];
         pin p = pins[adr_pin - 1];
         *(p.port) |= ( adress & 1 ) << p.index;
         adress = adress >> 1;
     }
 
-    for(uint8_t i = 0; i < sizeof(selected_ic->ctrl_pins_read_h); i++) {
-        uint8_t ctrl_pin = selected_ic->ctrl_pins_read_h[i];
+    for(uint8_t i = 0; i < sizeof(selected_ic.ctrl_pins_read_h); i++) {
+        uint8_t ctrl_pin = selected_ic.ctrl_pins_read_h[i];
         if (ctrl_pin == 0) break;
         pin p = pins[ctrl_pin - 1];
         *(p.port) |= 1 << p.index;
@@ -254,7 +254,7 @@ void turn_device_off() {
 }
 
 void read_device() {
-  if(selected_ic == NULL) {
+  if(selected_ic.name[0] == '\0') {
     Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
@@ -277,20 +277,20 @@ void blank_check() {
   uint8_t data;
   uint8_t blank_value;
 
-  if(selected_ic == NULL) {
+  if(selected_ic.name[0] == '\0') {
     Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
 
-  if (!selected_ic->f_can_blank_check) {
+  if (!selected_ic.f_can_blank_check) {
     Serial.print("Device ");
-    Serial.print(selected_ic->name);
+    Serial.print(selected_ic.name);
     Serial.println(" cannot be blank-checked.");
     Serial.println("Initially, and after erasure, all bits are in an undefined state.");
     return;
   }
 
-  if (selected_ic->f_blank_check_value == 0) {
+  if (selected_ic.f_blank_check_value == 0) {
     blank_value = 0;
   } else {
     blank_value = 0xFF;
@@ -322,7 +322,7 @@ void blank_check() {
 void compare_data() {
   uint8_t data;
 
-  if(selected_ic == NULL) {
+  if(selected_ic.name[0] == '\0') {
     Serial.println("No device selected. Select a device with \"t\"");
     return;
   }

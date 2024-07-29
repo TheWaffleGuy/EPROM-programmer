@@ -16,7 +16,7 @@ typedef struct IC {
 #define MANUFACTURER(n) { .manufacturer = n }
 #endif
 
-IC ics[] = {
+const IC ics[] PROGMEM = {
   {
     MANUFACTURER("CYPRESS"),
     NAME("CY7C264"),

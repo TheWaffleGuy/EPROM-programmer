@@ -22094,7 +22094,7 @@
 				)
 			)
 		)
-		(property "Value" "5K1"
+		(property "Value" "3K3"
 			(at 5.08 2.37 90)
 			(layer "F.Fab")
 			(uuid "5b2d2f99-6164-4e24-9ade-e6811d6ed8c9")
@@ -29256,7 +29256,7 @@
 				)
 			)
 		)
-		(property "Value" "5K1"
+		(property "Value" "3K3"
 			(at 5.08 2.37 90)
 			(layer "F.Fab")
 			(uuid "74686a64-2b38-4fee-b285-885d7e464ccf")
@@ -36389,7 +36389,7 @@
 				)
 			)
 		)
-		(property "Value" "5K1"
+		(property "Value" "3K3"
 			(at 5.08 2.37 90)
 			(layer "F.Fab")
 			(uuid "9ceb8c71-8b30-42ad-94ae-0699265ebd77")

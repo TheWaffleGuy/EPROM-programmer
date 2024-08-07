@@ -9551,7 +9551,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "5K1"
+		(property "Value" "3K3"
 			(at 173.99 93.98 0)
 			(effects
 				(font
@@ -11307,7 +11307,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "5K1"
+		(property "Value" "3K3"
 			(at 173.99 123.19 0)
 			(effects
 				(font
@@ -15001,7 +15001,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "5K1"
+		(property "Value" "3K3"
 			(at 173.99 152.4 0)
 			(effects
 				(font

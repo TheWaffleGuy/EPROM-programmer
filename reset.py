@@ -12,9 +12,8 @@ mcp = EasyMCP2221.Device()
 
 if args.configure:
     mcp.set_pin_function(gp3 = "GPIO_IN")
-    mcp.GPIO_write(gp3 = False)
     mcp.save_config()
 else:
-    mcp.set_pin_function(gp3 = "GPIO_OUT")
+    mcp.set_pin_function(gp3 = "GPIO_OUT", out3 = False)
     time.sleep(100 / 1000_000.0)
     mcp.set_pin_function(gp3 = "GPIO_IN")

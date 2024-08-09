@@ -10,11 +10,20 @@ extern "C" {
 }
 #include "device_definitions.h"
 
-#define DAC_SS_PORT PORTB
-#define DAC_SS_PIN 4
+#define VCC_EN_PORT PORTD
+#define VCC_EN_PIN 6
 
-#define VCC_EN_PORT PORTB
-#define VCC_EN_PIN 0
+#define VPP_P19_EN_PORT PORTD
+#define VPP_P19_EN_PIN 5
+
+#define VPP_P20_EN_PORT PORTD
+#define VPP_P20_EN_PIN 4
+
+#define VPP_P21_EN_PORT PORTD
+#define VPP_P21_EN_PIN 3
+
+#define DAC_SS_PORT PORTD
+#define DAC_SS_PIN 2
 
 #define MAX_LINE_LENGTH 80
 #define DATA_BUFFER_SIZE 8192
@@ -26,8 +35,6 @@ extern "C" {
 
 uint8_t port_a;
 uint8_t port_b;
-uint8_t port_c;
-uint8_t port_d;
 
 char line[MAX_LINE_LENGTH + 1];
 uint8_t line_length = 0;
@@ -46,21 +53,21 @@ pin pins[] = {
   { .port = &port_a, 5 }, //ZIF 6
   { .port = &port_a, 6 }, //ZIF 7
   { .port = &port_a, 7 }, //ZIF 8
-  { .port = &port_c, 0 }, //ZIF 9  (Data 0)
-  { .port = &port_c, 1 }, //ZIF 10 (Data 1)
-  { .port = &port_c, 2 }, //ZIF 11 (Data 2)
-  { .port = NULL, 0 },    //ZIF 12 (GND)
-  { .port = &port_c, 3 }, //ZIF 13 (Data 3)
-  { .port = &port_c, 4 }, //ZIF 14 (Data 4)
-  { .port = &port_c, 5 }, //ZIF 15 (Data 5)
-  { .port = &port_c, 6 }, //ZIF 16 (Data 6)
-  { .port = &port_c, 7 }, //ZIF 17 (Data 7)
-  { .port = &port_d, 7 }, //ZIF 18
-  { .port = &port_d, 6 }, //ZIF 19
-  { .port = &port_d, 5 }, //ZIF 20 (#OE)
-  { .port = &port_d, 4 }, //ZIF 21
-  { .port = &port_d, 3 }, //ZIF 22
-  { .port = &port_d, 2 }, //ZIF 23
+  { .port = NULL,    0 }, //ZIF 9  (Data 0)
+  { .port = NULL,    1 }, //ZIF 10 (Data 1)
+  { .port = NULL,    2 }, //ZIF 11 (Data 2)
+  { .port = NULL,    0 }, //ZIF 12 (GND)
+  { .port = NULL,    3 }, //ZIF 13 (Data 3)
+  { .port = NULL,    4 }, //ZIF 14 (Data 4)
+  { .port = NULL,    5 }, //ZIF 15 (Data 5)
+  { .port = NULL,    6 }, //ZIF 16 (Data 6)
+  { .port = NULL,    7 }, //ZIF 17 (Data 7)
+  { .port = &port_b, 2 }, //ZIF 18
+  { .port = &port_b, 4 }, //ZIF 19
+  { .port = NULL,    7 }, //ZIF 20 (#OE)
+  { .port = &port_b, 3 }, //ZIF 21
+  { .port = &port_b, 1 }, //ZIF 22
+  { .port = &port_b, 0 }, //ZIF 23
   { .port = NULL, 0 },    //ZIF 24 (VCC)
 };
 
@@ -78,19 +85,23 @@ void setVPP(uint8_t volt);
 void setup() {
   Serial.begin(SERIAL_SPEED);
 
-  SPI.begin();
-
   portMode(0, OUTPUT); // Port A
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    //Upper 6 pins outputs Port D
-    DDRD |= 0b11111100;
+    //Lower 5 pins outputs Port B
+    DDRB |= 0b00011111;
 
     DAC_SS_PORT |= 1 << DAC_SS_PIN;
     VCC_EN_PORT &= ~(1 << VCC_EN_PIN);
-    // Set SS, VCC_EN as output
-    DDRB |=  0b00010001;
+    VPP_P19_EN_PORT &= ~(1 << VPP_P19_EN_PIN);
+    VPP_P20_EN_PORT &= ~(1 << VPP_P20_EN_PIN);
+    VPP_P21_EN_PORT &= ~(1 << VPP_P21_EN_PIN);
+
+    //Upper 6 pins outputs Port D
+    DDRD |= 0b11111100;
   };
+
+  SPI.begin();
 
   setVCC(VOLT(5, 0));
   setVPP(VOLT(1, 250));
@@ -218,7 +229,7 @@ void print_device_info() {
 
 void set_adress(uint16_t adress) {
     port_a = 0;
-    port_d = 0;
+    port_b = 0;
 
     for(uint8_t i = 0; i < selected_ic_size; i++) {
         uint8_t adr_pin = selected_ic.adr_pins[i];
@@ -237,8 +248,8 @@ void set_adress(uint16_t adress) {
     portWrite(0, port_a);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-      PORTD &= 0b00000011; //Upper 6 bits used for adress
-      PORTD |= port_d;
+      PORTB &= 0b11100000; //Lower 5 bits used for adress
+      PORTB |= port_b;
     }
 }
 
@@ -400,7 +411,7 @@ void srec_data_read (struct srec_state *srec,
 
 void setVCC(uint8_t volt) {
   volt -= VOLT(1, 250);
-  uint16_t data = 0b0011000000000000 | (volt << 4);
+  uint16_t data = 0b1011000000000000 | (volt << 4);
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT &= ~(1 << DAC_SS_PIN); };
@@ -411,7 +422,7 @@ void setVCC(uint8_t volt) {
 
 void setVPP(uint8_t volt) {
   volt -= VOLT(1, 250);
-  uint16_t data = 0b1011000000000000 | (volt << 4);
+  uint16_t data = 0b0011000000000000 | (volt << 4);
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT &= ~(1 << DAC_SS_PIN); };

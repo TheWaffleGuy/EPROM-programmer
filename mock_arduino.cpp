@@ -11,6 +11,7 @@
 #include <termios.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/ioctl.h>
 
 void delay(unsigned long milliseconds)
 {
@@ -20,11 +21,12 @@ void delay(unsigned long milliseconds)
     nanosleep(&ts, NULL);
 }
 
-static struct termios old, current;
+static struct termios old;
 
 /* Initialize new terminal i/o settings */
 void initTermios(int echo) 
 {
+  static struct termios current;
   tcgetattr(0, &old); /* grab old terminal i/o settings */
   current = old; /* make new settings same as old settings */
   current.c_lflag &= ~ICANON; /* disable buffered i/o */
@@ -42,27 +44,20 @@ void resetTermios(void)
   tcsetattr(0, TCSANOW, &old);
 }
 
-/* Read 1 character - echo defines echo mode */
-char getch_(int echo) 
+char getch()
 {
-  char ch;
-  initTermios(echo);
-  ch = getchar();
-  resetTermios();
-  return ch;
+  int c = getchar();
+  if (c == 127) return 8;
+  return c;
 }
 
-/* Read 1 character without echo */
-char getch(void) 
+bool kbhit()
 {
-  return getch_(0);
+  int byteswaiting;
+  ioctl(0, FIONREAD, &byteswaiting);
+  return byteswaiting > 0;
 }
 
-/* Read 1 character with echo */
-char getche(void) 
-{
-  return getch_(1);
-}
 #elif _WIN32
 #include <conio.h>
 #include <windows.h>
@@ -73,6 +68,10 @@ void delay(unsigned long milliseconds)
 #endif
 
 #define F_CPU 20000000L
+
+#define PROGMEM
+#define memcpy_P memcpy
+#define __FlashStringHelper char
 
 #define ATOMIC_BLOCK(type) for (int __ToDo=1; __ToDo; __ToDo=0)
 
@@ -209,6 +208,12 @@ class String : public std::string {
 
 class FakeSerial {
 public:
+  FakeSerial() {
+    #ifdef __linux__ 
+    initTermios(0);
+    #endif
+  }
+
   void begin(unsigned long) {}
   void end() {}
 
@@ -220,7 +225,7 @@ public:
   }
 
   size_t write(char c) {
-    std::cout << c;
+    std::cout << c << std::flush;
     return 1;
   }
   size_t write(const unsigned char buf[], size_t size) {
@@ -370,6 +375,11 @@ public:
     return ret;
   }
 
+  ~FakeSerial() {
+    #ifdef __linux__ 
+    resetTermios();
+    #endif
+  }
 
 private:
 size_t printNumber(unsigned long n, uint8_t base)

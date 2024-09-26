@@ -29,15 +29,38 @@ extern "C" {
 #define DATA_BUFFER_SIZE 8192
 #define SERIAL_SPEED 38400
 
+#define STATE_NORMAL 0
+#define STATE_SREC   1
+#define STATE_VCAL   2
+
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
 #define VOLT(a,b) ( a * 8 + (b * 8) / 1000 )
+
+#define VCC_CAL_LOW VOLT(4, 500)
+#define VCC_CAL_HIGH VOLT(6, 500)
+
+#define VPP_CAL_LOW VOLT(12, 500)
+#define VPP_CAL_HIGH VOLT(25, 0)
+
+uint8_t steps_between_vcc_low_o_high = VCC_CAL_HIGH - VCC_CAL_LOW;
+
+uint8_t steps_between_vpp_low_o_high = VPP_CAL_HIGH - VPP_CAL_LOW;
+
+
+int16_t vcc_low_offset;
+int16_t vcc_high_offset;
+
+int16_t vpp_low_offset;
+int16_t vpp_high_offset;
 
 uint8_t port_a;
 uint8_t port_b;
 
 char line[MAX_LINE_LENGTH + 1];
 uint8_t line_length = 0;
+
+uint8_t state = STATE_NORMAL;
 
 typedef struct pin {
   uint8_t *port;
@@ -77,10 +100,14 @@ uint8_t buffer[DATA_BUFFER_SIZE];
 IC selected_ic = {0};
 uint8_t selected_ic_size = 0;
 
-void setVCC(uint8_t volt);
+void setVCC(uint8_t volt, uint8_t calibrated);
 
-void setVPP(uint8_t volt);
+void setVPP(uint8_t volt, uint8_t calibrated);
 
+void resetVCCandVPP() {
+  setVCC(VOLT(5, 0), 1);
+  setVPP(VOLT(1, 250), 0);
+}
 
 void setup() {
   Serial.begin(SERIAL_SPEED);
@@ -103,8 +130,7 @@ void setup() {
 
   SPI.begin();
 
-  setVCC(VOLT(5, 0));
-  setVPP(VOLT(1, 250));
+  resetVCCandVPP();
 }
 
 bool is_numeric(char *string) {
@@ -364,12 +390,140 @@ void compare_data() {
   Serial.println("OK!");
 }
 
+uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* fractional_part)  {
+  uint8_t digits = 0;
+  char fractional[4 + 1];
+  char *start = string;
+
+  while(*string && isspace(*string)) string++;
+
+  while(*string && isdigit(*string)) {
+    string++;
+    digits++;
+    if(digits > 2) {
+      return 0;
+    }
+  }
+
+  if(*string && *string != ',' && *string != '.') {
+    return 0;
+  }
+  string++;
+
+  digits = 0;
+  while(*string && isdigit(*string)) {
+    if(digits < sizeof(fractional) - 1) {
+      fractional[digits] = *string;
+    }
+    string++;
+    digits++;
+  }
+
+  fractional[digits < sizeof(fractional) ? digits : sizeof(fractional) - 1] = '\0';
+
+  if(*string == '\0') {
+    *integer_part = atol(start);
+    *fractional_part = atol(fractional);
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+void voltage_calibration() {
+  static uint8_t step = 0;
+  static uint8_t integer_part;
+  static uint16_t fractional_part;
+
+  uint16_t target;
+  uint16_t measured;
+  
+  switch(step) {
+    case 0:
+      Serial.println("Warning! Remove any ICs from socket before continuing!");
+      Serial.println("Continue? (y/n)");
+      step++;
+      break;
+    case 1:
+      switch(line[0] | 0b00100000) { //Force lower-case 
+        case 'y':
+          setVCC(VCC_CAL_LOW, 0);
+          Serial.println("Enter voltage measured on VCC (1/2):");
+          step++;
+          break;
+        case 'n':
+          step = 0;
+          state = STATE_NORMAL;
+          Serial.println("Cancelled!");
+          break;
+        default:
+          step = 0;
+          state = STATE_NORMAL;
+          Serial.println("Unknown option selected, cancelled!");
+          break;
+      }
+      break;
+    case 2:
+      if (parse_decimal(line, &integer_part, &fractional_part)) {
+        target = ( VCC_CAL_LOW << 4 ) + 13;
+        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        vcc_low_offset = target - measured;
+
+        setVCC(VCC_CAL_HIGH, 0);
+        Serial.println("Enter voltage measured on VCC (2/2):");
+        step++;
+      } else {
+        Serial.println("Error: invalid input! Use format dd.ddd");
+      }
+      break;
+    case 3:
+      if (parse_decimal(line, &integer_part, &fractional_part)) {
+        target = ( VCC_CAL_HIGH << 4 ) + 13;
+        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        vcc_high_offset = target - measured;
+
+        setVPP(VPP_CAL_LOW, 0);
+        Serial.println("Enter voltage measured on VPP (1/2):");
+        step++;
+      } else {
+        Serial.println("Error: invalid input! Use format dd.ddd");
+      }
+      break;
+    case 4:
+      if (parse_decimal(line, &integer_part, &fractional_part)) {
+        target = ( VPP_CAL_LOW << 4 ) + 13;
+        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        vpp_low_offset = target - measured;
+
+        setVPP(VPP_CAL_HIGH, 0);
+        Serial.println("Enter voltage measured on VPP (2/2):");
+        step++;
+      } else {
+        Serial.println("Error: invalid input! Use format dd.ddd");
+      }
+      break;
+    case 5:
+      if (parse_decimal(line, &integer_part, &fractional_part)) {
+        target = ( VPP_CAL_HIGH << 4 ) + 13;
+        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        vpp_high_offset = target - measured;
+
+        resetVCCandVPP();
+        step = 0;
+        state = STATE_NORMAL;
+        Serial.println("OK!");
+      } else {
+        Serial.println("Error: invalid input! Use format dd.ddd");
+      }
+      break;
+  }
+}
+
 void not_implemented() {
   Serial.println("This functionality is not yet implemented");
 }
 
 struct srec_state srec;
-uint8_t srec_state = 0;
 uint16_t records_read = 0;
 
 void srec_data_read (struct srec_state *srec,
@@ -404,12 +558,12 @@ void srec_data_read (struct srec_state *srec,
     }
     memcpy(buffer + address, data, length);
   } else if (SREC_IS_TERMINATION(record_type)) {
-    srec_state = 0;
+    state = STATE_NORMAL;
     records_read = 0;
   }
 }
 
-void setVCC(uint8_t volt) {
+void setVCC(uint8_t volt, uint8_t calibrated) {
   volt -= VOLT(1, 250);
   uint16_t data = 0b1011000000000000 | (volt << 4);
 
@@ -420,7 +574,7 @@ void setVCC(uint8_t volt) {
   SPI.endTransaction();
 }
 
-void setVPP(uint8_t volt) {
+void setVPP(uint8_t volt, uint8_t calibrated) {
   volt -= VOLT(1, 250);
   uint16_t data = 0b0011000000000000 | (volt << 4);
 
@@ -455,7 +609,7 @@ uint8_t tryReadLine() {
       if(line_length > 0) {
         line_length--;
       }
-    } else {
+    } else if (c_char != '\r') {
       if(line_length < sizeof(line) - 1) {
         line[line_length] = c_char;
       }
@@ -468,51 +622,58 @@ uint8_t tryReadLine() {
 
 void loop() {
   if(tryReadLine()) {
-    if (!srec_state) {
-      char first = line[0];
-      first |= 0b00100000; //Force lower-case 
-      switch(first) {
-        case '?':
-          print_help();
-          break;
-        case 'l':
-          list_devices();
-          break;
-        case 's':
-          srec_begin_read(&srec);
-          srec_state = 1;
-          break;
-        case 'd':
-          print_buffer();
-          break;
-        case 'w':
-          not_implemented();
-          break;
-        case 'r':
-          read_device();
-          break;
-        case 'c':
-          compare_data();
-          break;
-        case 'b':
-          blank_check();
-          break;
-        case 't':
-          select_device();
-          break;
-        case 'i':
-          print_device_info();
-          break;
-        default:
-          Serial.print("Unknown command: ");
-          Serial.println(line[0]);
-          print_help();
-          break;
-      }
-    }
-
-    if (srec_state) {
-      srec_read_bytes(&srec, line, line_length);
+    switch(state) {
+      case STATE_NORMAL:
+        switch(line[0] | 0b00100000) { //Force lower-case 
+          case '?':
+            print_help();
+            break;
+          case 'l':
+            list_devices();
+            break;
+          case 's':
+            srec_begin_read(&srec);
+            srec_read_bytes(&srec, line, line_length);
+            state = STATE_SREC;
+            break;
+          case 'd':
+            print_buffer();
+            break;
+          case 'w':
+            not_implemented();
+            break;
+          case 'r':
+            read_device();
+            break;
+          case 'c':
+            compare_data();
+            break;
+          case 'b':
+            blank_check();
+            break;
+          case 't':
+            select_device();
+            break;
+          case 'i':
+            print_device_info();
+            break;
+          case 'v':
+            voltage_calibration();
+            state = STATE_VCAL;
+            break;
+          default:
+            Serial.print("Unknown command: ");
+            Serial.println(line[0]);
+            print_help();
+            break;
+        }
+        break;
+      case STATE_SREC:
+        srec_read_bytes(&srec, line, line_length);
+        break;
+      case STATE_VCAL:
+        voltage_calibration();
+        break;
     }
 
     line_length = 0;

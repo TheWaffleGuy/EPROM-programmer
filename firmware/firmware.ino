@@ -43,11 +43,6 @@ extern "C" {
 #define VPP_CAL_LOW VOLT(12, 500)
 #define VPP_CAL_HIGH VOLT(25, 0)
 
-uint8_t steps_between_vcc_low_o_high = VCC_CAL_HIGH - VCC_CAL_LOW;
-
-uint8_t steps_between_vpp_low_o_high = VPP_CAL_HIGH - VPP_CAL_LOW;
-
-
 int16_t vcc_low_offset = 0;
 int16_t vcc_high_offset = 0;
 

@@ -48,11 +48,11 @@ uint8_t steps_between_vcc_low_o_high = VCC_CAL_HIGH - VCC_CAL_LOW;
 uint8_t steps_between_vpp_low_o_high = VPP_CAL_HIGH - VPP_CAL_LOW;
 
 
-int16_t vcc_low_offset;
-int16_t vcc_high_offset;
+int16_t vcc_low_offset = 0;
+int16_t vcc_high_offset = 0;
 
-int16_t vpp_low_offset;
-int16_t vpp_high_offset;
+int16_t vpp_low_offset = 0;
+int16_t vpp_high_offset = 0;
 
 uint8_t port_a;
 uint8_t port_b;
@@ -392,7 +392,7 @@ void compare_data() {
 
 uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* fractional_part)  {
   uint8_t digits = 0;
-  char fractional[4 + 1];
+  char fractional[3 + 1] = "000";
   char *start = string;
 
   while(*string && isspace(*string)) string++;
@@ -418,8 +418,6 @@ uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* fractional_
     string++;
     digits++;
   }
-
-  fractional[digits < sizeof(fractional) ? digits : sizeof(fractional) - 1] = '\0';
 
   if(*string == '\0') {
     *integer_part = atol(start);
@@ -580,8 +578,12 @@ void setVCC(uint8_t volt, uint8_t calibrated) {
 }
 
 void setVPP(uint8_t volt, uint8_t calibrated) {
+  int16_t offset = 0;
+  if(calibrated) {
+    offset = ( ( VPP_CAL_HIGH - volt ) * vpp_low_offset + ( volt - VPP_CAL_LOW ) * vpp_high_offset ) / ( VPP_CAL_HIGH - VPP_CAL_LOW );
+  }
   volt -= VOLT(1, 250);
-  uint16_t data = 0b0011000000000000 | (volt << 4);
+  uint16_t data = 0b0011000000000000 | ( (volt << 4) + offset );
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT &= ~(1 << DAC_SS_PIN); };

@@ -432,8 +432,9 @@ uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* fractional_
 
 void voltage_calibration() {
   static uint8_t step = 0;
-  static uint8_t integer_part;
-  static uint16_t fractional_part;
+  
+  uint8_t integer_part;
+  uint16_t fractional_part;
 
   uint16_t target;
   uint16_t measured;
@@ -466,7 +467,7 @@ void voltage_calibration() {
     case 2:
       if (parse_decimal(line, &integer_part, &fractional_part)) {
         target = ( VCC_CAL_LOW << 4 ) + 13;
-        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
         vcc_low_offset = target - measured;
 
         setVCC(VCC_CAL_HIGH, 0);
@@ -479,7 +480,7 @@ void voltage_calibration() {
     case 3:
       if (parse_decimal(line, &integer_part, &fractional_part)) {
         target = ( VCC_CAL_HIGH << 4 ) + 13;
-        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
         vcc_high_offset = target - measured;
 
         setVPP(VPP_CAL_LOW, 0);
@@ -492,7 +493,7 @@ void voltage_calibration() {
     case 4:
       if (parse_decimal(line, &integer_part, &fractional_part)) {
         target = ( VPP_CAL_LOW << 4 ) + 13;
-        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        measured = ( integer_part * 8 << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
         vpp_low_offset = target - measured;
 
         setVPP(VPP_CAL_HIGH, 0);
@@ -505,7 +506,7 @@ void voltage_calibration() {
     case 5:
       if (parse_decimal(line, &integer_part, &fractional_part)) {
         target = ( VPP_CAL_HIGH << 4 ) + 13;
-        measured = ( integer_part * 8 << 4 ) + fractional_part / 128;
+        measured = ( integer_part * 8 << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
         vpp_high_offset = target - measured;
 
         resetVCCandVPP();
@@ -564,8 +565,12 @@ void srec_data_read (struct srec_state *srec,
 }
 
 void setVCC(uint8_t volt, uint8_t calibrated) {
+  int16_t offset = 0;
+  if(calibrated) {
+    offset = ( ( VCC_CAL_HIGH - volt ) * vcc_low_offset + ( volt - VCC_CAL_LOW ) * vcc_high_offset ) / ( VCC_CAL_HIGH - VCC_CAL_LOW );
+  }
   volt -= VOLT(1, 250);
-  uint16_t data = 0b1011000000000000 | (volt << 4);
+  uint16_t data = 0b1011000000000000 | ( (volt << 4) + offset );
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DAC_SS_PORT &= ~(1 << DAC_SS_PIN); };

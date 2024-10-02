@@ -518,13 +518,13 @@ void not_implemented() {
 }
 
 struct srec_state srec;
-uint16_t records_read = 0;
 
 void srec_data_read (struct srec_state *srec,
                     srec_record_number_t record_type,
                     srec_address_t address,
                     uint8_t *data, srec_count_t length,
                     srec_bool_t checksum_error) {
+  static uint16_t records_read;
   records_read++;
 
   if (srec->length != srec->byte_count) {

@@ -147,6 +147,7 @@ void print_help() {
   Serial.println("B: Blank-check the device");
   Serial.println("T [device number]: Select type of device");
   Serial.println("I: Info about currently selected device");
+  Serial.println("V: Calibrate VCC and VPP voltages");
 }
 
 void list_devices() {

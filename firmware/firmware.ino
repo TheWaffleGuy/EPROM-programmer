@@ -137,7 +137,7 @@ bool is_numeric(char *string) {
 
 void print_help() {
   Serial.println("Eprom programmer help");
-  Serial.println("?: This help menu");
+  Serial.println("H: This help menu");
   Serial.println("L: List devices");
   Serial.println("S[srec data]: Upload SREC to buffer");
   Serial.println("D: Download data from buffer");
@@ -627,9 +627,6 @@ void loop() {
     switch(state) {
       case STATE_NORMAL:
         switch(line[0] | 0b00100000) { //Force lower-case 
-          case '?':
-            print_help();
-            break;
           case 'l':
             list_devices();
             break;
@@ -666,6 +663,8 @@ void loop() {
           default:
             Serial.print("Unknown command: ");
             Serial.println(line[0]);
+            /* FALLTHRU */
+          case 'h':
             print_help();
             break;
         }

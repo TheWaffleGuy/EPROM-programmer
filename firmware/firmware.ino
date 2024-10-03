@@ -385,9 +385,9 @@ void compare_data() {
   Serial.println("OK!");
 }
 
-uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* fractional_part)  {
+uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* thousandths_part)  {
   uint8_t digits = 0;
-  char fractional[3 + 1] = "000";
+  char thousandths[3 + 1] = "000";
   char *start = string;
 
   while(*string && isspace(*string)) string++;
@@ -407,8 +407,8 @@ uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* fractional_
 
   digits = 0;
   while(*string && isdigit(*string)) {
-    if(digits < sizeof(fractional) - 1) {
-      fractional[digits] = *string;
+    if(digits < sizeof(thousandths) - 1) {
+      thousandths[digits] = *string;
     }
     string++;
     digits++;
@@ -416,7 +416,7 @@ uint8_t parse_decimal(char *string, uint8_t* integer_part, uint16_t* fractional_
 
   if(*string == '\0') {
     *integer_part = atol(start);
-    *fractional_part = atol(fractional);
+    *thousandths_part = atol(thousandths);
     return 1;
   } else {
     return 0;
@@ -427,7 +427,7 @@ void voltage_calibration() {
   static uint8_t step = 0;
   
   uint8_t integer_part;
-  uint16_t fractional_part;
+  uint16_t thousandths_part;
 
   uint16_t target;
   uint16_t measured;
@@ -458,9 +458,9 @@ void voltage_calibration() {
       }
       break;
     case 2:
-      if (parse_decimal(line, &integer_part, &fractional_part)) {
+      if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VCC_CAL_LOW << 4 ) + 13;
-        measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
+        measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
         vcc_low_offset = target - measured;
 
         setVCC(VCC_CAL_HIGH, 0);
@@ -471,9 +471,9 @@ void voltage_calibration() {
       }
       break;
     case 3:
-      if (parse_decimal(line, &integer_part, &fractional_part)) {
+      if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VCC_CAL_HIGH << 4 ) + 13;
-        measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
+        measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
         vcc_high_offset = target - measured;
 
         setVPP(VPP_CAL_LOW, 0);
@@ -484,9 +484,9 @@ void voltage_calibration() {
       }
       break;
     case 4:
-      if (parse_decimal(line, &integer_part, &fractional_part)) {
+      if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VPP_CAL_LOW << 4 ) + 13;
-        measured = ( integer_part * 8 << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
+        measured = ( integer_part * 8 << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
         vpp_low_offset = target - measured;
 
         setVPP(VPP_CAL_HIGH, 0);
@@ -497,9 +497,9 @@ void voltage_calibration() {
       }
       break;
     case 5:
-      if (parse_decimal(line, &integer_part, &fractional_part)) {
+      if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VPP_CAL_HIGH << 4 ) + 13;
-        measured = ( integer_part * 8 << 4 ) + ( (uint32_t) fractional_part * 128 ) / 1000;
+        measured = ( integer_part * 8 << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
         vpp_high_offset = target - measured;
 
         resetVCCandVPP();

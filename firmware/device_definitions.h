@@ -125,108 +125,137 @@ const IC ics[] PROGMEM = {
     MANUFACTURER("TI"),
     NAME("TMS2532A"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
-    .ctrl_pins_read_h = { 21 }
+    .ctrl_pins_read_h = { 21 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("TI"),
     NAME("TMS2532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
-    .ctrl_pins_read_h = { 21 }
+    .ctrl_pins_read_h = { 21 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("HITACHI"),
     NAME("HN462532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
-    .ctrl_pins_read_h = { 21 }
+    .ctrl_pins_read_h = { 21 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("MOTOROLA"),
     NAME("MCM2532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
-    .ctrl_pins_read_h = { 21 }
+    .ctrl_pins_read_h = { 21 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("ST"),
     NAME("M2532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
-    .ctrl_pins_read_h = { 21 }
+    .ctrl_pins_read_h = { 21 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("WSI"),
     NAME("WS57C43"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
-    .ctrl_pins_read_h = { 18 }
+    .ctrl_pins_read_h = { 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("WSI"),
     NAME("WS57C43B"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
-    .ctrl_pins_read_h = { 18 }
+    .ctrl_pins_read_h = { 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("WSI"),
     NAME("WS57C43C"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
-    .ctrl_pins_read_h = { 18 }
+    .ctrl_pins_read_h = { 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("ICT"),
     NAME("27CX321"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
-    .ctrl_pins_read_h = { 18 }
+    .ctrl_pins_read_h = { 18 },
+    .f_can_blank_check = 0,
+    .f_blank_check_value = 0
   },
   {
     MANUFACTURER("CYPRESS"),
     NAME("CY7C244"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
-    .ctrl_pins_read_h = { 18 }
+    .ctrl_pins_read_h = { 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 0 //???
   },
   {
     MANUFACTURER("GENERIC"),
     NAME("2732"),
-    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 }
+    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
+    .ctrl_pins_read_h = {},
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("GENERIC"),
     NAME("2716"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
-    .ctrl_pins_read_h = { 21 }
+    .ctrl_pins_read_h = { 21 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("WSI"),
     NAME("WS57C191"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
-    .ctrl_pins_read_h = { 19, 18 }
+    .ctrl_pins_read_h = { 19, 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("WSI"),
     NAME("WS57C191B"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
-    .ctrl_pins_read_h = { 19, 18 }
+    .ctrl_pins_read_h = { 19, 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("WSI"),
     NAME("WS57C191C"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
-    .ctrl_pins_read_h = { 19, 18 }
-  },
-  {
-    MANUFACTURER("SHARP"),
-    NAME("LH57191"),
-    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
-    .ctrl_pins_read_h = { 19, 18 }
+    .ctrl_pins_read_h = { 19, 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   },
   {
     MANUFACTURER("TI"),
     NAME("TMS27C292"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
-    .ctrl_pins_read_h = { 19, 18 }
+    .ctrl_pins_read_h = { 19, 18 },
+    .f_can_blank_check = 0, //Can be blank-checked but requires special handling
+    .f_blank_check_value = 0
   },
   {
     MANUFACTURER("AMD"),
     NAME("AM27C191"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
-    .ctrl_pins_read_h = { 19, 18 }
+    .ctrl_pins_read_h = { 19, 18 },
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1
   }
 };
 

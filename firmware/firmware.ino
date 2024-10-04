@@ -13,13 +13,9 @@ extern "C" {
 #define VCC_EN_PORT PORTD
 #define VCC_EN_PIN 6
 
-#define VPP_P19_EN_PORT PORTD
+#define VPP_EN_PORT PORTD
 #define VPP_P19_EN_PIN 5
-
-#define VPP_P20_EN_PORT PORTD
 #define VPP_P20_EN_PIN 4
-
-#define VPP_P21_EN_PORT PORTD
 #define VPP_P21_EN_PIN 3
 
 #define DAC_SS_PORT PORTD
@@ -115,9 +111,9 @@ void setup() {
 
     DAC_SS_PORT |= 1 << DAC_SS_PIN;
     VCC_EN_PORT &= ~(1 << VCC_EN_PIN);
-    VPP_P19_EN_PORT &= ~(1 << VPP_P19_EN_PIN);
-    VPP_P20_EN_PORT &= ~(1 << VPP_P20_EN_PIN);
-    VPP_P21_EN_PORT &= ~(1 << VPP_P21_EN_PIN);
+    VPP_EN_PORT &= ~(1 << VPP_P19_EN_PIN);
+    VPP_EN_PORT &= ~(1 << VPP_P20_EN_PIN);
+    VPP_EN_PORT &= ~(1 << VPP_P21_EN_PIN);
 
     //Upper 6 pins outputs Port D
     DDRD |= 0b11111100;
@@ -273,6 +269,21 @@ void set_adress(uint16_t adress) {
       PORTB &= 0b11100000; //Lower 5 bits used for adress
       PORTB |= port_b;
     }
+}
+
+void turn_vpp_on(uint8_t pin_number) {
+  if(pin_number == 19) {
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P19_EN_PIN; }
+  } else if(pin_number == 20) {
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P20_EN_PIN; }
+  } else if (pin_number == 21) {
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P21_EN_PIN; }
+  }
+}
+
+void turn_vpp_off() {
+  uint8_t vpp_off_mask = ~(1 << VPP_P19_EN_PIN | 1 << VPP_P20_EN_PIN | 1 << VPP_P21_EN_PIN);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT &= vpp_off_mask; }
 }
 
 void turn_device_on() {

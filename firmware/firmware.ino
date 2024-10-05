@@ -31,8 +31,6 @@ extern "C" {
 
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
-#define VOLT(a,b) ( a * 8 + (b * 8) / 1000 )
-
 #define VCC_CAL_LOW VOLT(4, 500)
 #define VCC_CAL_HIGH VOLT(6, 500)
 

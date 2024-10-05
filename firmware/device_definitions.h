@@ -62,7 +62,7 @@ const IC ics[] PROGMEM = {
     NAME("27HC641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(12, 750), //???
+    .vpp_voltage = VOLT(12, 500),
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },

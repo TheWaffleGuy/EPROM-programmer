@@ -37,7 +37,7 @@ const IC ics[] PROGMEM = {
     NAME("AM27C49"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(12, 500),
+    .vpp_voltage = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1

@@ -7,6 +7,7 @@ typedef struct IC {
   uint8_t ctrl_pins_read_h[2];
 
   uint8_t vpp_voltage;
+  uint16_t pgm_pw_us;
 
   uint8_t f_can_blank_check : 1;
   uint8_t f_blank_check_value : 1;
@@ -27,6 +28,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(12, 500),
+    .pgm_pw_us = 200,
     .f_can_blank_check = 1,
     .f_blank_check_value = 0
   },
@@ -36,6 +38,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(12, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -45,6 +48,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(12, 500),
+    .pgm_pw_us = 50, //???
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },
@@ -54,6 +58,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(13, 0),
+    .pgm_pw_us = 100,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -63,6 +68,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(12, 500),
+    .pgm_pw_us = 10, //???
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },
@@ -72,6 +78,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(12, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -81,6 +88,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(13, 0),
+    .pgm_pw_us = 100,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -90,6 +98,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(13, 0),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -99,6 +108,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -108,6 +118,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -117,6 +128,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(12, 750),
+    .pgm_pw_us = 150, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -126,6 +138,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18, 21 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -135,6 +148,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18, 21 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -144,6 +158,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
     .vpp_voltage = VOLT(21, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -153,6 +168,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -162,6 +178,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -171,6 +188,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -180,6 +198,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -189,6 +208,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -198,6 +218,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -207,6 +228,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp_voltage = VOLT(12, 750),
+    .pgm_pw_us = 150, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -216,6 +238,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp_voltage = VOLT(12, 500),
+    .pgm_pw_us = 50, //???
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },
@@ -225,6 +248,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp_voltage = VOLT(12, 500),
+    .pgm_pw_us = 200, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 0 //???
   },
@@ -234,6 +258,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -243,6 +268,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
     .ctrl_pins_read_h = {},
     .vpp_voltage = VOLT(21, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -252,6 +278,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
     .ctrl_pins_read_h = { 21 },
     .vpp_voltage = VOLT(25, 0),
+    .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -261,6 +288,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -270,6 +298,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -279,6 +308,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
     .vpp_voltage = VOLT(12, 750),
+    .pgm_pw_us = 150, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -288,6 +318,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 100,
     .f_can_blank_check = 0, //Can be blank-checked but requires special handling
     .f_blank_check_value = 0
   },
@@ -297,6 +328,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
     .vpp_voltage = VOLT(13, 500),
+    .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   }

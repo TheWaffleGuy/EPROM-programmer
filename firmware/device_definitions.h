@@ -6,7 +6,7 @@ typedef struct IC {
   uint8_t adr_pins[13];
   uint8_t ctrl_pins_read_h[2];
 
-  uint8_t vpp_voltage;
+  uint8_t vpp;
   uint16_t pgm_pw_us;
 
   uint8_t f_can_blank_check : 1;
@@ -27,7 +27,7 @@ const IC ics[] PROGMEM = {
     NAME("CY7C264"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(12, 500),
+    .vpp = VOLT(12, 500),
     .pgm_pw_us = 200,
     .f_can_blank_check = 1,
     .f_blank_check_value = 0
@@ -37,7 +37,7 @@ const IC ics[] PROGMEM = {
     NAME("AM27C49"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -47,7 +47,7 @@ const IC ics[] PROGMEM = {
     NAME("27CX641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(12, 500),
+    .vpp = VOLT(12, 500),
     .pgm_pw_us = 50, //???
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
@@ -57,7 +57,7 @@ const IC ics[] PROGMEM = {
     NAME("27HC641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(13, 0),
+    .vpp = VOLT(13, 0),
     .pgm_pw_us = 100,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -67,7 +67,7 @@ const IC ics[] PROGMEM = {
     NAME("27HC641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(12, 500),
+    .vpp = VOLT(12, 500),
     .pgm_pw_us = 10, //???
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
@@ -77,7 +77,7 @@ const IC ics[] PROGMEM = {
     NAME("AT27HC641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(12, 500),
+    .vpp = VOLT(12, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -87,7 +87,7 @@ const IC ics[] PROGMEM = {
     NAME("AT27HC641R"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(13, 0),
+    .vpp = VOLT(13, 0),
     .pgm_pw_us = 100,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -97,7 +97,7 @@ const IC ics[] PROGMEM = {
     NAME("LH5749"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(13, 0),
+    .vpp = VOLT(13, 0),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -107,7 +107,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C49"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -117,7 +117,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C49B"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -127,7 +127,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C49C"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(12, 750),
+    .vpp = VOLT(12, 750),
     .pgm_pw_us = 150, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -137,7 +137,7 @@ const IC ics[] PROGMEM = {
     NAME("MCM68764"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18, 21 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -147,7 +147,7 @@ const IC ics[] PROGMEM = {
     NAME("MCM68766"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18, 21 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -157,7 +157,7 @@ const IC ics[] PROGMEM = {
     NAME("TMS2532A"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
-    .vpp_voltage = VOLT(21, 0),
+    .vpp = VOLT(21, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -167,7 +167,7 @@ const IC ics[] PROGMEM = {
     NAME("TMS2532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -177,7 +177,7 @@ const IC ics[] PROGMEM = {
     NAME("HN462532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -187,7 +187,7 @@ const IC ics[] PROGMEM = {
     NAME("MCM2532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -197,7 +197,7 @@ const IC ics[] PROGMEM = {
     NAME("M2532"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18 },
     .ctrl_pins_read_h = { 21 },
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -207,7 +207,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C43"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -217,7 +217,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C43B"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -227,7 +227,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C43C"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
-    .vpp_voltage = VOLT(12, 750),
+    .vpp = VOLT(12, 750),
     .pgm_pw_us = 150, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -237,7 +237,7 @@ const IC ics[] PROGMEM = {
     NAME("27CX321"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
-    .vpp_voltage = VOLT(12, 500),
+    .vpp = VOLT(12, 500),
     .pgm_pw_us = 50, //???
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
@@ -247,7 +247,7 @@ const IC ics[] PROGMEM = {
     NAME("CY7C244"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
-    .vpp_voltage = VOLT(12, 500),
+    .vpp = VOLT(12, 500),
     .pgm_pw_us = 200, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 0 //???
@@ -257,7 +257,7 @@ const IC ics[] PROGMEM = {
     NAME("2732"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -267,7 +267,7 @@ const IC ics[] PROGMEM = {
     NAME("2732A"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
     .ctrl_pins_read_h = {},
-    .vpp_voltage = VOLT(21, 0),
+    .vpp = VOLT(21, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -277,7 +277,7 @@ const IC ics[] PROGMEM = {
     NAME("2716"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
     .ctrl_pins_read_h = { 21 },
-    .vpp_voltage = VOLT(25, 0),
+    .vpp = VOLT(25, 0),
     .pgm_pw_us = 50000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -287,7 +287,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C191"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -297,7 +297,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C191B"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -307,7 +307,7 @@ const IC ics[] PROGMEM = {
     NAME("WS57C191C"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
-    .vpp_voltage = VOLT(12, 750),
+    .vpp = VOLT(12, 750),
     .pgm_pw_us = 150, //???
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
@@ -317,7 +317,7 @@ const IC ics[] PROGMEM = {
     NAME("TMS27C292"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 100,
     .f_can_blank_check = 0, //Can be blank-checked but requires special handling
     .f_blank_check_value = 0
@@ -327,7 +327,7 @@ const IC ics[] PROGMEM = {
     NAME("AM27C191"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21 },
     .ctrl_pins_read_h = { 19, 18 },
-    .vpp_voltage = VOLT(13, 500),
+    .vpp = VOLT(13, 500),
     .pgm_pw_us = 1000,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1

@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), 'appdeps'))
 import EasyMCP2221
 import argparse
 import time

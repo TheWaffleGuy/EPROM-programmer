@@ -48,7 +48,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp = VOLT(12, 500),
-    .pgm_pw_us = 50, //???
+    .pgm_pw_us = 100, //Assumed to be same as 27CX321
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },
@@ -238,7 +238,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp = VOLT(12, 500),
-    .pgm_pw_us = 50, //???
+    .pgm_pw_us = 100, //30 retries. Observed on oscilloscope on ALL-03 programmer
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },

@@ -248,7 +248,7 @@ const IC ics[] PROGMEM = {
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp = VOLT(12, 500),
-    .pgm_pw_us = 200, //???
+    .pgm_pw_us = 200, //50 retries. Seems like the same algorithm used on CY7C264. Observed on oscilloscope on ALL-03 programmer
     .f_can_blank_check = 1,
     .f_blank_check_value = 0 //???
   },

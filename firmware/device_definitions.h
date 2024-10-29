@@ -11,6 +11,9 @@ typedef struct IC {
   uint8_t pgm_vcc_extra : 4;
   uint8_t pgm_overprogram : 1;
   uint8_t pgm_overprogram_5v_vcc : 1;
+  uint8_t pgm_overprogram_ignore_verify : 1;
+  uint8_t pgm_intial_single_pass : 1;
+  uint8_t pgm_pulses : 6;
 
   uint8_t f_can_blank_check : 1;
   uint8_t f_blank_check_value : 1;
@@ -35,6 +38,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 1,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 10,
     .f_can_blank_check = 1,
     .f_blank_check_value = 0
   },
@@ -48,23 +54,29 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 1,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 25,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
-  {
+  { //Assumed to be same algorithm as 27CX321
     MANUFACTURER("ICT"),
     NAME("27CX641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp = VOLT(12, 500),
-    .pgm_pw_us = 100, //Assumed to be same as 27CX321
+    .pgm_pw_us = 100,
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 30,
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },
-  { // Express algorithm
+  { //Express algorithm
     MANUFACTURER("MICROCHIP"),
     NAME("27HC641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
@@ -74,19 +86,25 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 500),
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 10,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
-  {
+  { //Algorithm observed on oscilloscope on ALL-03 programmer
     MANUFACTURER("SIGNETICS"),
     NAME("27HC641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },
     .ctrl_pins_read_h = {},
     .vpp = VOLT(12, 500),
-    .pgm_pw_us = 2250, //20 retries. Observed on oscilloscope on ALL-03 programmer
+    .pgm_pw_us = 2250,
     .pgm_vcc_extra = 0, //???
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 20,
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },
@@ -100,6 +118,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 25,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -113,6 +134,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 1,
+    .pgm_pulses = 10,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -126,6 +150,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 25,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -139,6 +166,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(0, 500),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 5,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -152,6 +182,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(0, 500),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 5,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -165,6 +198,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 250),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 25,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -178,6 +214,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 20, //No max-value specified in datasheet
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -191,6 +230,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 20, //No max-value specified in datasheet
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -204,6 +246,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -217,6 +262,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -230,6 +278,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -243,6 +294,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -256,6 +310,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -269,6 +326,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(0, 500),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 5,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -282,6 +342,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(0, 500),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 5,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -295,34 +358,43 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 250),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 5,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
-  {
+  { //Algorithm observed on oscilloscope on ALL-03 programmer
     MANUFACTURER("ICT"),
     NAME("27CX321"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp = VOLT(12, 500),
-    .pgm_pw_us = 100, //30 retries. Observed on oscilloscope on ALL-03 programmer
+    .pgm_pw_us = 100,
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 30,
     .f_can_blank_check = 0,
     .f_blank_check_value = 0
   },
-  {
+  { //Assumed to be same algorithm as CY7C264
     MANUFACTURER("CYPRESS"),
     NAME("CY7C244"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19 },
     .ctrl_pins_read_h = { 18 },
     .vpp = VOLT(12, 500),
-    .pgm_pw_us = 200, //50 retries. Seems like the same algorithm used on CY7C264. Observed on oscilloscope on ALL-03 programmer
+    .pgm_pw_us = 200,
     .pgm_vcc_extra = 0, //???
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 1,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 10,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 0 //???
+    .f_blank_check_value = 0
   },
   {
     MANUFACTURER("GENERIC"),
@@ -334,6 +406,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -347,6 +422,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -360,6 +438,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 0,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 1,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -373,6 +454,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(0, 500),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 5,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -386,6 +470,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(0, 500),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 5,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -399,6 +486,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 250),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 25,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   },
@@ -412,6 +502,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = 0,
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 1,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 4,
     .f_can_blank_check = 0, //Can be blank-checked but requires special handling
     .f_blank_check_value = 0
   },
@@ -425,6 +518,9 @@ const IC ics[] PROGMEM = {
     .pgm_vcc_extra = VOLT(1, 0),
     .pgm_overprogram = 1,
     .pgm_overprogram_5v_vcc = 1,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_pulses = 25,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1
   }

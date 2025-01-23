@@ -7,6 +7,7 @@ import EasyMCP2221
 from EasyMCP2221.Constants import *
 import argparse
 import time
+import serial.tools.list_ports;
 
 MANUFACTURER = "TheWaffleGuy"
 PRODUCT = "EPROM-programmer"
@@ -42,7 +43,7 @@ def reset(device):
     device.set_pin_function(gp3 = "GPIO_IN")
  
 
-def main(configure_device):
+def main(configure_device, reset_device):
     if configure_device:
         devlist = devices()
         mcp = None
@@ -56,7 +57,7 @@ def main(configure_device):
             print("Error: multiple MCP2221 connected. When configuring, make sure that only one device is connected", file=sys.stderr)
             sys.exit(1)
         configure(mcp)
-    else:
+    elif reset_device:
         devlist = filter(lambda device: device.read_flash_info()["USB_VENDOR"] == MANUFACTURER and device.read_flash_info()["USB_PRODUCT"] == PRODUCT , devices())
         mcp = None
         try:
@@ -69,9 +70,23 @@ def main(configure_device):
             print("Error: multiple programmers found", file=sys.stderr)
             sys.exit(1)
         reset(mcp)
+    else:
+        comports = [com for com in serial.tools.list_ports.comports() if com.vid == DEV_DEFAULT_VID and com.pid == DEV_DEFAULT_PID and com.manufacturer == MANUFACTURER and com.product == PRODUCT]
+        if len(comports) == 0:
+            print("Error: no programmers found", file=sys.stderr)
+            sys.exit(1)
+        elif len(comports) > 1:
+            print("Error: multiple programmers found", file=sys.stderr)
+            sys.exit(1)
+        else:
+            print(comports[0].device)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-c", "--configure", help="configure MCP2221 for reset handling", action="store_true")
+    parser.add_argument("-r", "--reset", help="reset programmer", action="store_true")
     args = parser.parse_args()
-    main(args.configure)
+    if args.configure and args.reset:
+        print("Error: configure cannot be combined with other parameters", file=sys.stderr)
+        sys.exit(1)
+    main(args.configure, args.reset)

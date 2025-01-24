@@ -41,7 +41,20 @@ def reset(device):
     device.set_pin_function(gp3 = "GPIO_OUT", out3 = False)
     time.sleep(100 / 1000_000.0)
     device.set_pin_function(gp3 = "GPIO_IN")
- 
+
+def find_programmer():
+    devlist = filter(lambda device: device.read_flash_info()["USB_VENDOR"] == MANUFACTURER and device.read_flash_info()["USB_PRODUCT"] == PRODUCT , devices())
+    mcp = None
+    try:
+        mcp = next(devlist)
+    except StopIteration:
+        print("Error: no programmers found", file=sys.stderr)
+        sys.exit(1)
+    sentinel = object()
+    if next(devlist, sentinel) != sentinel:
+        print("Error: multiple programmers found", file=sys.stderr)
+        sys.exit(1)
+    return mcp
 
 def main(configure_device, reset_device):
     if configure_device:
@@ -58,28 +71,12 @@ def main(configure_device, reset_device):
             sys.exit(1)
         configure(mcp)
     elif reset_device:
-        devlist = filter(lambda device: device.read_flash_info()["USB_VENDOR"] == MANUFACTURER and device.read_flash_info()["USB_PRODUCT"] == PRODUCT , devices())
-        mcp = None
-        try:
-            mcp = next(devlist)
-        except StopIteration:
-            print("Error: no programmers found", file=sys.stderr)
-            sys.exit(1)
-        sentinel = object()
-        if next(devlist, sentinel) != sentinel:
-            print("Error: multiple programmers found", file=sys.stderr)
-            sys.exit(1)
+        mcp = find_programmer()
         reset(mcp)
     else:
-        comports = [com for com in serial.tools.list_ports.comports() if com.vid == DEV_DEFAULT_VID and com.pid == DEV_DEFAULT_PID and com.manufacturer == MANUFACTURER and com.product == PRODUCT]
-        if len(comports) == 0:
-            print("Error: no programmers found", file=sys.stderr)
-            sys.exit(1)
-        elif len(comports) > 1:
-            print("Error: multiple programmers found", file=sys.stderr)
-            sys.exit(1)
-        else:
-            print(comports[0].device)
+        mcp = find_programmer()
+        comports = [com for com in serial.tools.list_ports.comports() if com.serial_number == mcp.read_flash_info()["USB_SERIAL"]]
+        print(comports[0].device)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -8,9 +8,11 @@ from EasyMCP2221.Constants import *
 import argparse
 import time
 import serial.tools.list_ports;
+import subprocess
 
 MANUFACTURER = "TheWaffleGuy"
 PRODUCT = "EPROM-programmer"
+FQBN = "MightyCore:avr:1284:clock=20MHz_external,variant=modelNonP"
 
 def devices():
     devnum = 0
@@ -29,24 +31,11 @@ def configure_data_string(device, descriptor_type, data_str):
     cmd = [CMD_WRITE_FLASH_DATA, descriptor_type, data_length, 0x03] + data
     device.send_cmd(cmd)
 
-def configure(device):
-    device.set_pin_function(gp3 = "GPIO_IN")
-    configure_data_string(device, FLASH_DATA_USB_MANUFACTURER, MANUFACTURER)
-    configure_data_string(device, FLASH_DATA_USB_PRODUCT, PRODUCT)
-    device.enable_cdc_serial(True)
-    device.save_config()
-    device.reset()
-
-def reset(device):
-    device.set_pin_function(gp3 = "GPIO_OUT", out3 = False)
-    time.sleep(100 / 1000_000.0)
-    device.set_pin_function(gp3 = "GPIO_IN")
-
 def find_programmer():
     devlist = filter(lambda device: device.read_flash_info()["USB_VENDOR"] == MANUFACTURER and device.read_flash_info()["USB_PRODUCT"] == PRODUCT , devices())
-    mcp = None
+    device = None
     try:
-        mcp = next(devlist)
+        device = next(devlist)
     except StopIteration:
         print("Error: no programmers found", file=sys.stderr)
         sys.exit(1)
@@ -54,36 +43,67 @@ def find_programmer():
     if next(devlist, sentinel) != sentinel:
         print("Error: multiple programmers found", file=sys.stderr)
         sys.exit(1)
-    return mcp
+    return device
 
-def main(configure_device, reset_device):
-    if configure_device:
-        devlist = devices()
-        mcp = None
-        try:
-            mcp = next(devlist)
-        except StopIteration:
-            print("Error: no MCP2221 found", file=sys.stderr)
-            sys.exit(1)
-        sentinel = object()
-        if next(devlist, sentinel) != sentinel:
-            print("Error: multiple MCP2221 connected. When configuring, make sure that only one device is connected", file=sys.stderr)
-            sys.exit(1)
-        configure(mcp)
-    elif reset_device:
-        mcp = find_programmer()
-        reset(mcp)
-    else:
-        mcp = find_programmer()
-        comports = [com for com in serial.tools.list_ports.comports() if com.serial_number == mcp.read_flash_info()["USB_SERIAL"]]
-        print(comports[0].device)
+def find_first_mcp2221():
+    devlist = devices()
+    device = None
+    try:
+        device = next(devlist)
+    except StopIteration:
+        print("Error: no MCP2221 found", file=sys.stderr)
+        sys.exit(1)
+    sentinel = object()
+    if next(devlist, sentinel) != sentinel:
+        print("Error: multiple MCP2221 connected. When configuring, make sure that only one device is connected", file=sys.stderr)
+        sys.exit(1)
+    return device
+
+def configure(device=None):
+    if device == None:
+        device = find_first_mcp2221()
+    device.set_pin_function(gp3 = "GPIO_IN")
+    configure_data_string(device, FLASH_DATA_USB_MANUFACTURER, MANUFACTURER)
+    configure_data_string(device, FLASH_DATA_USB_PRODUCT, PRODUCT)
+    device.enable_cdc_serial(True)
+    device.save_config()
+    device.reset()
+
+def reset(device=None):
+    if device == None:
+        device = find_programmer()
+    device.set_pin_function(gp3 = "GPIO_OUT", out3 = False)
+    time.sleep(100 / 1000_000.0)
+    device.set_pin_function(gp3 = "GPIO_IN")
+
+def get_com_port(device=None):
+    if device == None:
+        device = find_programmer()
+    comports = [com for com in serial.tools.list_ports.comports() if com.serial_number == device.read_flash_info()["USB_SERIAL"]]
+    return comports[0].device
+
+def update(file, device=None):
+    if device == None:
+        device = find_programmer()
+    com_port = get_com_port(device)
+    reset(device)
+    subprocess.run(["arduino-cli", "upload", "-b", FQBN, "-i", file, "-p", com_port]) 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--configure", help="configure MCP2221 for reset handling", action="store_true")
-    parser.add_argument("-r", "--reset", help="reset programmer", action="store_true")
+    subparsers = parser.add_subparsers(dest="operation", required=True)
+    configure_parser = subparsers.add_parser('configure', help="configure MCP2221 for reset handling")
+    com_port_parser = subparsers.add_parser('get_com_port', help="get com-port of connected programmer")
+    reset_parser = subparsers.add_parser('reset', help="reset programmer")
+    update_parser = subparsers.add_parser('update', help="update firmware of programmer")
+    update_parser.add_argument('-f', required=True, help="firmware file to flash")
     args = parser.parse_args()
-    if args.configure and args.reset:
-        print("Error: configure cannot be combined with other parameters", file=sys.stderr)
-        sys.exit(1)
-    main(args.configure, args.reset)
+    match args.operation:
+        case 'configure':
+            configure()
+        case 'get_com_port':
+            print(get_com_port())
+        case 'reset':
+            reset()
+        case 'update':
+            update(args.f)

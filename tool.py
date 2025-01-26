@@ -87,7 +87,10 @@ def update(file, device=None):
         device = find_programmer()
     com_port = get_com_port(device)
     reset(device)
-    subprocess.run(["arduino-cli", "upload", "-b", FQBN, "-i", file, "-p", com_port]) 
+    try:
+        subprocess.run(["arduino-cli", "upload", "-b", FQBN, "-i", file, "-p", com_port])
+    except FileNotFoundError:
+        print("Error: arduino-cli required, but not found. Either it isn't installed or it it isn't in PATH")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

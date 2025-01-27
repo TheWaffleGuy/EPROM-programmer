@@ -5,12 +5,17 @@
 #
 
 import wx
+import wx.lib.newevent
+import serial
+import threading
 
 # begin wxGlade: dependencies
 import wx.grid
 # end wxGlade
 
 # begin wxGlade: extracode
+SerialRxEvent, EVT_SERIALRX = wx.lib.newevent.NewEvent()
+SERIALRX = wx.NewEventType()
 # end wxGlade
 
 
@@ -177,9 +182,17 @@ class MainFrame(wx.Frame):
         sizer_1.Fit(self)
 
         self.Layout()
-        self.SetMinSize(self.Size)
+        self.Bind(EVT_SERIALRX, self.OnSerialRx)
 
+        self.debug_text_ctrl.Bind(wx.EVT_CHAR_HOOK, self.OnDebugText)
+        self.Bind(wx.EVT_CLOSE, self.OnExit)
         # end wxGlade
+
+
+        self.serial = serial.Serial('/dev/ttyACM0', 38400, timeout=1)
+        self.thread = None
+        self.alive = threading.Event()
+        self.StartRxThread()
 
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnOpen' not implemented!")
@@ -190,8 +203,9 @@ class MainFrame(wx.Frame):
         event.Skip()
 
     def OnExit(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnExit' not implemented!")
-        event.Skip()
+        self.StopRxThread()
+        self.serial.close()
+        self.Destroy()
 
     def OnDeviceSelect(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnDeviceSelect' not implemented!")
@@ -212,6 +226,37 @@ class MainFrame(wx.Frame):
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnDeviceProgram' not implemented!")
         event.Skip()
+
+    def OnDebugText(self, event):  # wxGlade: MainFrame.<event_handler>
+        code = event.GetKeyCode()
+        if code == 13:
+            self.serial.write(b'\n')
+        else:
+            char = chr(code)
+            self.serial.write(char.encode('UTF-8', 'replace'))
+        event.StopPropagation()
+
+    def OnSerialRx(self, event):  # wxGlade: MainFrame.<event_handler>
+        self.debug_text_ctrl.AppendText(event.data.decode('UTF-8', 'replace'))
+
+    def ComPortRxThread(self):
+        while self.alive.is_set():
+            b = self.serial.read(self.serial.in_waiting or 1)
+            if b:
+                b = b.replace(b'\r', b'')
+                wx.PostEvent(self, SerialRxEvent(data=b))
+
+    def StartRxThread(self):
+        self.thread = threading.Thread(target=self.ComPortRxThread)
+        self.thread.daemon = True
+        self.alive.set()
+        self.thread.start()
+
+    def StopRxThread(self):
+        if self.thread is not None:
+            self.alive.clear()
+            self.thread.join()
+            self.thread = None
 
 # end of class MainFrame
 

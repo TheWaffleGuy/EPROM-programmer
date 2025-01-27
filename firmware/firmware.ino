@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <util/atomic.h>
 #include <SPI.h>
+#include <EEPROM.h>
 #endif
 
 #define restrict __restrict__
@@ -36,6 +37,14 @@ extern "C" {
 
 #define VPP_CAL_LOW VOLT(12, 500)
 #define VPP_CAL_HIGH VOLT(25, 0)
+
+#define EPROM_ADR_VCC_LOW_OFFSET ( EEPROM.length() - 10 )
+#define EPROM_ADR_VCC_HIGH_OFFSET ( EEPROM.length() - 8 )
+#define EPROM_ADR_VPP_LOW_OFFSET ( EEPROM.length() - 6 )
+#define EPROM_ADR_VPP_HIGH_OFFSET ( EEPROM.length() - 4 )
+#define EPROM_ADR_IS_CALIBRATED ( EEPROM.length() - 2 )
+#define EPROM_ADR_EPROM_VER ( EEPROM.length() - 1 )
+#define EPROM_VER 0xFF
 
 int16_t vcc_low_offset = 0;
 int16_t vcc_high_offset = 0;
@@ -98,6 +107,17 @@ void resetVCCandVPP() {
   setVPP(VOLT(1, 250), 0);
 }
 
+void readCal() {
+  if (EEPROM.read(EPROM_ADR_IS_CALIBRATED) == 0xFF) {
+    return;
+  }
+
+  EEPROM.get(EPROM_ADR_VCC_LOW_OFFSET, vcc_low_offset);
+  EEPROM.get(EPROM_ADR_VCC_HIGH_OFFSET, vcc_high_offset);
+  EEPROM.get(EPROM_ADR_VPP_LOW_OFFSET, vpp_low_offset);
+  EEPROM.get(EPROM_ADR_VPP_HIGH_OFFSET, vpp_high_offset);
+}
+
 void setup() {
   Serial.begin(SERIAL_SPEED);
 
@@ -120,6 +140,10 @@ void setup() {
   SPI.begin();
 
   resetVCCandVPP();
+
+  if (EEPROM.read(EPROM_ADR_EPROM_VER) == EPROM_VER) {
+    readCal();
+  }
 }
 
 bool is_numeric(char *string) {
@@ -517,6 +541,14 @@ void voltage_calibration() {
         resetVCCandVPP();
         step = 0;
         state = STATE_NORMAL;
+
+        EEPROM.update(EPROM_ADR_IS_CALIBRATED, 0xFF);
+        EEPROM.put(EPROM_ADR_VCC_LOW_OFFSET, vcc_low_offset);
+        EEPROM.put(EPROM_ADR_VCC_HIGH_OFFSET, vcc_high_offset);
+        EEPROM.put(EPROM_ADR_VPP_LOW_OFFSET, vpp_low_offset);
+        EEPROM.put(EPROM_ADR_VPP_HIGH_OFFSET, vpp_high_offset);
+        EEPROM.update(EPROM_ADR_IS_CALIBRATED, 1);
+
         Serial.println("OK!");
       } else {
         Serial.println("Error: invalid input! Use format dd.ddd");

@@ -237,7 +237,12 @@ class MainFrame(wx.Frame):
         event.StopPropagation()
 
     def OnSerialRx(self, event):  # wxGlade: MainFrame.<event_handler>
-        self.debug_text_ctrl.AppendText(event.data.decode('UTF-8', 'replace'))
+        if event.data == b'\x08':
+            (_, xpos, _) = self.debug_text_ctrl.PositionToXY(self.debug_text_ctrl.GetInsertionPoint())
+            if xpos > 0:
+                self.debug_text_ctrl.Remove(self.debug_text_ctrl.GetLastPosition() - 1, self.debug_text_ctrl.GetLastPosition())
+        else:
+            self.debug_text_ctrl.AppendText(event.data.decode('UTF-8', 'replace'))
 
     def ComPortRxThread(self):
         while self.alive.is_set():

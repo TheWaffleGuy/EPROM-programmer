@@ -242,6 +242,7 @@ void print_device_info() {
   Serial.print(selected_ic.manufacturer);
   Serial.print(" - ");
   Serial.println(selected_ic.name);
+  Serial.println("OK!");
 }
 
 void set_adress(uint16_t adress) {

@@ -212,16 +212,13 @@ class MainFrame(wx.Frame):
         event.Skip()
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnDeviceRead' not implemented!")
-        event.Skip()
+        self.serial.write('R\n'.encode('UTF-8', 'replace'))
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnDeviceBlankCheck' not implemented!")
-        event.Skip()
+        self.serial.write('B\n'.encode('UTF-8', 'replace'))
 
     def OnDeviceVerify(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnDeviceVerify' not implemented!")
-        event.Skip()
+        self.serial.write('C\n'.encode('UTF-8', 'replace'))
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnDeviceProgram' not implemented!")

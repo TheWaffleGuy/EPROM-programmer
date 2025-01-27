@@ -153,6 +153,7 @@ void list_devices() {
     Serial.print(" - ");
     Serial.println(reinterpret_cast<const __FlashStringHelper *>(ics[i].name));
   }
+  Serial.println("OK!");
 }
 
 void write_byte(uint8_t byte) {

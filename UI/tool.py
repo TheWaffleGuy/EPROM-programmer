@@ -14,6 +14,16 @@ MANUFACTURER = "TheWaffleGuy"
 PRODUCT = "EPROM-programmer"
 FQBN = "MightyCore:avr:1284:clock=20MHz_external,variant=modelNonP"
 
+
+class NoDeviceFound(Exception):
+    pass
+
+class MultipleDevicesFound(Exception):
+    pass
+
+class MissingProgram(FileNotFoundError):
+    pass
+
 def devices():
     devnum = 0
     try:
@@ -37,12 +47,10 @@ def find_programmer():
     try:
         device = next(devlist)
     except StopIteration:
-        print("Error: no programmers found", file=sys.stderr)
-        sys.exit(1)
+        raise NoDeviceFound("No programmers found") from None
     sentinel = object()
     if next(devlist, sentinel) != sentinel:
-        print("Error: multiple programmers found", file=sys.stderr)
-        sys.exit(1)
+        raise MultipleDevicesFound("Multiple programmers found")
     return device
 
 def find_first_mcp2221():
@@ -51,12 +59,10 @@ def find_first_mcp2221():
     try:
         device = next(devlist)
     except StopIteration:
-        print("Error: no MCP2221 found", file=sys.stderr)
-        sys.exit(1)
+        raise NoDeviceFound("No MCP2221 found") from None
     sentinel = object()
     if next(devlist, sentinel) != sentinel:
-        print("Error: multiple MCP2221 connected. When configuring, make sure that only one device is connected", file=sys.stderr)
-        sys.exit(1)
+        raise MultipleDevicesFound("Multiple MCP2221 connected. When configuring, make sure that only one device is connected")
     return device
 
 def configure(device=None):
@@ -90,7 +96,7 @@ def update(file, device=None):
     try:
         subprocess.run(["arduino-cli", "upload", "-b", FQBN, "-i", file, "-p", com_port])
     except FileNotFoundError:
-        print("Error: arduino-cli required, but not found. Either it isn't installed or it it isn't in PATH")
+        raise MissingProgram("arduino-cli required, but not found. Either it isn't installed or it it isn't in PATH")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

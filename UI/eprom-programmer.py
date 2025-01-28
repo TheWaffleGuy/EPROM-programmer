@@ -308,7 +308,6 @@ class MainFrame(wx.Frame):
             self.alive = threading.Event()
             self.StartRxThread()
         except DeviceError as de:
-            print(de)
             with ErrorFrame(self, -1, "", error_message=str(de)) as dialog:
                 dialog.CenterOnParent()
                 dialog.ShowModal()

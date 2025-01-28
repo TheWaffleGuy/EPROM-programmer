@@ -15,16 +15,19 @@ PRODUCT = "EPROM-programmer"
 FQBN = "MightyCore:avr:1284:clock=20MHz_external,variant=modelNonP"
 
 
-class NoDeviceFound(Exception):
+class DeviceError(Exception):
     pass
 
-class MultipleDevicesFound(Exception):
+class NoDeviceFound(DeviceError):
+    pass
+
+class MultipleDevicesFound(DeviceError):
     pass
 
 class MissingProgram(FileNotFoundError):
     pass
 
-def devices():
+def _devices():
     devnum = 0
     try:
         mcp = EasyMCP2221.Device(devnum = devnum)
@@ -35,14 +38,14 @@ def devices():
     except RuntimeError:
         pass
 
-def configure_data_string(device, descriptor_type, data_str):
+def _configure_data_string(device, descriptor_type, data_str):
     data = list(bytearray(data_str.encode('utf-16-le')))
     data_length = len(data) + 2
     cmd = [CMD_WRITE_FLASH_DATA, descriptor_type, data_length, 0x03] + data
     device.send_cmd(cmd)
 
 def find_programmer():
-    devlist = filter(lambda device: device.read_flash_info()["USB_VENDOR"] == MANUFACTURER and device.read_flash_info()["USB_PRODUCT"] == PRODUCT , devices())
+    devlist = filter(lambda device: device.read_flash_info()["USB_VENDOR"] == MANUFACTURER and device.read_flash_info()["USB_PRODUCT"] == PRODUCT , _devices())
     device = None
     try:
         device = next(devlist)
@@ -54,7 +57,7 @@ def find_programmer():
     return device
 
 def find_first_mcp2221():
-    devlist = devices()
+    devlist = _devices()
     device = None
     try:
         device = next(devlist)
@@ -69,8 +72,8 @@ def configure(device=None):
     if device == None:
         device = find_first_mcp2221()
     device.set_pin_function(gp3 = "GPIO_IN")
-    configure_data_string(device, FLASH_DATA_USB_MANUFACTURER, MANUFACTURER)
-    configure_data_string(device, FLASH_DATA_USB_PRODUCT, PRODUCT)
+    _configure_data_string(device, FLASH_DATA_USB_MANUFACTURER, MANUFACTURER)
+    _configure_data_string(device, FLASH_DATA_USB_PRODUCT, PRODUCT)
     device.enable_cdc_serial(True)
     device.save_config()
     device.reset()

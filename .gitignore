@@ -24,5 +24,8 @@ fp-info-cache
 *.dsn
 *.ses
 
+#Python cache
+__pycache__/
+
 # Firmware build dir
 firmware/build

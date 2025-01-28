@@ -8,6 +8,7 @@ import wx
 import wx.lib.newevent
 import serial
 import threading
+from tool import find_programmer, get_com_port, DeviceError
 
 # begin wxGlade: dependencies
 import wx.grid
@@ -19,6 +20,47 @@ SERIALRX = wx.NewEventType()
 # end wxGlade
 
 
+class ErrorFrame(wx.Dialog):
+    def __init__(self, *args, **kwds):
+        error_message_str = kwds["error_message"]
+        del kwds["error_message"]
+
+        # begin wxGlade: ErrorFrame.__init__
+        kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_DIALOG_STYLE
+        wx.Dialog.__init__(self, *args, **kwds)
+        self.SetTitle("Error")
+
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+
+        error_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_1.Add(error_sizer, 0, wx.ALL | wx.EXPAND, 4)
+
+        error_image = wx.StaticBitmap(self, wx.ID_ANY, wx.ArtProvider.GetBitmap(wx.ART_ERROR, wx.ART_MESSAGE_BOX, (36, 36)))
+        error_sizer.Add(error_image, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        error_message = wx.StaticText(self, wx.ID_ANY, "")
+        error_message.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "Sans"))
+        error_message.SetLabel(error_message_str)
+        error_sizer.Add(error_message, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        button_sizer = wx.StdDialogButtonSizer()
+        sizer_1.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.ALL, 4)
+
+        self.button_OK = wx.Button(self, wx.ID_OK, "")
+        self.button_OK.SetDefault()
+        button_sizer.AddButton(self.button_OK)
+
+        button_sizer.Realize()
+
+        self.SetSizer(sizer_1)
+        sizer_1.Fit(self)
+
+        self.SetAffirmativeId(self.button_OK.GetId())
+
+        self.Layout()
+        # end wxGlade
+
+# end of class ErrorFrame
 class MainFrame(wx.Frame):
     def __init__(self, *args, **kwds):
         # begin wxGlade: MainFrame.__init__
@@ -188,11 +230,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.OnExit)
         # end wxGlade
 
-
-        self.serial = serial.Serial('/dev/ttyACM0', 38400, timeout=1)
         self.thread = None
-        self.alive = threading.Event()
-        self.StartRxThread()
+        self.serial = None
 
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnOpen' not implemented!")
@@ -204,7 +243,8 @@ class MainFrame(wx.Frame):
 
     def OnExit(self, event):  # wxGlade: MainFrame.<event_handler>
         self.StopRxThread()
-        self.serial.close()
+        if self.serial is not None:
+            self.serial.close()
         self.Destroy()
 
     def OnDeviceSelect(self, event):  # wxGlade: MainFrame.<event_handler>
@@ -260,6 +300,20 @@ class MainFrame(wx.Frame):
             self.thread.join()
             self.thread = None
 
+    def StartSerial(self):
+        try:
+            programmer = find_programmer()
+            com_port = get_com_port(programmer)
+            self.serial = serial.Serial(com_port, 38400, timeout=1)
+            self.alive = threading.Event()
+            self.StartRxThread()
+        except DeviceError as de:
+            print(de)
+            with ErrorFrame(self, -1, "", error_message=str(de)) as dialog:
+                dialog.CenterOnParent()
+                dialog.ShowModal()
+            self.OnExit(None)
+
 # end of class MainFrame
 
 class EpromProgrammerApp(wx.App):
@@ -267,6 +321,7 @@ class EpromProgrammerApp(wx.App):
         self.frame = MainFrame(None, wx.ID_ANY, "")
         self.SetTopWindow(self.frame)
         self.frame.Show()
+        self.frame.StartSerial()
         return True
 
 # end of class EpromProgrammerApp

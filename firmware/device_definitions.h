@@ -1,6 +1,14 @@
 #define VOLT(a,b) ( a * 8 + (b * 8) / 1000 ) //In 0,125 steps
 #define OVERPROGRAM_PW(a,b) ( a * 2 + b) //In 0.5 steps
 
+#define PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE            0
+#define PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE            1
+#define PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE            2
+#define PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE_P19_VERIFY 3
+#define PGM_VARIANT_VPP_P21_P18_PULSED_POSITIVE            4
+#define PGM_VARIANT_VPP_P19_CYPRESS                        5
+
+
 typedef struct IC {
   char manufacturer[10];
   char name[11];
@@ -22,6 +30,9 @@ typedef struct IC {
   uint8_t pgm_pulses : 6;
   uint8_t f_can_blank_check : 1;
   uint8_t f_blank_check_value : 1;
+
+  uint8_t f_2364_compat_pinout : 1;
+  uint8_t pgm_variant: 3;
 } IC;
 
 #if __GNUC__ > 11
@@ -48,7 +59,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(4, 0),
     .pgm_pulses = 10,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 0
+    .f_blank_check_value = 0,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P19_CYPRESS
   },
   {
     MANUFACTURER("AMD"),
@@ -65,7 +78,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(2, 0),
     .pgm_pulses = 25,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   { //Assumed to be same algorithm as 27CX321
     MANUFACTURER("ICT"),
@@ -82,7 +97,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(5, 5),
     .pgm_pulses = 30,
     .f_can_blank_check = 0,
-    .f_blank_check_value = 0
+    .f_blank_check_value = 0,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   { //Express algorithm
     MANUFACTURER("MICROCHIP"),
@@ -99,7 +116,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 10,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   { //Algorithm observed on oscilloscope on ALL-03 programmer
     MANUFACTURER("SIGNETICS"),
@@ -116,7 +135,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 20,
     .f_can_blank_check = 0,
-    .f_blank_check_value = 0
+    .f_blank_check_value = 0,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("ATMEL"),
@@ -133,7 +154,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(3, 0),
     .pgm_pulses = 25,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("ATMEL"),
@@ -150,7 +173,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 10,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("SHARP"),
@@ -167,7 +192,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(3, 0),
     .pgm_pulses = 25,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -184,7 +211,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(1, 0),
     .pgm_pulses = 5,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -201,7 +230,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(1, 0),
     .pgm_pulses = 5,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -218,7 +249,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(10, 0),
     .pgm_pulses = 25,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("MOTOROLA"),
@@ -235,7 +268,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 20, //No max-value specified in datasheet
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("MOTOROLA"),
@@ -252,7 +287,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 20, //No max-value specified in datasheet
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 1,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("TI"),
@@ -269,7 +306,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE
   },
   {
     MANUFACTURER("TI"),
@@ -286,7 +325,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE
   },
   {
     MANUFACTURER("HITACHI"),
@@ -303,7 +344,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE
   },
   {
     MANUFACTURER("MOTOROLA"),
@@ -320,7 +363,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE
   },
   {
     MANUFACTURER("ST"),
@@ -337,7 +382,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -354,7 +401,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(1, 0),
     .pgm_pulses = 5,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -371,7 +420,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(1, 0),
     .pgm_pulses = 5,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -388,7 +439,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(10, 0),
     .pgm_pulses = 5,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   { //Algorithm observed on oscilloscope on ALL-03 programmer
     MANUFACTURER("ICT"),
@@ -405,7 +458,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(5, 5),
     .pgm_pulses = 30,
     .f_can_blank_check = 0,
-    .f_blank_check_value = 0
+    .f_blank_check_value = 0,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   { //Assumed to be same algorithm as CY7C264
     MANUFACTURER("CYPRESS"),
@@ -422,7 +477,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(4, 0),
     .pgm_pulses = 10,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 0
+    .f_blank_check_value = 0,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P19_CYPRESS
   },
   {
     MANUFACTURER("GENERIC"),
@@ -439,7 +496,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE
   },
   {
     MANUFACTURER("GENERIC"),
@@ -456,7 +515,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE
   },
   {
     MANUFACTURER("GENERIC"),
@@ -473,7 +534,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = 0,
     .pgm_pulses = 1,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P21_P18_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -490,7 +553,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(1, 0),
     .pgm_pulses = 5,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -507,7 +572,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(1, 0),
     .pgm_pulses = 5,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("WSI"),
@@ -524,7 +591,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(10, 0),
     .pgm_pulses = 25,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   },
   {
     MANUFACTURER("TI"),
@@ -541,7 +610,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(24, 0),
     .pgm_pulses = 4,
     .f_can_blank_check = 0, //Can be blank-checked but requires special handling
-    .f_blank_check_value = 0
+    .f_blank_check_value = 0,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE_P19_VERIFY
   },
   {
     MANUFACTURER("AMD"),
@@ -558,7 +629,9 @@ const IC ics[] PROGMEM = {
     .pgm_overprogram_pw = OVERPROGRAM_PW(2, 0),
     .pgm_pulses = 25,
     .f_can_blank_check = 1,
-    .f_blank_check_value = 1
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE
   }
 };
 

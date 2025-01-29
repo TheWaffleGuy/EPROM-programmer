@@ -3,6 +3,7 @@
 #include <util/atomic.h>
 #include <SPI.h>
 #include <EEPROM.h>
+#include <assert.h>
 #endif
 
 #define restrict __restrict__
@@ -38,19 +39,21 @@ extern "C" {
 #define VPP_CAL_LOW VOLT(12, 500)
 #define VPP_CAL_HIGH VOLT(25, 0)
 
-#define EPROM_ADR_VCC_LOW_OFFSET ( EEPROM.length() - 10 )
-#define EPROM_ADR_VCC_HIGH_OFFSET ( EEPROM.length() - 8 )
-#define EPROM_ADR_VPP_LOW_OFFSET ( EEPROM.length() - 6 )
-#define EPROM_ADR_VPP_HIGH_OFFSET ( EEPROM.length() - 4 )
+#define EPROM_ADR_VCC_OFFSETS ( EEPROM.length() - 10 )
 #define EPROM_ADR_IS_CALIBRATED ( EEPROM.length() - 2 )
 #define EPROM_ADR_EPROM_VER ( EEPROM.length() - 1 )
 #define EPROM_VER 0xFF
 
-int16_t vcc_low_offset = 0;
-int16_t vcc_high_offset = 0;
+typedef struct voltage_offsets {
+  int16_t vcc_low;
+  int16_t vcc_high;
 
-int16_t vpp_low_offset = 0;
-int16_t vpp_high_offset = 0;
+  int16_t vpp_low;
+  int16_t vpp_high;
+} voltage_offsets;
+static_assert(sizeof(voltage_offsets) == 8, "Error: unexpected size of voltage_offsets");
+
+voltage_offsets v_offset { 0 };
 
 uint8_t port_a;
 uint8_t port_b;
@@ -112,10 +115,7 @@ void readCal() {
     return;
   }
 
-  EEPROM.get(EPROM_ADR_VCC_LOW_OFFSET, vcc_low_offset);
-  EEPROM.get(EPROM_ADR_VCC_HIGH_OFFSET, vcc_high_offset);
-  EEPROM.get(EPROM_ADR_VPP_LOW_OFFSET, vpp_low_offset);
-  EEPROM.get(EPROM_ADR_VPP_HIGH_OFFSET, vpp_high_offset);
+  EEPROM.get(EPROM_ADR_VCC_OFFSETS, v_offset);
 }
 
 void setup() {
@@ -497,7 +497,7 @@ void voltage_calibration() {
       if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VCC_CAL_LOW << 4 ) + 13;
         measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
-        vcc_low_offset = target - measured;
+        v_offset.vcc_low = target - measured;
 
         setVCC(VCC_CAL_HIGH, 0);
         Serial.println("Enter voltage measured on VCC (2/2):");
@@ -510,7 +510,7 @@ void voltage_calibration() {
       if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VCC_CAL_HIGH << 4 ) + 13;
         measured = ( ( integer_part * 8 ) << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
-        vcc_high_offset = target - measured;
+        v_offset.vcc_high = target - measured;
 
         setVPP(VPP_CAL_LOW, 0);
         Serial.println("Enter voltage measured on VPP (1/2):");
@@ -523,7 +523,7 @@ void voltage_calibration() {
       if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VPP_CAL_LOW << 4 ) + 13;
         measured = ( integer_part * 8 << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
-        vpp_low_offset = target - measured;
+        v_offset.vpp_low = target - measured;
 
         setVPP(VPP_CAL_HIGH, 0);
         Serial.println("Enter voltage measured on VPP (2/2):");
@@ -536,17 +536,14 @@ void voltage_calibration() {
       if (parse_decimal(line, &integer_part, &thousandths_part)) {
         target = ( VPP_CAL_HIGH << 4 ) + 13;
         measured = ( integer_part * 8 << 4 ) + ( (uint32_t) thousandths_part * 128 ) / 1000;
-        vpp_high_offset = target - measured;
+        v_offset.vpp_high = target - measured;
 
         resetVCCandVPP();
         step = 0;
         state = STATE_NORMAL;
 
         EEPROM.update(EPROM_ADR_IS_CALIBRATED, 0xFF);
-        EEPROM.put(EPROM_ADR_VCC_LOW_OFFSET, vcc_low_offset);
-        EEPROM.put(EPROM_ADR_VCC_HIGH_OFFSET, vcc_high_offset);
-        EEPROM.put(EPROM_ADR_VPP_LOW_OFFSET, vpp_low_offset);
-        EEPROM.put(EPROM_ADR_VPP_HIGH_OFFSET, vpp_high_offset);
+        EEPROM.put(EPROM_ADR_VCC_OFFSETS, v_offset);
         EEPROM.update(EPROM_ADR_IS_CALIBRATED, 1);
 
         Serial.println("OK!");
@@ -604,7 +601,7 @@ void srec_data_read (struct srec_state *srec,
 void setVCC(uint8_t volt, uint8_t calibrated) {
   int16_t offset = 0;
   if(calibrated) {
-    offset = ( ( VCC_CAL_HIGH - volt ) * vcc_low_offset + ( volt - VCC_CAL_LOW ) * vcc_high_offset ) / ( VCC_CAL_HIGH - VCC_CAL_LOW );
+    offset = ( ( VCC_CAL_HIGH - volt ) * v_offset.vcc_low + ( volt - VCC_CAL_LOW ) * v_offset.vcc_high ) / ( VCC_CAL_HIGH - VCC_CAL_LOW );
   }
   volt -= VOLT(1, 250);
   uint16_t data = 0b1011000000000000 | ( (volt << 4) + offset );
@@ -619,7 +616,7 @@ void setVCC(uint8_t volt, uint8_t calibrated) {
 void setVPP(uint8_t volt, uint8_t calibrated) {
   int16_t offset = 0;
   if(calibrated) {
-    offset = ( ( VPP_CAL_HIGH - volt ) * vpp_low_offset + ( volt - VPP_CAL_LOW ) * vpp_high_offset ) / ( VPP_CAL_HIGH - VPP_CAL_LOW );
+    offset = ( ( VPP_CAL_HIGH - volt ) * v_offset.vpp_low + ( volt - VPP_CAL_LOW ) * v_offset.vpp_high ) / ( VPP_CAL_HIGH - VPP_CAL_LOW );
   }
   volt -= VOLT(1, 250);
   uint16_t data = 0b0011000000000000 | ( (volt << 4) + offset );

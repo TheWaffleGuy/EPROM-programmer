@@ -23,6 +23,9 @@ extern "C" {
 #define DAC_SS_PORT PORTD
 #define DAC_SS_PIN 2
 
+#define DEVICE_ENABLE_PORT PORTD
+#define DEVICE_ENABLE_PIN 7
+
 #define MAX_LINE_LENGTH 80
 #define DATA_BUFFER_SIZE 8192
 #define SERIAL_SPEED 38400
@@ -295,6 +298,14 @@ void set_adress(uint16_t adress) {
     }
 }
 
+void disable_device_output() {
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DEVICE_ENABLE_PORT |= 1 << DEVICE_ENABLE_PIN; }
+}
+
+void enable_device_output() {
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DEVICE_ENABLE_PORT &= ~(1 << DEVICE_ENABLE_PIN); }
+}
+
 void turn_vpp_on(uint8_t pin_number) {
   if(pin_number == 19) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P19_EN_PIN; }
@@ -554,8 +565,74 @@ void voltage_calibration() {
   }
 }
 
-void not_implemented() {
-  Serial.println("This functionality is not yet implemented");
+#define SETUP_HOLD_TIME_US 5
+
+void pgm_variant_vpp_p20_vpp_pulsed_positive(uint16_t address, unsigned int pw) {
+  disable_device_output();
+  set_adress(address);
+  portMode(2, OUTPUT); // Port C
+  portWrite(2, write_data); // Port C
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  turn_vpp_on(20);
+  delayMicroseconds(pw);
+  turn_vpp_off();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  portMode(2, INPUT); // Port C
+  enable_device_output();
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+}
+
+//Untested!
+void write_data() {
+  if(selected_ic.name[0] == '\0') {
+    Serial.println("No device selected. Select a device with \"t\"");
+    return;
+  }
+
+  uint8_t pulse_number;
+  uint8_t read_data;
+  uint16_t address = 0;
+  uint8_t write_data = buffer[address];
+
+  switch(selected_ic.pgm_variant) {
+    case PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE:
+      if(selected_ic.pgm_vcc_extra != 0) {
+        setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
+      }
+      setVPP(selected_ic.vpp, 1);
+      turn_device_on();
+
+      for(pulse_number = 1; pulse_number <= selected_ic.pgm_pulses; pulse_number++) {
+        pgm_variant_vpp_p20_vpp_pulsed_positive(address, selected_ic.pgm_pw_us);
+        read_data = portRead(2); // Port C
+        if (read_data == write_data) {
+          break;
+        }
+      }
+      if (selected_ic.pgm_overprogram_pw > 0 && (pulse_number <= selected_ic.pgm_pulses || selected_ic.pgm_overprogram_ignore_verify) ) {
+        unsigned int pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+        if(selected_ic.pgm_overprogram_multiply_n) {
+          pw *= pulse_number;
+        }
+        pgm_variant_vpp_p20_vpp_pulsed_positive(address, pw);
+        read_data = portRead(2); // Port C
+      }
+      break;
+    default:
+      Serial.println("This functionality is not yet implemented");
+      break;
+  }
+
+  turn_device_off();
+  resetVCCandVPP();
+
+  if (read_data == write_data) {
+    Serial.println("OK!");
+  } else {
+    Serial.print("Error: write failed at address: ");
+    Serial.println(address, HEX);
+  }
 }
 
 struct srec_state srec;
@@ -680,7 +757,7 @@ void loop() {
             print_buffer();
             break;
           case 'w':
-            not_implemented();
+            write_data();
             break;
           case 'r':
             read_device();

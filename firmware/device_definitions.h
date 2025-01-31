@@ -1,5 +1,5 @@
-#define VOLT(a,b) ( a * 8 + (b * 8) / 1000 ) //In 0,125 steps
-#define OVERPROGRAM_PW(a,b) ( a * 2 + b) //In 0.5 steps
+#define VOLT(a,b) ( a * 8 + (b * 8) / 1000 ) //In 0.125 steps
+#define OVERPROGRAM_PW(a,b) ( a * 2 + b / 5) //In 0.5 steps
 
 #define PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE            0
 #define PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE            1

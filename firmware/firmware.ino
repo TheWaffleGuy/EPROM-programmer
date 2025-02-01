@@ -273,6 +273,11 @@ void print_device_info() {
 }
 
 void set_adress(uint16_t adress) {
+    static uint16_t current_address = 0xFFFF;
+    if (adress == current_address) {
+      return;
+    }
+    current_address = adress;
     port_a = 0;
     port_b = 0;
 

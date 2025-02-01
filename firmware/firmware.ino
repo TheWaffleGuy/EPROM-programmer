@@ -615,7 +615,15 @@ void write_data() {
         if(selected_ic.pgm_overprogram_multiply_n) {
           pw *= pulse_number;
         }
+        if(selected_ic.pgm_overprogram_5v_vcc) {
+          setVCC(VOLT(5, 0), 1);
+          delayMicroseconds(1000);
+        }
         pgm_variant_vpp_p20_vpp_pulsed_positive(address, pw);
+        if(selected_ic.pgm_overprogram_5v_vcc) {
+          setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
+          delayMicroseconds(20);
+        }
         read_data = portRead(2); // Port C
       }
       break;

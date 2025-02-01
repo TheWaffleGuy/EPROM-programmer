@@ -30,9 +30,10 @@ extern "C" {
 #define DATA_BUFFER_SIZE 8192
 #define SERIAL_SPEED 38400
 
-#define STATE_NORMAL 0
-#define STATE_SREC   1
-#define STATE_VCAL   2
+#define STATE_NORMAL        0
+#define STATE_SREC          1
+#define STATE_VCAL          2
+#define STATE_CONFIRM_WRITE 3
 
 #define HEX_DIGIT(n) ((char)((n) + (((n) < 10) ? '0' : ('A' - 10))))
 
@@ -590,11 +591,6 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint16_t address, unsigned int pw) 
 
 //Untested!
 void write_data() {
-  if(selected_ic.name[0] == '\0') {
-    Serial.println("No device selected. Select a device with \"t\"");
-    return;
-  }
-
   uint8_t pulse_number;
   uint8_t read_data;
   uint16_t address = 0;
@@ -652,6 +648,21 @@ void write_data() {
     Serial.print("Error: write failed at address: ");
     Serial.println(address, HEX);
   }
+}
+
+void confirm_write_data() {
+  if(selected_ic.name[0] == '\0') {
+    Serial.println("No device selected. Select a device with \"t\"");
+    return;
+  }
+
+  state = STATE_CONFIRM_WRITE;
+
+  Serial.print("Do you want to continuing programming ");
+  Serial.print(selected_ic.manufacturer);
+  Serial.print(" - ");
+  Serial.print(selected_ic.name);
+  Serial.println("? [y/n]");
 }
 
 struct srec_state srec;
@@ -776,7 +787,7 @@ void loop() {
             print_buffer();
             break;
           case 'w':
-            write_data();
+            confirm_write_data();
             break;
           case 'r':
             read_device();
@@ -811,6 +822,21 @@ void loop() {
         break;
       case STATE_VCAL:
         voltage_calibration();
+        break;
+      case STATE_CONFIRM_WRITE:
+        switch(line[0] | 0b00100000) { //Force lower-case 
+          case 'y':
+            state = STATE_NORMAL;
+            write_data();
+            break;
+          case 'n':
+            state = STATE_NORMAL;
+            break;
+          default:
+            Serial.print("Unknown option: ");
+            Serial.println(line[0]);
+            break;
+        }
         break;
     }
 

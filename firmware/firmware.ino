@@ -197,12 +197,12 @@ void write_byte(uint8_t byte) {
   write_byte(data.val_split[0]);
  }
 
-void print_record(const char *type, uint8_t *data, uint8_t data_length, uint16_t adress) {
-  uint8_t record_length = data_length + 3; // 2 bytes for adress, 1 for checksum
-  uint8_t chksum = record_length + (uint8_t) adress + (uint8_t) ( adress >> 8 );
+void print_record(const char *type, uint8_t *data, uint8_t data_length, uint16_t address) {
+  uint8_t record_length = data_length + 3; // 2 bytes for address, 1 for checksum
+  uint8_t chksum = record_length + (uint8_t) address + (uint8_t) ( address >> 8 );
   Serial.print(type);
   write_byte(record_length);
-  write_2byte(adress);
+  write_2byte(address);
   for (uint8_t i = 0; i < data_length; i++) {
     write_byte(data[i]);
     chksum += data[i];
@@ -272,20 +272,20 @@ void print_device_info() {
   Serial.println("OK!");
 }
 
-void set_adress(uint16_t adress) {
+void set_address(uint16_t address) {
     static uint16_t current_address = 0xFFFF;
-    if (adress == current_address) {
+    if (address == current_address) {
       return;
     }
-    current_address = adress;
+    current_address = address;
     port_a = 0;
     port_b = 0;
 
     for(uint8_t i = 0; i < selected_ic_size; i++) {
         uint8_t adr_pin = selected_ic.adr_pins[i];
         pin p = pins[adr_pin - 1];
-        *(p.port) |= ( adress & 1 ) << p.index;
-        adress = adress >> 1;
+        *(p.port) |= ( address & 1 ) << p.index;
+        address = address >> 1;
     }
 
     for(uint8_t i = 0; i < sizeof(selected_ic.ctrl_pins_read_h); i++) {
@@ -298,7 +298,7 @@ void set_adress(uint16_t adress) {
     portWrite(0, port_a);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-      PORTB &= 0b11100000; //Lower 5 bits used for adress
+      PORTB &= 0b11100000; //Lower 5 bits used for address
       PORTB |= port_b;
     }
 }
@@ -332,7 +332,7 @@ void turn_device_on() {
 }
 
 void turn_device_off() {
-  set_adress(0);
+  set_address(0);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT &= ~(1 << VCC_EN_PIN); }
   delay(100);
 }
@@ -347,9 +347,9 @@ void read_device() {
 
   portMode(2, INPUT); // Port C
 
-  for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
-    set_adress(current_adress);
-    buffer[current_adress] = portRead(2); // Port C
+  for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
+    set_address(current_address);
+    buffer[current_address] = portRead(2); // Port C
   }
 
   turn_device_off();
@@ -384,15 +384,15 @@ void blank_check() {
 
   portMode(2, INPUT); // Port C
 
-  for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
-    set_adress(current_adress);
+  for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
+    set_address(current_address);
     data = portRead(2); // Port C
     if(data != blank_value) {
       turn_device_off();
       Serial.println("Device not blank!");
       write_byte(data);
-      Serial.print(" read at adress: ");
-      write_2byte(current_adress);
+      Serial.print(" read at address: ");
+      write_2byte(current_address);
       Serial.println();
       return;
     }
@@ -415,18 +415,18 @@ void compare_data() {
 
   portMode(2, INPUT); // Port C
 
-  for(uint16_t current_adress = 0; current_adress < 1U << selected_ic_size; current_adress++) {
-    set_adress(current_adress);
+  for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
+    set_address(current_address);
     data = portRead(2); // Port C
-    if(data != buffer[current_adress]) {
+    if(data != buffer[current_address]) {
       turn_device_off();
       Serial.println("Device data does not match current buffer!");
       Serial.print("Device data: ");
       write_byte(data);
       Serial.print(", buffer data: ");
-      write_byte(buffer[current_adress]);
-      Serial.print(" read at adress: ");
-      write_2byte(current_adress);
+      write_byte(buffer[current_address]);
+      Serial.print(" read at address: ");
+      write_2byte(current_address);
       Serial.println();
       return;
     }
@@ -574,7 +574,7 @@ void voltage_calibration() {
 
 void pgm_variant_vpp_p20_vpp_pulsed_positive(uint16_t address, unsigned int pw) {
   disable_device_output();
-  set_adress(address);
+  set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, write_data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);

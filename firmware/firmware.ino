@@ -597,12 +597,13 @@ void write_data() {
 
   switch(selected_ic.pgm_variant) {
     case PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE:
+      //Set up voltages
       if(selected_ic.pgm_vcc_extra != 0) {
         setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
       }
       setVPP(selected_ic.vpp, 1);
       turn_device_on();
-
+      //Iterative programming
       for(pulse_number = 1; pulse_number <= selected_ic.pgm_pulses; pulse_number++) {
         pgm_variant_vpp_p20_vpp_pulsed_positive(address, selected_ic.pgm_pw_us);
         read_data = portRead(2); // Port C
@@ -610,7 +611,12 @@ void write_data() {
           break;
         }
       }
-      if (selected_ic.pgm_overprogram_pw > 0 && (pulse_number <= selected_ic.pgm_pulses || selected_ic.pgm_overprogram_ignore_verify) ) {
+      //Force overprogram for configured devices even if max number of pulses have been reached
+      if(selected_ic.pgm_overprogram_ignore_verify && pulse_number > selected_ic.pgm_pulses) {
+        pulse_number = selected_ic.pgm_pulses;
+      }
+      //Overprogram section
+      if (selected_ic.pgm_overprogram_pw > 0 && pulse_number <= selected_ic.pgm_pulses) {
         unsigned int pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
         if(selected_ic.pgm_overprogram_multiply_n) {
           pw *= pulse_number;

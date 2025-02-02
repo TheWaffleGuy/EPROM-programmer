@@ -617,7 +617,7 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
 void write_data() {
   uint8_t pulse_number;
   uint16_t address_start = 0;
-  uint16_t address_end = 0;
+  uint16_t address_end = ( 1U << selected_ic_size ) - 1;
   uint16_t address;
   uint8_t write_data;
   uint8_t verified = 1;

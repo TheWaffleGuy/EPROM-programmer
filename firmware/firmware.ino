@@ -150,8 +150,8 @@ void setup() {
   }
 }
 
-bool is_numeric(char *string) {
-  while(*string && isdigit(*string)) string++;
+bool is_hex(char *string) {
+  while(*string && (isdigit(*string) || ((*string | 0b00100000) >= 'a' && (*string | 0b00100000) <= 'f'))) string++;
   while(*string && isspace(*string)) string++;
 
   return *string == '\0';
@@ -174,8 +174,7 @@ void print_help() {
 
 void list_devices() {
   for (uint8_t i = 0; i < num_ics; i++) {
-    if (i < 10) Serial.print(" ");
-    Serial.print(i, DEC);
+    write_byte(i);
     Serial.print(") ");
     Serial.print(reinterpret_cast<const __FlashStringHelper *>(ics[i].manufacturer));
     Serial.print(" - ");
@@ -228,29 +227,40 @@ void print_buffer() {
 
 void select_device() {
   char *arg;
-  uint16_t arg_num;
+  char *arg_tmp;
+  uint8_t arg_num;
 
   arg = line + 1;
   while(*arg && isspace(*arg)) arg++;
 
-  if (! *arg || !is_numeric(arg)) {
-    Serial.println("\"t\" requires a numeric argument");
+  if (arg[0] == '0' && (arg[1] | 0b00100000) == 'x') arg+=2;
+
+  if (! *arg || !is_hex(arg)) {
+    Serial.println("Error: \"t\" requires a hex argument");
     return;
   }
 
-  arg_num = atol(arg);
-  if(arg_num < num_ics) {
-    memcpy_P(&selected_ic, &(ics[arg_num]), sizeof(ics[0]));
-    for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic.adr_pins); selected_ic_size++) {
-      uint8_t adr_pin = selected_ic.adr_pins[selected_ic_size];
-      if (adr_pin == 0) break;
-    }
-  } else {
+  arg_tmp = arg;
+  arg_num = *arg_tmp <= '9' ? *arg_tmp - '0' : ( *arg_tmp | 0b00100000 ) - 'a' + 10;
+  arg_tmp++;
+  if ( *arg_tmp ) {
+    arg_num <<= 4;
+    arg_num |= *arg_tmp <= '9' ? *arg_tmp - '0' : ( *arg_tmp | 0b00100000 ) - 'a' + 10;
+    arg_tmp++;
+  }
+
+  if (*arg_tmp && !isspace(arg[2]) || arg_num >= num_ics) {
     Serial.print("No device with id ");
-    Serial.print(arg_num, DEC);
+    Serial.print(arg);
     Serial.println(" exists");
     Serial.println("Use l to list available devices");
     return;
+  }
+
+  memcpy_P(&selected_ic, &(ics[arg_num]), sizeof(ics[0]));
+  for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic.adr_pins); selected_ic_size++) {
+    uint8_t adr_pin = selected_ic.adr_pins[selected_ic_size];
+    if (adr_pin == 0) break;
   }
 
   Serial.print("Selected: ");

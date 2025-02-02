@@ -589,6 +589,12 @@ void voltage_calibration() {
 #define SETUP_HOLD_TIME_US 5
 
 void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
+  uint8_t tens_of_ms = 0;
+  pw -= 3;
+  if(pw > 10000) {
+    tens_of_ms = pw / 10000;
+    pw %= 10000;
+  }
   disable_device_output();
   set_address(address);
   portMode(2, OUTPUT); // Port C
@@ -596,6 +602,9 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
   delayMicroseconds(SETUP_HOLD_TIME_US);
   turn_vpp_on(20);
   delayMicroseconds(pw);
+  if(tens_of_ms) {
+    delay(tens_of_ms * 10);
+  }
   turn_vpp_off();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   portMode(2, INPUT); // Port C

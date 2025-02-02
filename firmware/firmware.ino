@@ -659,7 +659,8 @@ void write_data() {
     Serial.println("OK!");
   } else {
     Serial.print("Error: write failed at address: ");
-    Serial.println(address, HEX);
+    write_2byte(address);
+    Serial.println();
   }
 }
 

@@ -57,7 +57,10 @@ typedef struct voltage_offsets {
 } voltage_offsets;
 static_assert(sizeof(voltage_offsets) == 8, "Error: unexpected size of voltage_offsets");
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 voltage_offsets v_offset { 0 };
+#pragma GCC diagnostic pop
 
 uint8_t port_a;
 uint8_t port_b;
@@ -101,8 +104,10 @@ pin pins[] = {
 
 
 uint8_t buffer[DATA_BUFFER_SIZE];
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 IC selected_ic = {0};
+#pragma GCC diagnostic pop
 uint8_t selected_ic_size = 0;
 
 void setVCC(uint8_t volt, uint8_t calibrated);
@@ -249,7 +254,7 @@ void select_device() {
     arg_tmp++;
   }
 
-  if (*arg_tmp && !isspace(arg[2]) || arg_num >= num_ics) {
+  if ( ( *arg_tmp && !isspace(arg[2]) ) || arg_num >= num_ics ) {
     Serial.print("No device with id ");
     Serial.print(arg);
     Serial.println(" exists");
@@ -583,11 +588,11 @@ void voltage_calibration() {
 
 #define SETUP_HOLD_TIME_US 5
 
-void pgm_variant_vpp_p20_vpp_pulsed_positive(uint16_t address, unsigned int pw) {
+void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
   disable_device_output();
   set_address(address);
   portMode(2, OUTPUT); // Port C
-  portWrite(2, write_data); // Port C
+  portWrite(2, data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);
   turn_vpp_on(20);
   delayMicroseconds(pw);
@@ -603,9 +608,11 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint16_t address, unsigned int pw) 
 void write_data() {
   uint8_t pulse_number;
   uint8_t read_data;
-  uint16_t address = 0;
-  uint8_t write_data = buffer[address];
-  void (*pgm_variant)(int, int);
+  uint16_t address_start = 0;
+  uint16_t address_end = 0;
+  uint16_t address;
+  uint8_t write_data;
+  void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw);
 
   switch(selected_ic.pgm_variant) {
     case PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE:
@@ -622,46 +629,51 @@ void write_data() {
   }
   setVPP(selected_ic.vpp, 1);
   turn_device_on();
-  //Iterative programming
-  for(pulse_number = 1; pulse_number <= selected_ic.pgm_pulses; pulse_number++) {
-    pgm_variant(address, selected_ic.pgm_pw_us);
-    read_data = portRead(2); // Port C
-    if (read_data == write_data) {
-      break;
+
+  for (address = address_start; address <= address_end; address++) {
+    write_data = buffer[address];
+    //Iterative programming
+    for(pulse_number = 1; pulse_number <= selected_ic.pgm_pulses; pulse_number++) {
+      pgm_variant(write_data, address, selected_ic.pgm_pw_us);
+      read_data = portRead(2); // Port C
+      if (read_data == write_data) {
+        break;
+      }
     }
-  }
-  //Force overprogram for configured devices even if max number of pulses have been reached
-  if(selected_ic.pgm_overprogram_ignore_verify && pulse_number > selected_ic.pgm_pulses) {
-    pulse_number = selected_ic.pgm_pulses;
-  }
-  //Overprogram section
-  if (selected_ic.pgm_overprogram_pw > 0 && pulse_number <= selected_ic.pgm_pulses) {
-    unsigned int pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
-    if(selected_ic.pgm_overprogram_multiply_n) {
-      pw *= pulse_number;
+    //Force overprogram for configured devices even if max number of pulses have been reached
+    if(selected_ic.pgm_overprogram_ignore_verify && pulse_number > selected_ic.pgm_pulses) {
+      pulse_number = selected_ic.pgm_pulses;
     }
-    if(selected_ic.pgm_overprogram_5v_vcc) {
-      setVCC(VOLT(5, 0), 1);
-      delayMicroseconds(1000);
+    //Overprogram section
+    if (selected_ic.pgm_overprogram_pw > 0 && pulse_number <= selected_ic.pgm_pulses) {
+      uint16_t pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+      if(selected_ic.pgm_overprogram_multiply_n) {
+        pw *= pulse_number;
+      }
+      if(selected_ic.pgm_overprogram_5v_vcc) {
+        setVCC(VOLT(5, 0), 1);
+        delayMicroseconds(1000);
+      }
+      pgm_variant(write_data, address, pw);
+      if(selected_ic.pgm_overprogram_5v_vcc) {
+        setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
+        delayMicroseconds(20);
+      }
+      read_data = portRead(2); // Port C
     }
-    pgm_variant(address, pw);
-    if(selected_ic.pgm_overprogram_5v_vcc) {
-      setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
-      delayMicroseconds(20);
+
+    turn_device_off();
+    resetVCCandVPP();
+
+    if (read_data != write_data) {
+      Serial.print("Error: write failed at address: ");
+      write_2byte(address);
+      Serial.println();
+      return;
     }
-    read_data = portRead(2); // Port C
   }
 
-  turn_device_off();
-  resetVCCandVPP();
-
-  if (read_data == write_data) {
-    Serial.println("OK!");
-  } else {
-    Serial.print("Error: write failed at address: ");
-    write_2byte(address);
-    Serial.println();
-  }
+  Serial.println("OK!");
 }
 
 void confirm_write_data() {

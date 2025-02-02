@@ -616,11 +616,11 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
 //Untested!
 void write_data() {
   uint8_t pulse_number;
-  uint8_t read_data;
   uint16_t address_start = 0;
   uint16_t address_end = 0;
   uint16_t address;
   uint8_t write_data;
+  uint8_t verified = 1;
   void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw);
 
   switch(selected_ic.pgm_variant) {
@@ -639,22 +639,17 @@ void write_data() {
   setVPP(selected_ic.vpp, 1);
   turn_device_on();
 
-  for (address = address_start; address <= address_end; address++) {
+  for (address = address_start; verified && address <= address_end; address++) {
     write_data = buffer[address];
+    pulse_number = 0;
     //Iterative programming
-    for(pulse_number = 1; pulse_number <= selected_ic.pgm_pulses; pulse_number++) {
+    do {
+      pulse_number++;
       pgm_variant(write_data, address, selected_ic.pgm_pw_us);
-      read_data = portRead(2); // Port C
-      if (read_data == write_data) {
-        break;
-      }
-    }
-    //Force overprogram for configured devices even if max number of pulses have been reached
-    if(selected_ic.pgm_overprogram_ignore_verify && pulse_number > selected_ic.pgm_pulses) {
-      pulse_number = selected_ic.pgm_pulses;
-    }
+      verified = write_data == portRead(2); // Port C
+    } while (!verified && pulse_number < selected_ic.pgm_pulses);
     //Overprogram section
-    if (selected_ic.pgm_overprogram_pw > 0 && pulse_number <= selected_ic.pgm_pulses) {
+    if (selected_ic.pgm_overprogram_pw > 0 && (verified || selected_ic.pgm_overprogram_ignore_verify)) {
       uint16_t pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
       if(selected_ic.pgm_overprogram_multiply_n) {
         pw *= pulse_number;
@@ -668,18 +663,20 @@ void write_data() {
         setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
         delayMicroseconds(20);
       }
-      read_data = portRead(2); // Port C
+      if (!verified) {
+        verified = write_data == portRead(2); // Port C
+      }
     }
+  }
 
-    turn_device_off();
-    resetVCCandVPP();
+  turn_device_off();
+  resetVCCandVPP();
 
-    if (read_data != write_data) {
-      Serial.print("Error: write failed at address: ");
-      write_2byte(address);
-      Serial.println();
-      return;
-    }
+  if (!verified) {
+    Serial.print("Error: write failed at address: ");
+    write_2byte(address - 1);
+    Serial.println();
+    return;
   }
 
   Serial.println("OK!");

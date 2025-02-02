@@ -65,6 +65,8 @@ voltage_offsets v_offset { 0 };
 uint8_t port_a;
 uint8_t port_b;
 
+uint16_t g_current_address = 0xFFFF;
+
 char line[MAX_LINE_LENGTH + 1];
 uint8_t line_length = 0;
 
@@ -289,11 +291,10 @@ void print_device_info() {
 }
 
 void set_address(uint16_t address) {
-    static uint16_t current_address = 0xFFFF;
-    if (address == current_address) {
+    if (address == g_current_address) {
       return;
     }
-    current_address = address;
+    g_current_address = address;
     port_a = 0;
     port_b = 0;
 
@@ -314,8 +315,7 @@ void set_address(uint16_t address) {
     portWrite(0, port_a);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-      PORTB &= 0b11100000; //Lower 5 bits used for address
-      PORTB |= port_b;
+      PORTB = ( PORTB & 0b11100000 ) | port_b;
     }
 }
 
@@ -348,7 +348,13 @@ void turn_device_on() {
 }
 
 void turn_device_off() {
-  set_address(0);
+  //Turn all address-pins off
+  portWrite(0, 0);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    PORTB &= 0b11100000; //Lower 5 bits used for address
+  }
+  g_current_address = 0xFFFF;
+
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT &= ~(1 << VCC_EN_PIN); }
   delay(100);
 }
@@ -613,6 +619,34 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
 }
 
+void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
+  uint8_t tens_of_ms = 0;
+  pw -= 3;
+  if(pw > 10000) {
+    tens_of_ms = pw / 10000;
+    pw %= 10000;
+  }
+  disable_device_output();
+  set_address(address);
+  portMode(2, OUTPUT); // Port C
+  portWrite(2, data); // Port C
+  turn_vpp_on(21);
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  enable_device_output();
+  delayMicroseconds(pw);
+  if(tens_of_ms) {
+    delay(tens_of_ms * 10);
+  }
+  disable_device_output();
+  turn_vpp_off();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  enable_device_output();
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+}
+
 //Untested!
 void write_data() {
   uint8_t pulse_number;
@@ -626,6 +660,9 @@ void write_data() {
   switch(selected_ic.pgm_variant) {
     case PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE:
       pgm_variant = &pgm_variant_vpp_p20_vpp_pulsed_positive;
+      break;
+    case PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE:
+      pgm_variant = &pgm_variant_vpp_p21_p20_pulsed_negative;
       break;
     default:
       Serial.println("This functionality is not yet implemented");

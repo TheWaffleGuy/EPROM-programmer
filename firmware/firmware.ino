@@ -645,6 +645,7 @@ void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uin
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
 }
 
 //Untested!

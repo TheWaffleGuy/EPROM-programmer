@@ -592,7 +592,7 @@ void voltage_calibration() {
   }
 }
 
-#define SETUP_HOLD_TIME_US 5
+#define SETUP_HOLD_TIME_US 6
 
 void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
   uint8_t tens_of_ms = 0;
@@ -640,7 +640,45 @@ void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uin
   disable_device_output();
   turn_vpp_off();
   delayMicroseconds(SETUP_HOLD_TIME_US);
+  portMode(2, INPUT); // Port C
   enable_device_output();
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+}
+
+void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
+  uint8_t tens_of_ms = 0;
+  pw -= 3;
+  if(pw > 10000) {
+    tens_of_ms = pw / 10000;
+    pw %= 10000;
+  }
+  disable_device_output();
+  set_address(address);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
+  portMode(2, OUTPUT); // Port C
+  portWrite(2, data); // Port C
+  turn_vpp_on(20);
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
+  delayMicroseconds(pw);
+  if(tens_of_ms) {
+    delay(tens_of_ms * 10);
+  }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  turn_vpp_off();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
+  portMode(2, INPUT); // Port C
+  enable_device_output();
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
@@ -664,6 +702,9 @@ void write_data() {
       break;
     case PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE:
       pgm_variant = &pgm_variant_vpp_p21_p20_pulsed_negative;
+      break;
+    case PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE:
+      pgm_variant = &pgm_variant_vpp_p20_p18_pulsed_negative;
       break;
     default:
       Serial.println("This functionality is not yet implemented");

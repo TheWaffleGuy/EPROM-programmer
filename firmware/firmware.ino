@@ -371,6 +371,7 @@ void read_device() {
 
   for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
     set_address(current_address);
+    __asm__ __volatile__ ("rjmp .+0" "\n\t");
     buffer[current_address] = portRead(2); // Port C
   }
 
@@ -408,6 +409,7 @@ void blank_check() {
 
   for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
     set_address(current_address);
+    __asm__ __volatile__ ("rjmp .+0" "\n\t");
     data = portRead(2); // Port C
     if(data != blank_value) {
       turn_device_off();
@@ -439,6 +441,7 @@ void compare_data() {
 
   for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
     set_address(current_address);
+    __asm__ __volatile__ ("rjmp .+0" "\n\t");
     data = portRead(2); // Port C
     if(data != buffer[current_address]) {
       turn_device_off();

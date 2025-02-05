@@ -620,6 +620,9 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
   enable_device_output();
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
 }
 
 void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
@@ -689,6 +692,35 @@ void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uin
   __asm__ __volatile__ ("rjmp .+0" "\n\t");
 }
 
+void pgm_variant_vpp_p21_p18_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
+  uint8_t tens_of_ms = 0;
+  pw -= 3;
+  if(pw > 10000) {
+    tens_of_ms = pw / 10000;
+    pw %= 10000;
+  }
+  disable_device_output();
+  set_address(address);
+  portMode(2, OUTPUT); // Port C
+  portWrite(2, data); // Port C
+  turn_vpp_on(21);
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
+  delayMicroseconds(pw);
+  if(tens_of_ms) {
+    delay(tens_of_ms * 10);
+  }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  portMode(2, INPUT); // Port C
+  enable_device_output();
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+}
+
 //Untested!
 void write_data() {
   uint8_t pulse_number;
@@ -708,6 +740,9 @@ void write_data() {
       break;
     case PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE:
       pgm_variant = &pgm_variant_vpp_p20_p18_pulsed_negative;
+      break;
+    case PGM_VARIANT_VPP_P21_P18_PULSED_POSITIVE:
+      pgm_variant = &pgm_variant_vpp_p21_p18_pulsed_positive;
       break;
     default:
       Serial.println("This functionality is not yet implemented");
@@ -751,6 +786,8 @@ void write_data() {
     }
   }
 
+  turn_vpp_off();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
   turn_device_off();
   resetVCCandVPP();
 

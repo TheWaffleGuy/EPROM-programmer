@@ -595,7 +595,7 @@ void voltage_calibration() {
   }
 }
 
-#define SETUP_HOLD_TIME_US 6
+#define SETUP_HOLD_TIME_US 10
 
 void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
   uint8_t tens_of_ms = 0;
@@ -605,6 +605,7 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
     pw %= 10000;
   }
   disable_device_output();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
@@ -618,11 +619,7 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
   delayMicroseconds(SETUP_HOLD_TIME_US);
   portMode(2, INPUT); // Port C
   enable_device_output();
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  delayMicroseconds(3);
 }
 
 void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
@@ -633,6 +630,7 @@ void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uin
     pw %= 10000;
   }
   disable_device_output();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
@@ -648,11 +646,7 @@ void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uin
   delayMicroseconds(SETUP_HOLD_TIME_US);
   portMode(2, INPUT); // Port C
   enable_device_output();
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  delayMicroseconds(3);
 }
 
 void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
@@ -663,6 +657,7 @@ void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uin
     pw %= 10000;
   }
   disable_device_output();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
   portMode(2, OUTPUT); // Port C
@@ -681,15 +676,7 @@ void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uin
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
   portMode(2, INPUT); // Port C
   enable_device_output();
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  delayMicroseconds(3);
 }
 
 void pgm_variant_vpp_p21_p18_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
@@ -700,6 +687,7 @@ void pgm_variant_vpp_p21_p18_pulsed_positive(uint8_t data, uint16_t address, uin
     pw %= 10000;
   }
   disable_device_output();
+  delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
@@ -714,11 +702,7 @@ void pgm_variant_vpp_p21_p18_pulsed_positive(uint8_t data, uint16_t address, uin
   delayMicroseconds(SETUP_HOLD_TIME_US);
   portMode(2, INPUT); // Port C
   enable_device_output();
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
-  __asm__ __volatile__ ("rjmp .+0" "\n\t");
+  delayMicroseconds(3);
 }
 
 //Untested!

@@ -730,7 +730,7 @@ void pgm_variant_vpp_p19_cypress(uint8_t data, uint16_t address, uint16_t pw) {
     tens_of_ms = pw / 10000;
     pw %= 10000;
   }
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 0; }; //23 low
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 0; }; //23 high
   delayMicroseconds(3);
   if (adr.val_split[1] != latched_adr) {
     portWrite(0, reverse_bits(adr.val_split[1])); //Port A

@@ -691,7 +691,6 @@ void pgm_variant_vpp_p21_p18_pulsed_positive(uint8_t data, uint16_t address, uin
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
-  turn_vpp_on(21);
   delayMicroseconds(SETUP_HOLD_TIME_US);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
   delayMicroseconds(pw);
@@ -731,13 +730,8 @@ void pgm_variant_vpp19_cypress(uint8_t data, uint16_t address, uint16_t pw) {
     tens_of_ms = pw / 10000;
     pw %= 10000;
   }
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    PORTB &= ~(1 << 3); //21 low
-    PORTB |= (1 << 1) | (1 << 0); //22, 23 high
-  };
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 0; }; //23 low
   delayMicroseconds(3);
-  turn_vpp_on(19);
-  delayMicroseconds(10);
   if (adr.val_split[1] != latched_adr) {
     portWrite(0, reverse_bits(adr.val_split[1])); //Port A
     delayMicroseconds(3);
@@ -771,6 +765,13 @@ void write_data() {
   uint8_t verified = 1;
   void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw);
 
+  //Set up voltages
+  if(selected_ic.pgm_vcc_extra != 0) {
+    setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
+  }
+  setVPP(selected_ic.vpp, 1);
+  turn_device_on();
+
   switch(selected_ic.pgm_variant) {
     case PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE:
       pgm_variant = &pgm_variant_vpp_p20_vpp_pulsed_positive;
@@ -783,21 +784,25 @@ void write_data() {
       break;
     case PGM_VARIANT_VPP_P21_P18_PULSED_POSITIVE:
       pgm_variant = &pgm_variant_vpp_p21_p18_pulsed_positive;
+      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
+      delayMicroseconds(SETUP_HOLD_TIME_US);
+      turn_vpp_on(21);
+      delay(20);
       break;
     case PGM_VARIANT_VPP_P19_CYPRESS:
       pgm_variant = &pgm_variant_vpp19_cypress;
+      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        PORTB &= ~(1 << 3); //21 low
+        PORTB |= (1 << 1) | (1 << 0); //22, 23 high
+      };
+      delayMicroseconds(3);
+      turn_vpp_on(19);
+      delay(20);
       break;
     default:
       Serial.println("This functionality is not yet implemented");
-      return;
+      verified = 0;
   }
-
-  //Set up voltages
-  if(selected_ic.pgm_vcc_extra != 0) {
-    setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
-  }
-  setVPP(selected_ic.vpp, 1);
-  turn_device_on();
 
   for (address = address_start; verified && address <= address_end; address++) {
     write_data = buffer[address];

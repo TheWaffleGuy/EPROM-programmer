@@ -720,7 +720,7 @@ uint8_t reverse_bits(uint8_t num)
     return reverse_num;
 }
 
-void pgm_variant_vpp19_cypress(uint8_t data, uint16_t address, uint16_t pw) {
+void pgm_variant_vpp_p19_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   static uint8_t latched_adr = 0xFF;
   union { uint16_t val; uint8_t val_split[2]; } adr;
   adr.val = address;
@@ -790,7 +790,7 @@ void write_data() {
       delay(20);
       break;
     case PGM_VARIANT_VPP_P19_CYPRESS:
-      pgm_variant = &pgm_variant_vpp19_cypress;
+      pgm_variant = &pgm_variant_vpp_p19_cypress;
       ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         PORTB &= ~(1 << 3); //21 low
         PORTB |= (1 << 1) | (1 << 0); //22, 23 high

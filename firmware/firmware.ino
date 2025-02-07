@@ -705,6 +705,62 @@ void pgm_variant_vpp_p21_p18_pulsed_positive(uint8_t data, uint16_t address, uin
   delayMicroseconds(3);
 }
 
+uint8_t reverse_bits(uint8_t num)
+{
+    uint8_t count = 7;
+    uint8_t reverse_num = num;
+
+    num >>= 1;
+    while (num) {
+        reverse_num <<= 1;
+        reverse_num |= num & 1;
+        num >>= 1;
+        count--;
+    }
+    reverse_num <<= count;
+    return reverse_num;
+}
+
+void pgm_variant_vpp19_cypress(uint8_t data, uint16_t address, uint16_t pw) {
+  static uint8_t latched_adr = 0xFF;
+  union { uint16_t val; uint8_t val_split[2]; } adr;
+  adr.val = address;
+  uint8_t tens_of_ms = 0;
+  pw -= 3;
+  if(pw > 10000) {
+    tens_of_ms = pw / 10000;
+    pw %= 10000;
+  }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    PORTB &= ~(1 << 3); //21 low
+    PORTB |= (1 << 1) | (1 << 0); //22, 23 high
+  };
+  delayMicroseconds(3);
+  turn_vpp_on(19);
+  delayMicroseconds(10);
+  if (adr.val_split[1] != latched_adr) {
+    portWrite(0, reverse_bits(adr.val_split[1])); //Port A
+    delayMicroseconds(3);
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 3; }; //21 high
+    delayMicroseconds(3);
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 3); }; //21 low
+  }
+  portMode(2, OUTPUT); // Port C
+  portWrite(2, data); // Port C
+  delayMicroseconds(3);
+  portWrite(0, reverse_bits(adr.val_split[0]));
+  delayMicroseconds(3);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 1); }; //22 low
+  delayMicroseconds(pw);
+  if(tens_of_ms) {
+    delay(tens_of_ms * 10);
+  }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 1; }; //22 high
+  delayMicroseconds(3);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 0); }; //23 low
+  delayMicroseconds(3);
+}
+
 //Untested!
 void write_data() {
   uint8_t pulse_number;
@@ -727,6 +783,9 @@ void write_data() {
       break;
     case PGM_VARIANT_VPP_P21_P18_PULSED_POSITIVE:
       pgm_variant = &pgm_variant_vpp_p21_p18_pulsed_positive;
+      break;
+    case PGM_VARIANT_VPP_P19_CYPRESS:
+      pgm_variant = &pgm_variant_vpp19_cypress;
       break;
     default:
       Serial.println("This functionality is not yet implemented");
@@ -771,7 +830,7 @@ void write_data() {
   }
 
   turn_vpp_off();
-  delayMicroseconds(SETUP_HOLD_TIME_US);
+  delay(20);
   turn_device_off();
   resetVCCandVPP();
 

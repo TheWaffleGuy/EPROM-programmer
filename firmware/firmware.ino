@@ -327,12 +327,12 @@ void enable_device_output() {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DEVICE_ENABLE_PORT &= ~(1 << DEVICE_ENABLE_PIN); }
 }
 
-void turn_vpp_on(uint8_t pin_number) {
-  if(pin_number == 19) {
+void turn_vpp_on(uint8_t pin_id) {
+  if(pin_id == PGM_VPP_PIN_P19) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P19_EN_PIN; }
-  } else if(pin_number == 20) {
+  } else if(pin_id == PGM_VPP_PIN_P20) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P20_EN_PIN; }
-  } else if (pin_number == 21) {
+  } else if (pin_id == PGM_VPP_PIN_P21) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P21_EN_PIN; }
   }
 }
@@ -597,7 +597,7 @@ void voltage_calibration() {
 
 #define SETUP_HOLD_TIME_US 10
 
-void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
+void pgm_variant_vpp_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
   uint8_t tens_of_ms = 0;
   pw -= 3;
   if(pw > 10000) {
@@ -610,7 +610,7 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);
-  turn_vpp_on(20);
+  turn_vpp_on(selected_ic.pgm_vpp_pin);
   delayMicroseconds(pw);
   if(tens_of_ms) {
     delay(tens_of_ms * 10);
@@ -622,7 +622,7 @@ void pgm_variant_vpp_p20_vpp_pulsed_positive(uint8_t data, uint16_t address, uin
   delayMicroseconds(3);
 }
 
-void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
+void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
   uint8_t tens_of_ms = 0;
   pw -= 3;
   if(pw > 10000) {
@@ -634,7 +634,7 @@ void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uin
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
-  turn_vpp_on(21);
+  turn_vpp_on(selected_ic.pgm_vpp_pin);
   delayMicroseconds(SETUP_HOLD_TIME_US);
   enable_device_output();
   delayMicroseconds(pw);
@@ -649,7 +649,7 @@ void pgm_variant_vpp_p21_p20_pulsed_negative(uint8_t data, uint16_t address, uin
   delayMicroseconds(3);
 }
 
-void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
+void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
   uint8_t tens_of_ms = 0;
   pw -= 3;
   if(pw > 10000) {
@@ -662,7 +662,7 @@ void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uin
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
-  turn_vpp_on(20);
+  turn_vpp_on(selected_ic.pgm_vpp_pin);
   delayMicroseconds(SETUP_HOLD_TIME_US);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
   delayMicroseconds(pw);
@@ -679,7 +679,7 @@ void pgm_variant_vpp_p20_p18_pulsed_negative(uint8_t data, uint16_t address, uin
   delayMicroseconds(3);
 }
 
-void pgm_variant_vpp_p21_p18_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
+void pgm_variant_p18_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
   uint8_t tens_of_ms = 0;
   pw -= 3;
   if(pw > 10000) {
@@ -720,7 +720,7 @@ uint8_t reverse_bits(uint8_t num)
     return reverse_num;
 }
 
-void pgm_variant_vpp_p19_cypress(uint8_t data, uint16_t address, uint16_t pw) {
+void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   static uint8_t latched_adr = 0xFF;
   union { uint16_t val; uint8_t val_split[2]; } adr;
   adr.val = address;
@@ -773,35 +773,35 @@ void write_data() {
   turn_device_on();
 
   switch(selected_ic.pgm_variant) {
-    case PGM_VARIANT_VPP_P20_VPP_PULSED_POSITIVE:
-      pgm_variant = &pgm_variant_vpp_p20_vpp_pulsed_positive;
+    case PGM_VARIANT_VPP_PULSED_POSITIVE:
+      pgm_variant = &pgm_variant_vpp_pulsed_positive;
       break;
-    case PGM_VARIANT_VPP_P21_P20_PULSED_NEGATIVE:
-      pgm_variant = &pgm_variant_vpp_p21_p20_pulsed_negative;
+    case PGM_VARIANT_P20_PULSED_NEGATIVE:
+      pgm_variant = &pgm_variant_p20_pulsed_negative;
       break;
-    case PGM_VARIANT_VPP_P20_P18_PULSED_NEGATIVE:
-      pgm_variant = &pgm_variant_vpp_p20_p18_pulsed_negative;
+    case PGM_VARIANT_P18_PULSED_NEGATIVE:
+      pgm_variant = &pgm_variant_p18_pulsed_negative;
       break;
-    case PGM_VARIANT_VPP_P21_P18_PULSED_POSITIVE:
-      pgm_variant = &pgm_variant_vpp_p21_p18_pulsed_positive;
+    case PGM_VARIANT_P18_PULSED_POSITIVE:
+      pgm_variant = &pgm_variant_p18_pulsed_positive;
       ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
-      delayMicroseconds(SETUP_HOLD_TIME_US);
-      turn_vpp_on(21);
-      delay(20);
       break;
-    case PGM_VARIANT_VPP_P19_CYPRESS:
-      pgm_variant = &pgm_variant_vpp_p19_cypress;
+    case PGM_VARIANT_CYPRESS:
+      pgm_variant = &pgm_variant_cypress;
       ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         PORTB &= ~(1 << 3); //21 low
         PORTB |= (1 << 1) | (1 << 0); //22, 23 high
       };
-      delayMicroseconds(3);
-      turn_vpp_on(19);
-      delay(20);
       break;
     default:
       Serial.println("This functionality is not yet implemented");
       verified = 0;
+  }
+
+  if(selected_ic.pgm_vpp_always_on) {
+      delayMicroseconds(SETUP_HOLD_TIME_US);
+      turn_vpp_on(selected_ic.pgm_vpp_pin);
+      delay(20);
   }
 
   for (address = address_start; verified && address <= address_end; address++) {

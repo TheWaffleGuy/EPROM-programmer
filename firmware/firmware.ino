@@ -755,6 +755,22 @@ void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   delayMicroseconds(3);
 }
 
+void write_data_overprogram(void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw), uint8_t data, uint16_t address, uint8_t pulse_number) {
+  uint16_t pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+  if(selected_ic.pgm_overprogram_multiply_n) {
+    pw *= pulse_number;
+  }
+  if(selected_ic.pgm_overprogram_5v_vcc) {
+    setVCC(VOLT(5, 0), 1);
+    delayMicroseconds(1000);
+  }
+  pgm_variant(data, address, pw);
+  if(selected_ic.pgm_overprogram_5v_vcc) {
+    setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
+    delayMicroseconds(20);
+  }
+}
+
 //Untested!
 void write_data() {
   uint8_t pulse_number;
@@ -813,24 +829,19 @@ void write_data() {
       pgm_variant(write_data, address, selected_ic.pgm_pw_us);
       verified = write_data == portRead(2); // Port C
     } while (!verified && pulse_number < selected_ic.pgm_pulses);
-    //Overprogram section
-    if (selected_ic.pgm_overprogram_pw > 0 && (verified || selected_ic.pgm_overprogram_ignore_verify)) {
-      uint16_t pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
-      if(selected_ic.pgm_overprogram_multiply_n) {
-        pw *= pulse_number;
-      }
-      if(selected_ic.pgm_overprogram_5v_vcc) {
-        setVCC(VOLT(5, 0), 1);
-        delayMicroseconds(1000);
-      }
-      pgm_variant(write_data, address, pw);
-      if(selected_ic.pgm_overprogram_5v_vcc) {
-        setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
-        delayMicroseconds(20);
-      }
+    //Overprogram section if it should be done in the main programming loop
+    if (selected_ic.pgm_overprogram_pw > 0 && (verified || selected_ic.pgm_overprogram_ignore_verify) && !selected_ic.pgm_overprogram_after) {
+      write_data_overprogram(pgm_variant, write_data, address, pulse_number);
       if (!verified) {
         verified = write_data == portRead(2); // Port C
       }
+    }
+  }
+  //Overprogram section if it should be done after the main programming loop
+  if (verified && selected_ic.pgm_overprogram_after) {
+    for (address = address_start; address <= address_end; address++) {
+      write_data = buffer[address];
+      write_data_overprogram(pgm_variant, write_data, address, 1);
     }
   }
 

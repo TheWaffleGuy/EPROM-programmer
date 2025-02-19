@@ -230,6 +230,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.OnExit)
         # end wxGlade
 
+        self.SetMinSize(self.Size)
+
         self.thread = None
         self.serial = None
 

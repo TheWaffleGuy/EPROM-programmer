@@ -601,6 +601,28 @@ const IC ics[] PROGMEM = {
     .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
   },
   {
+    MANUFACTURER("AMD"),
+    NAME("2716B"),
+    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
+    .ctrl_pins_read_h = { 21 },
+    .vpp = VOLT(12, 500),
+    .pgm_pw_us = 1000,
+    .pgm_vcc_extra = VOLT(1, 0),
+    .pgm_intial_single_pass = 0,
+    .pgm_overprogram_5v_vcc = 1,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_overprogram_multiply_n = 0,
+    .pgm_overprogram_after = 1,
+    .pgm_overprogram_pw = OVERPROGRAM_PW(2, 0),
+    .pgm_vpp_pin = PGM_VPP_PIN_P21,
+    .pgm_pulses = 15,
+    .pgm_vpp_always_on = 1,
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_P18_PULSED_POSITIVE
+  },
+  {
     MANUFACTURER("GENERIC"),
     NAME("2716"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },

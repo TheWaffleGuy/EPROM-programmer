@@ -580,7 +580,7 @@ const IC ics[] PROGMEM = {
   },
   {
     MANUFACTURER("AMD"),
-    NAME("2732B"),
+    NAME("AM2732B"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
     .ctrl_pins_read_h = {},
     .vpp = VOLT(12, 500),
@@ -668,7 +668,7 @@ const IC ics[] PROGMEM = {
   },
   {
     MANUFACTURER("AMD"),
-    NAME("2716B"),
+    NAME("AM2716B"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
     .ctrl_pins_read_h = { 21 },
     .vpp = VOLT(12, 500),

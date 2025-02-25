@@ -345,6 +345,10 @@ void turn_vpp_off() {
 void turn_device_on() {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT |= 1 << VCC_EN_PIN; }
   delay(100);
+  //Some devices requires one address transition after initial power-up to reset the outputs.
+  set_address(1);
+  delayMicroseconds(3);
+  set_address(0);
 }
 
 void turn_device_off() {

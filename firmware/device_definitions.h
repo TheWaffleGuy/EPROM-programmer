@@ -94,7 +94,7 @@ const IC ics[] PROGMEM = {
     .f_2364_compat_pinout = 1,
     .pgm_variant = PGM_VARIANT_VPP_PULSED_POSITIVE
   },
-  { //Assumed to be same algorithm as 27CX321
+  { //Same algorithm as 27CX321
     MANUFACTURER("ICT"),
     NAME("27CX641"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 21, 19, 18 },

@@ -653,6 +653,30 @@ void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw
   delayMicroseconds(3);
 }
 
+void pgm_variant_p18_pulsed_negative_p19_verify(uint8_t data, uint16_t address, uint16_t pw) {
+  uint8_t tens_of_ms = 0;
+  pw -= 3;
+  if(pw > 10000) {
+    tens_of_ms = pw / 10000;
+    pw %= 10000;
+  }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 4; }; //19 high
+  set_address(address);
+  portMode(2, OUTPUT); // Port C
+  portWrite(2, data); // Port C
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
+  delayMicroseconds(pw);
+  if(tens_of_ms) {
+    delay(tens_of_ms * 10);
+  }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
+  delayMicroseconds(SETUP_HOLD_TIME_US);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 4); }; //19 low
+  portMode(2, INPUT); // Port C
+  delayMicroseconds(3);
+}
+
 void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
   uint8_t tens_of_ms = 0;
   pw -= 3;
@@ -783,6 +807,12 @@ void write_data() {
     case PGM_VARIANT_P20_PULSED_NEGATIVE:
       pgm_variant = &pgm_variant_p20_pulsed_negative;
       break;
+    case PGM_VARIANT_P18_PULSED_NEGATIVE_P19_VERIFY:
+      pgm_variant = &pgm_variant_p18_pulsed_negative_p19_verify;
+      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        PORTB |= (1 << 2) | (1 << 4); //18 high, 19 high
+      }
+      break;
     case PGM_VARIANT_P18_PULSED_NEGATIVE:
       pgm_variant = &pgm_variant_p18_pulsed_negative;
       break;
@@ -802,7 +832,7 @@ void write_data() {
       verified = 0;
   }
 
-  if(selected_ic.pgm_vpp_always_on) {
+  if(verified && selected_ic.pgm_vpp_always_on) {
       delayMicroseconds(SETUP_HOLD_TIME_US);
       turn_vpp_on(selected_ic.pgm_vpp_pin);
       delay(20);

@@ -55,11 +55,11 @@ void readCal() {
 void setup() {
   Serial.begin(SERIAL_SPEED);
 
-  device_operations_init();
-
   if (EEPROM.read(EPROM_ADR_EPROM_VER) == EPROM_VER) {
     readCal();
   }
+
+  device_operations_init();
 }
 
 bool is_hex(char *string) {

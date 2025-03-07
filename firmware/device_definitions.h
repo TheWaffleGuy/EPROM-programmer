@@ -604,6 +604,28 @@ const IC ics[] PROGMEM = {
     .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
   },
   {
+    MANUFACTURER("TI"),
+    NAME("TMS2732A"),
+    .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
+    .ctrl_pins_read_h = {},
+    .vpp = VOLT(21, 0),
+    .pgm_pw_us = 10000,
+    .pgm_vcc_extra = 0,
+    .pgm_intial_single_pass = 0,
+    .pgm_overprogram_5v_vcc = 0,
+    .pgm_overprogram_ignore_verify = 0,
+    .pgm_overprogram_multiply_n = 0,
+    .pgm_overprogram_after = 0,
+    .pgm_overprogram_pw = 0,
+    .pgm_vpp_pin = PGM_VPP_PIN_P20,
+    .pgm_pulses = 1,
+    .pgm_vpp_always_on = 0,
+    .f_can_blank_check = 1,
+    .f_blank_check_value = 1,
+    .f_2364_compat_pinout = 0,
+    .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
+  },
+  {
     MANUFACTURER("GENERIC"),
     NAME("2732A"),
     .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },

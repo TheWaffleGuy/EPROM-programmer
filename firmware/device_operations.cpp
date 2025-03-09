@@ -31,6 +31,7 @@ extern voltage_offsets v_offset;
 extern uint8_t buffer[];
 extern IC selected_ic;
 extern uint8_t selected_ic_size;
+extern uint8_t is_2364_mode;
 
 
 typedef struct pin {
@@ -447,6 +448,12 @@ static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   delayMicroseconds(3);
   if (adr.val_split[1] != latched_adr) {
     latched_adr = adr.val_split[1];
+    if (is_2364_mode) {
+      uint8_t a10 = ( adr.val_split[1] & 0b00000100 ) > 1;
+      uint8_t a11 = ( adr.val_split[1] & 0b00001000 ) > 1;
+      uint8_t a12 = ( adr.val_split[1] & 0b00010000 ) > 1;
+      adr.val_split[1] = ( adr.val_split[1] & 0b11100011 ) | a10 << 3 | a11 << 4 | a12 << 2;
+    }
     portWrite(0, reverse_bits(adr.val_split[1])); //Port A
     delayMicroseconds(3);
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 3; }; //21 high

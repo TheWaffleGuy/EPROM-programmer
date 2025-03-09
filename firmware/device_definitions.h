@@ -8,6 +8,8 @@
 #define MANUFACTURER(n) { .manufacturer = n }
 #endif
 
+const uint8_t adr_pins_2364[13] PROGMEM = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 18, 21 };
+
 const IC ics[] PROGMEM = {
   {
     MANUFACTURER("CYPRESS"),
@@ -270,7 +272,7 @@ const IC ics[] PROGMEM = {
     .pgm_vpp_always_on = 0,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1,
-    .f_2364_compat_pinout = 1,
+    .f_2364_compat_pinout = 0,
     .pgm_variant = PGM_VARIANT_VPP_PULSED_POSITIVE
   },
   {
@@ -292,7 +294,7 @@ const IC ics[] PROGMEM = {
     .pgm_vpp_always_on = 0,
     .f_can_blank_check = 1,
     .f_blank_check_value = 1,
-    .f_2364_compat_pinout = 1,
+    .f_2364_compat_pinout = 0,
     .pgm_variant = PGM_VARIANT_VPP_PULSED_POSITIVE
   },
   {

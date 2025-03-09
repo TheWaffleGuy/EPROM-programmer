@@ -22,6 +22,7 @@ extern "C" {
 #define STATE_VCAL          2
 #define STATE_CONFIRM_WRITE 3
 
+#define EPROM_ADR_2364_MODE ( EEPROM.length() - 11 )
 #define EPROM_ADR_VCC_OFFSETS ( EEPROM.length() - 10 )
 #define EPROM_ADR_IS_CALIBRATED ( EEPROM.length() - 2 )
 #define EPROM_ADR_EPROM_VER ( EEPROM.length() - 1 )
@@ -43,6 +44,8 @@ uint8_t buffer[DATA_BUFFER_SIZE];
 IC selected_ic = {0};
 #pragma GCC diagnostic pop
 uint8_t selected_ic_size = 0;
+uint8_t is_2364_mode;
+uint8_t adr_pins_original_2364_mode[13];
 
 void readCal() {
   if (EEPROM.read(EPROM_ADR_IS_CALIBRATED) == 0xFF) {
@@ -57,6 +60,7 @@ void setup() {
 
   if (EEPROM.read(EPROM_ADR_EPROM_VER) == EPROM_VER) {
     readCal();
+    is_2364_mode = EEPROM.read(EPROM_ADR_2364_MODE) != 0xFF;
   }
 
   device_operations_init();
@@ -82,6 +86,7 @@ void print_help() {
   Serial.println("T [device number]: Select type of device");
   Serial.println("I: Info about currently selected device");
   Serial.println("V: Calibrate VCC and VPP voltages");
+  Serial.println("X [0/1]: Toggle \"2364 mode\"");
 }
 
 void list_devices() {
@@ -175,10 +180,19 @@ void select_device() {
     if (adr_pin == 0) break;
   }
 
+  if(selected_ic.f_2364_compat_pinout && is_2364_mode) {
+    memcpy(adr_pins_original_2364_mode, selected_ic.adr_pins, sizeof(adr_pins_original_2364_mode));
+    memcpy_P(selected_ic.adr_pins, adr_pins_2364, sizeof(selected_ic.adr_pins));
+  }
+
   Serial.print("Selected: ");
   Serial.print(selected_ic.manufacturer);
   Serial.print(" - ");
-  Serial.println(selected_ic.name);
+  Serial.print(selected_ic.name);
+  if(selected_ic.f_2364_compat_pinout && is_2364_mode) {
+    Serial.print(" (2364 mode)");
+  }
+  Serial.println();
   Serial.println("OK!");
 }
 
@@ -191,7 +205,11 @@ void print_device_info() {
   Serial.print("Currently selected device is: ");
   Serial.print(selected_ic.manufacturer);
   Serial.print(" - ");
-  Serial.println(selected_ic.name);
+  Serial.print(selected_ic.name);
+  if(selected_ic.f_2364_compat_pinout && is_2364_mode) {
+    Serial.print(" (2364 mode)");
+  }
+  Serial.println();
   Serial.println("OK!");
 }
 
@@ -343,6 +361,51 @@ void confirm_write_data() {
   Serial.println("? [y/n]");
 }
 
+void toggle_2364_mode() {
+  char *arg;
+
+  arg = line + 1;
+  while(*arg && isspace(*arg)) arg++;
+
+  if (! *arg) {
+    Serial.println("Error: \"x\" requires an argument");
+    return;
+  }
+
+  if (*(arg + 1)) {
+    Serial.print("Error: invalid argument for x: ");
+    Serial.print(arg);
+    Serial.println();
+    return;
+  }
+
+  switch(*arg) {
+    case '0':
+      EEPROM.update(EPROM_ADR_2364_MODE, 0xFF);
+      is_2364_mode = 0;
+      break;
+    case '1':
+      EEPROM.update(EPROM_ADR_2364_MODE, 1);
+      is_2364_mode = 1;
+      break;
+    default:
+      Serial.print("Error: invalid argument for x: ");
+      Serial.print(arg);
+      Serial.println();
+      return;
+  }
+
+  if(selected_ic.name[0] != '\0' && selected_ic.f_2364_compat_pinout) {
+    if(is_2364_mode) {
+      memcpy_P(selected_ic.adr_pins, adr_pins_2364, sizeof(selected_ic.adr_pins));
+    } else {
+      memcpy(selected_ic.adr_pins, adr_pins_original_2364_mode, sizeof(selected_ic.adr_pins));
+    }
+  }
+
+  Serial.println("OK!");
+}
+
 struct srec_state srec;
 
 void srec_data_read (struct srec_state *srec,
@@ -455,6 +518,9 @@ void loop() {
           case 'v':
             voltage_calibration();
             state = STATE_VCAL;
+            break;
+          case 'x':
+            toggle_2364_mode();
             break;
           default:
             Serial.print("Unknown command: ");

@@ -363,6 +363,7 @@ void confirm_write_data() {
 
 void toggle_2364_mode() {
   char *arg;
+  uint8_t new_2364_mode;
 
   arg = line + 1;
   while(*arg && isspace(*arg)) arg++;
@@ -382,11 +383,11 @@ void toggle_2364_mode() {
   switch(*arg) {
     case '0':
       EEPROM.update(EPROM_ADR_2364_MODE, 0xFF);
-      is_2364_mode = 0;
+      new_2364_mode = 0;
       break;
     case '1':
       EEPROM.update(EPROM_ADR_2364_MODE, 1);
-      is_2364_mode = 1;
+      new_2364_mode = 1;
       break;
     default:
       Serial.print("Error: invalid argument for x: ");
@@ -395,13 +396,15 @@ void toggle_2364_mode() {
       return;
   }
 
-  if(selected_ic.name[0] != '\0' && selected_ic.f_2364_compat_pinout) {
-    if(is_2364_mode) {
+  if(new_2364_mode != is_2364_mode && selected_ic.name[0] != '\0' && selected_ic.f_2364_compat_pinout) {
+    if(new_2364_mode) {
+      memcpy(adr_pins_original_2364_mode, selected_ic.adr_pins, sizeof(adr_pins_original_2364_mode));
       memcpy_P(selected_ic.adr_pins, adr_pins_2364, sizeof(selected_ic.adr_pins));
     } else {
       memcpy(selected_ic.adr_pins, adr_pins_original_2364_mode, sizeof(selected_ic.adr_pins));
     }
   }
+  is_2364_mode = new_2364_mode;
 
   Serial.println("OK!");
 }

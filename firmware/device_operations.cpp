@@ -465,6 +465,7 @@ static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   }
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 1; }; //22 high
   delayMicroseconds(3);
+  portMode(2, INPUT); // Port C
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 0); }; //23 low
   delayMicroseconds(3);
 }

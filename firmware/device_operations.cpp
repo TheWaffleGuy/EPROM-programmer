@@ -446,6 +446,7 @@ static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 0; }; //23 high
   delayMicroseconds(3);
   if (adr.val_split[1] != latched_adr) {
+    latched_adr = adr.val_split[1];
     portWrite(0, reverse_bits(adr.val_split[1])); //Port A
     delayMicroseconds(3);
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 3; }; //21 high

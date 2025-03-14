@@ -76,7 +76,7 @@ bool is_hex(char *string) {
 void print_help() {
   Serial.println("Eprom programmer help");
   Serial.println("H: This help menu");
-  Serial.println("L: List devices");
+  Serial.println("L [search string]: List devices");
   Serial.println("S[srec data]: Upload SREC to buffer");
   Serial.println("D: Download data from buffer");
   Serial.println("W: Write buffer to device");
@@ -90,7 +90,41 @@ void print_help() {
 }
 
 void list_devices() {
+  char *arg;
+  uint8_t has_search_arg;
+  char arg_copy[sizeof(line)];
+
+  arg = line + 1;
+  while(*arg && isspace(*arg)) arg++;
+
+  has_search_arg = *arg != '\0';
+
+  char *chr = arg;
+  while(*chr) {
+      *chr=toupper(*chr);
+      chr++;
+  }
+
   for (uint8_t i = 0; i < num_ics; i++) {
+    if (has_search_arg) {
+      strcpy(arg_copy, arg);
+      char manufacturer[sizeof(ics[i].manufacturer)];
+      char name[sizeof(ics[i].name)];
+
+      strcpy_P(manufacturer, ics[i].manufacturer);
+      strcpy_P(name, ics[i].name);
+
+      uint8_t match = 1;
+      char* token = strtok(arg_copy, " ");
+      while (token != NULL && match) {
+        match = strstr(manufacturer, token) || strstr(name, token);
+        token = strtok(NULL, " ");
+      }
+      if (!match) {
+        continue;
+      }
+    }
+
     write_byte(i);
     Serial.print(") ");
     Serial.print(reinterpret_cast<const __FlashStringHelper *>(ics[i].manufacturer));

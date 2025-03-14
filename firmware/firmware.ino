@@ -117,7 +117,7 @@ void list_devices() {
       uint8_t match = 1;
       char* token = strtok(arg_copy, " ");
       while (token != NULL && match) {
-        match = strstr(manufacturer, token) || strstr(name, token);
+        match = strcmp(token, "-") == 0 || strstr(manufacturer, token) || strstr(name, token);
         token = strtok(NULL, " ");
       }
       if (!match) {

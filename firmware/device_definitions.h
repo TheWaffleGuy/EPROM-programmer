@@ -115,6 +115,48 @@ const device_def WS57C191_WS57C191B PROGMEM = {
   .pgm_variant = PGM_VARIANT_VPP_PULSED_POSITIVE
 };
 
+const device_def GENERIC_2758_L PROGMEM = {
+  .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22 },
+  .ctrl_pins_read_h = { 21 },
+  .vpp = VOLT(25, 0),
+  .pgm_pw_us = 50000,
+  .pgm_vcc_extra = 0,
+  .pgm_intial_single_pass = 0,
+  .pgm_overprogram_5v_vcc = 0,
+  .pgm_overprogram_ignore_verify = 0,
+  .pgm_overprogram_multiply_n = 0,
+  .pgm_overprogram_after = 0,
+  .pgm_overprogram_pw = 0,
+  .pgm_vpp_pin = PGM_VPP_PIN_P21,
+  .pgm_pulses = 1,
+  .pgm_vpp_always_on = 1,
+  .f_can_blank_check = 1,
+  .f_blank_check_value = 1,
+  .f_2364_compat_pinout = 0,
+  .pgm_variant = PGM_VARIANT_P18_PULSED_POSITIVE
+};
+
+const device_def GENERIC_2758_H PROGMEM = {
+  .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22 },
+  .ctrl_pins_read_h = { 21, 19 },
+  .vpp = VOLT(25, 0),
+  .pgm_pw_us = 50000,
+  .pgm_vcc_extra = 0,
+  .pgm_intial_single_pass = 0,
+  .pgm_overprogram_5v_vcc = 0,
+  .pgm_overprogram_ignore_verify = 0,
+  .pgm_overprogram_multiply_n = 0,
+  .pgm_overprogram_after = 0,
+  .pgm_overprogram_pw = 0,
+  .pgm_vpp_pin = PGM_VPP_PIN_P21,
+  .pgm_pulses = 1,
+  .pgm_vpp_always_on = 1,
+  .f_can_blank_check = 1,
+  .f_blank_check_value = 1,
+  .f_2364_compat_pinout = 0,
+  .pgm_variant = PGM_VARIANT_P18_PULSED_POSITIVE
+};
+
 const IC ics[] PROGMEM = {
   {
     MANUFACTURER("CYPRESS"),
@@ -799,6 +841,36 @@ const IC ics[] PROGMEM = {
       .f_2364_compat_pinout = 0,
       .pgm_variant = PGM_VARIANT_VPP_PULSED_POSITIVE
     }
+  },
+  {
+    MANUFACTURER("INTEL"),
+    NAME("2758"),
+    .device_definition = GENERIC_2758_L
+  },
+  {
+    MANUFACTURER("NATIONAL"),
+    NAME("MM2758-A"),
+    .device_definition = GENERIC_2758_L
+  },
+  {
+    MANUFACTURER("TI"),
+    NAME("TMS2758-JL0"),
+    .device_definition = GENERIC_2758_L
+  },
+  {
+    MANUFACTURER("INTEL"),
+    NAME("2758-S1865"),
+    .device_definition = GENERIC_2758_H
+  },
+  {
+    MANUFACTURER("NATIONAL"),
+    NAME("MM2758-B"),
+    .device_definition = GENERIC_2758_H
+  },
+  {
+    MANUFACTURER("TI"),
+    NAME("TMS2758-JL1"),
+    .device_definition = GENERIC_2758_H
   }
 };
 

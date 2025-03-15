@@ -117,14 +117,14 @@ static void set_address(uint16_t address) {
     port_b = 0;
 
     for(uint8_t i = 0; i < selected_ic_size; i++) {
-        uint8_t adr_pin = selected_ic.adr_pins[i];
+        uint8_t adr_pin = selected_ic.device_definition.adr_pins[i];
         pin p = pins[adr_pin - 1];
         *(p.port) |= ( address & 1 ) << p.index;
         address = address >> 1;
     }
 
-    for(uint8_t i = 0; i < sizeof(selected_ic.ctrl_pins_read_h); i++) {
-        uint8_t ctrl_pin = selected_ic.ctrl_pins_read_h[i];
+    for(uint8_t i = 0; i < sizeof(selected_ic.device_definition.ctrl_pins_read_h); i++) {
+        uint8_t ctrl_pin = selected_ic.device_definition.ctrl_pins_read_h[i];
         if (ctrl_pin == 0) break;
         pin p = pins[ctrl_pin - 1];
         *(p.port) |= 1 << p.index;
@@ -212,7 +212,7 @@ void blank_check() {
     return;
   }
 
-  if (!selected_ic.f_can_blank_check) {
+  if (!selected_ic.device_definition.f_can_blank_check) {
     Serial.print("Device ");
     Serial.print(selected_ic.name);
     Serial.println(" cannot be blank-checked.");
@@ -220,7 +220,7 @@ void blank_check() {
     return;
   }
 
-  if (selected_ic.f_blank_check_value == 0) {
+  if (selected_ic.device_definition.f_blank_check_value == 0) {
     blank_value = 0;
   } else {
     blank_value = 0xFF;
@@ -303,7 +303,7 @@ static void pgm_variant_vpp_pulsed_positive(uint8_t data, uint16_t address, uint
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);
-  turn_vpp_on(selected_ic.pgm_vpp_pin);
+  turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
   delayMicroseconds(pw);
   if(tens_of_ms) {
     delay(tens_of_ms * 10);
@@ -327,7 +327,7 @@ static void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
-  turn_vpp_on(selected_ic.pgm_vpp_pin);
+  turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
   delayMicroseconds(SETUP_HOLD_TIME_US);
   enable_device_output();
   delayMicroseconds(pw);
@@ -379,7 +379,7 @@ static void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
-  turn_vpp_on(selected_ic.pgm_vpp_pin);
+  turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
   delayMicroseconds(SETUP_HOLD_TIME_US);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
   delayMicroseconds(pw);
@@ -491,13 +491,13 @@ void write_data() {
   void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw);
 
   //Set up voltages
-  if(selected_ic.pgm_vcc_extra != 0) {
-    setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
+  if(selected_ic.device_definition.pgm_vcc_extra != 0) {
+    setVCC(VOLT(5, 0) + selected_ic.device_definition.pgm_vcc_extra, 1);
   }
-  setVPP(selected_ic.vpp, 1);
+  setVPP(selected_ic.device_definition.vpp, 1);
   turn_device_on();
 
-  switch(selected_ic.pgm_variant) {
+  switch(selected_ic.device_definition.pgm_variant) {
     case PGM_VARIANT_VPP_PULSED_POSITIVE:
       pgm_variant = &pgm_variant_vpp_pulsed_positive;
       break;
@@ -529,9 +529,9 @@ void write_data() {
       verified = 0;
   }
 
-  if(verified && selected_ic.pgm_vpp_always_on) {
+  if(verified && selected_ic.device_definition.pgm_vpp_always_on) {
       delayMicroseconds(SETUP_HOLD_TIME_US);
-      turn_vpp_on(selected_ic.pgm_vpp_pin);
+      turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
       delay(20);
   }
 
@@ -541,22 +541,22 @@ void write_data() {
     //Iterative programming
     do {
       pulse_number++;
-      pgm_variant(write_data, address, selected_ic.pgm_pw_us);
+      pgm_variant(write_data, address, selected_ic.device_definition.pgm_pw_us);
       verified = write_data == portRead(2); // Port C
-    } while (!verified && pulse_number < selected_ic.pgm_pulses);
+    } while (!verified && pulse_number < selected_ic.device_definition.pgm_pulses);
     //Overprogram section if it should be done in the main programming loop
-    if (selected_ic.pgm_overprogram_pw > 0 && (verified || selected_ic.pgm_overprogram_ignore_verify) && !selected_ic.pgm_overprogram_after) {
-      uint16_t pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
-      if(selected_ic.pgm_overprogram_multiply_n) {
+    if (selected_ic.device_definition.pgm_overprogram_pw > 0 && (verified || selected_ic.device_definition.pgm_overprogram_ignore_verify) && !selected_ic.device_definition.pgm_overprogram_after) {
+      uint16_t pw = ( selected_ic.device_definition.pgm_overprogram_pw * selected_ic.device_definition.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+      if(selected_ic.device_definition.pgm_overprogram_multiply_n) {
         pw *= pulse_number;
       }
-      if(selected_ic.pgm_overprogram_5v_vcc) {
+      if(selected_ic.device_definition.pgm_overprogram_5v_vcc) {
         setVCC(VOLT(5, 0), 1);
         delayMicroseconds(1000);
       }
       pgm_variant(write_data, address, pw);
-      if(selected_ic.pgm_overprogram_5v_vcc) {
-        setVCC(VOLT(5, 0) + selected_ic.pgm_vcc_extra, 1);
+      if(selected_ic.device_definition.pgm_overprogram_5v_vcc) {
+        setVCC(VOLT(5, 0) + selected_ic.device_definition.pgm_vcc_extra, 1);
         delayMicroseconds(20);
       }
       if (!verified) {
@@ -565,9 +565,9 @@ void write_data() {
     }
   }
   //Overprogram section if it should be done after the main programming loop
-  if (verified && selected_ic.pgm_overprogram_after) {
-    uint16_t pw = ( selected_ic.pgm_overprogram_pw * selected_ic.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
-    if(selected_ic.pgm_overprogram_5v_vcc) {
+  if (verified && selected_ic.device_definition.pgm_overprogram_after) {
+    uint16_t pw = ( selected_ic.device_definition.pgm_overprogram_pw * selected_ic.device_definition.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+    if(selected_ic.device_definition.pgm_overprogram_5v_vcc) {
       setVCC(VOLT(5, 0), 1);
       delayMicroseconds(1000);
     }

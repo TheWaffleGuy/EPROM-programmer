@@ -209,21 +209,21 @@ void select_device() {
   }
 
   memcpy_P(&selected_ic, &(ics[arg_num]), sizeof(ics[0]));
-  for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic.adr_pins); selected_ic_size++) {
-    uint8_t adr_pin = selected_ic.adr_pins[selected_ic_size];
+  for(selected_ic_size = 0; selected_ic_size < sizeof(selected_ic.device_definition.adr_pins); selected_ic_size++) {
+    uint8_t adr_pin = selected_ic.device_definition.adr_pins[selected_ic_size];
     if (adr_pin == 0) break;
   }
 
-  if(selected_ic.f_2364_compat_pinout && is_2364_mode) {
-    memcpy(adr_pins_original_2364_mode, selected_ic.adr_pins, sizeof(adr_pins_original_2364_mode));
-    memcpy_P(selected_ic.adr_pins, adr_pins_2364, sizeof(selected_ic.adr_pins));
+  if(selected_ic.device_definition.f_2364_compat_pinout && is_2364_mode) {
+    memcpy(adr_pins_original_2364_mode, selected_ic.device_definition.adr_pins, sizeof(adr_pins_original_2364_mode));
+    memcpy_P(selected_ic.device_definition.adr_pins, adr_pins_2364, sizeof(selected_ic.device_definition.adr_pins));
   }
 
   Serial.print("Selected: ");
   Serial.print(selected_ic.manufacturer);
   Serial.print(" - ");
   Serial.print(selected_ic.name);
-  if(selected_ic.f_2364_compat_pinout && is_2364_mode) {
+  if(selected_ic.device_definition.f_2364_compat_pinout && is_2364_mode) {
     Serial.print(" (2364 mode)");
   }
   Serial.println();
@@ -240,7 +240,7 @@ void print_device_info() {
   Serial.print(selected_ic.manufacturer);
   Serial.print(" - ");
   Serial.print(selected_ic.name);
-  if(selected_ic.f_2364_compat_pinout && is_2364_mode) {
+  if(selected_ic.device_definition.f_2364_compat_pinout && is_2364_mode) {
     Serial.print(" (2364 mode)");
   }
   Serial.println();
@@ -430,12 +430,12 @@ void toggle_2364_mode() {
       return;
   }
 
-  if(new_2364_mode != is_2364_mode && selected_ic.name[0] != '\0' && selected_ic.f_2364_compat_pinout) {
+  if(new_2364_mode != is_2364_mode && selected_ic.name[0] != '\0' && selected_ic.device_definition.f_2364_compat_pinout) {
     if(new_2364_mode) {
-      memcpy(adr_pins_original_2364_mode, selected_ic.adr_pins, sizeof(adr_pins_original_2364_mode));
-      memcpy_P(selected_ic.adr_pins, adr_pins_2364, sizeof(selected_ic.adr_pins));
+      memcpy(adr_pins_original_2364_mode, selected_ic.device_definition.adr_pins, sizeof(adr_pins_original_2364_mode));
+      memcpy_P(selected_ic.device_definition.adr_pins, adr_pins_2364, sizeof(selected_ic.device_definition.adr_pins));
     } else {
-      memcpy(selected_ic.adr_pins, adr_pins_original_2364_mode, sizeof(selected_ic.adr_pins));
+      memcpy(selected_ic.device_definition.adr_pins, adr_pins_original_2364_mode, sizeof(selected_ic.device_definition.adr_pins));
     }
   }
   is_2364_mode = new_2364_mode;

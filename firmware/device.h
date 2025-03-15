@@ -15,9 +15,7 @@
 #define PGM_VPP_PIN_P20 1
 #define PGM_VPP_PIN_P21 2
 
-typedef struct IC {
-  char manufacturer[10];
-  char name[11];
+typedef struct device_def {
   uint8_t adr_pins[13];
   uint8_t ctrl_pins_read_h[2];
 
@@ -42,6 +40,12 @@ typedef struct IC {
   uint8_t f_blank_check_value : 1;
   uint8_t f_2364_compat_pinout : 1;
   uint8_t pgm_variant: 3;
+} device_def;
+
+typedef struct IC {
+  char manufacturer[10];
+  char name[11];
+  device_def device_definition;
 } IC;
 
 #endif

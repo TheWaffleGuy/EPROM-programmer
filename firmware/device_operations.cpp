@@ -451,7 +451,7 @@ static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   delayMicroseconds(3);
   if (adr.val_split[1] != latched_adr) {
     latched_adr = adr.val_split[1];
-    if (is_2364_mode) {
+    if (is_2364_mode && selected_ic.device_definition.f_2364_compat_pinout) {
       uint8_t a10 = ( adr.val_split[1] & 0b00000100 ) > 1;
       uint8_t a11 = ( adr.val_split[1] & 0b00001000 ) > 1;
       uint8_t a12 = ( adr.val_split[1] & 0b00010000 ) > 1;

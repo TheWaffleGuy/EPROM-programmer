@@ -712,6 +712,11 @@ const IC ics[] PROGMEM = {
     .device_definition = GENERIC_2732
   },
   {
+    MANUFACTURER("NATIONAL"),
+    NAME("NMC27C32"),
+    .device_definition = GENERIC_2732
+  },
+  {
     MANUFACTURER("TI"),
     NAME("TMS2732A"),
     .device_definition = {

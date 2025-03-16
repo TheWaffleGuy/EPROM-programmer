@@ -373,13 +373,13 @@ const IC ics[] PROGMEM = {
       .ctrl_pins_read_h = {},
       .vpp = VOLT(13, 0),
       .pgm_pw_us = 100,
-      .pgm_vcc_extra = VOLT(1, 0),
-      .pgm_intial_single_pass = 1,
+      .pgm_vcc_extra = VOLT(1, 500),
+      .pgm_intial_single_pass = 1, //Not implemented at the moment. Overprogram used instead
       .pgm_overprogram_5v_vcc = 0,
       .pgm_overprogram_ignore_verify = 0,
       .pgm_overprogram_multiply_n = 0,
       .pgm_overprogram_after = 0,
-      .pgm_overprogram_pw = 0,
+      .pgm_overprogram_pw = OVERPROGRAM_PW(1, 0),
       .pgm_vpp_pin = PGM_VPP_PIN_P20,
       .pgm_pulses = 10,
       .pgm_vpp_always_on = 0,
@@ -559,7 +559,7 @@ const IC ics[] PROGMEM = {
       .pgm_variant = PGM_VARIANT_VPP_PULSED_POSITIVE
     }
   },
-  { //Assumed to be same algorithm as CY7C264
+  { //Assumed to be same algorithm as CY7C264. Untested!
     MANUFACTURER("CYPRESS"),
     NAME("CY7C244"),
     .device_definition = {
@@ -567,7 +567,7 @@ const IC ics[] PROGMEM = {
       .ctrl_pins_read_h = { 18 },
       .vpp = VOLT(12, 500),
       .pgm_pw_us = 200,
-      .pgm_vcc_extra = 0, //???
+      .pgm_vcc_extra = 0,
       .pgm_intial_single_pass = 0,
       .pgm_overprogram_5v_vcc = 0,
       .pgm_overprogram_ignore_verify = 1,

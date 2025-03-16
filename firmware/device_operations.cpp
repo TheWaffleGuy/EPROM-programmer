@@ -480,7 +480,6 @@ static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   delayMicroseconds(3);
 }
 
-//Untested!
 void write_data() {
   uint8_t pulse_number;
   uint16_t address_start = 0;

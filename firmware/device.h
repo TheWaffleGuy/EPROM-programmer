@@ -43,7 +43,7 @@ typedef struct device_def {
 } device_def;
 
 typedef struct IC {
-  char manufacturer[10];
+  char manufacturer[14];
   char name[12];
   device_def device_definition;
 } IC;

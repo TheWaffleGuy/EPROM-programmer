@@ -157,6 +157,27 @@ const device_def GENERIC_2758_H PROGMEM = {
   .pgm_variant = PGM_VARIANT_P18_PULSED_POSITIVE
 };
 
+const device_def GENERIC_2716 PROGMEM = {
+  .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
+  .ctrl_pins_read_h = { 21 },
+  .vpp = VOLT(25, 0),
+  .pgm_pw_us = 50000,
+  .pgm_vcc_extra = 0,
+  .pgm_intial_single_pass = 0,
+  .pgm_overprogram_5v_vcc = 0,
+  .pgm_overprogram_ignore_verify = 0,
+  .pgm_overprogram_multiply_n = 0,
+  .pgm_overprogram_after = 0,
+  .pgm_overprogram_pw = 0,
+  .pgm_vpp_pin = PGM_VPP_PIN_P21,
+  .pgm_pulses = 1,
+  .pgm_vpp_always_on = 1,
+  .f_can_blank_check = 1,
+  .f_blank_check_value = 1,
+  .f_2364_compat_pinout = 0,
+  .pgm_variant = PGM_VARIANT_P18_PULSED_POSITIVE
+};
+
 const IC ics[] PROGMEM = {
   {
     MANUFACTURER("CYPRESS"),
@@ -737,28 +758,129 @@ const IC ics[] PROGMEM = {
     }
   },
   {
-    MANUFACTURER("GENERIC"),
+    MANUFACTURER("AMD"),
+    NAME("AM2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("EUROTECHNIQUE"),
+    NAME("ET2716Q"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("EUROTECHNIQUE"),
+    NAME("ETC2716Q"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("FUJUTSU"),
+    NAME("MBM2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("FUJUTSU"),
+    NAME("MB8516"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("HITACHI"),
+    NAME("HN462716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("INTEL"),
     NAME("2716"),
-    .device_definition = {
-      .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19 },
-      .ctrl_pins_read_h = { 21 },
-      .vpp = VOLT(25, 0),
-      .pgm_pw_us = 50000,
-      .pgm_vcc_extra = 0,
-      .pgm_intial_single_pass = 0,
-      .pgm_overprogram_5v_vcc = 0,
-      .pgm_overprogram_ignore_verify = 0,
-      .pgm_overprogram_multiply_n = 0,
-      .pgm_overprogram_after = 0,
-      .pgm_overprogram_pw = 0,
-      .pgm_vpp_pin = PGM_VPP_PIN_P21,
-      .pgm_pulses = 1,
-      .pgm_vpp_always_on = 1,
-      .f_can_blank_check = 1,
-      .f_blank_check_value = 1,
-      .f_2364_compat_pinout = 0,
-      .pgm_variant = PGM_VARIANT_P18_PULSED_POSITIVE
-    }
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("MITSUBISHI"),
+    NAME("M5L2716K"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("RFT"),
+    NAME("U2716C"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("MOTOROLA"),
+    NAME("MCM2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("NATIONAL"),
+    NAME("MM2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("NEC"),
+    NAME("D2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("NTE"),
+    NAME("NTE2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("OKI"),
+    NAME("MSM2716AS"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("ST"),
+    NAME("M2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("SOVIET"),
+    NAME("573RF2"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("TESLA"),
+    NAME("MHB2716C"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("TI"),
+    NAME("TMS2516"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("THOMSON"),
+    NAME("ET2716Q"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("ST"),
+    NAME("ET2716Q"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("TOSHIBA"),
+    NAME("TMM323D"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("ST"),
+    NAME("M2716A"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("NATIONAL"),
+    NAME("NMC27C16"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("MOSTEK"),
+    NAME("MK2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("SIEMENS"),
+    NAME("SAB2716"),
+    .device_definition = GENERIC_2716
   },
   {
     MANUFACTURER("WSI"),

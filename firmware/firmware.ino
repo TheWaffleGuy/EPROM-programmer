@@ -128,6 +128,9 @@ void list_devices() {
     write_byte(i);
     Serial.print(") ");
     Serial.print(reinterpret_cast<const __FlashStringHelper *>(ics[i].manufacturer));
+    for(uint8_t j = 0; j < sizeof(ics[i].manufacturer) - 1 - strlen_P(ics[i].manufacturer); j++) {
+      Serial.print(' ');
+    }
     Serial.print(" - ");
     Serial.println(reinterpret_cast<const __FlashStringHelper *>(ics[i].name));
   }

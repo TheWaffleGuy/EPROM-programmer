@@ -178,6 +178,48 @@ const device_def GENERIC_2716 PROGMEM = {
   .pgm_variant = PGM_VARIANT_P18_PULSED_POSITIVE
 };
 
+const device_def GENERIC_2732 PROGMEM = {
+  .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
+  .ctrl_pins_read_h = {},
+  .vpp = VOLT(25, 0),
+  .pgm_pw_us = 50000,
+  .pgm_vcc_extra = 0,
+  .pgm_intial_single_pass = 0,
+  .pgm_overprogram_5v_vcc = 0,
+  .pgm_overprogram_ignore_verify = 0,
+  .pgm_overprogram_multiply_n = 0,
+  .pgm_overprogram_after = 0,
+  .pgm_overprogram_pw = 0,
+  .pgm_vpp_pin = PGM_VPP_PIN_P20,
+  .pgm_pulses = 1,
+  .pgm_vpp_always_on = 0,
+  .f_can_blank_check = 1,
+  .f_blank_check_value = 1,
+  .f_2364_compat_pinout = 0,
+  .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
+};
+
+const device_def GENERIC_2732A PROGMEM = {
+  .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
+  .ctrl_pins_read_h = {},
+  .vpp = VOLT(21, 0),
+  .pgm_pw_us = 50000,
+  .pgm_vcc_extra = 0,
+  .pgm_intial_single_pass = 0,
+  .pgm_overprogram_5v_vcc = 0,
+  .pgm_overprogram_ignore_verify = 0,
+  .pgm_overprogram_multiply_n = 0,
+  .pgm_overprogram_after = 0,
+  .pgm_overprogram_pw = 0,
+  .pgm_vpp_pin = PGM_VPP_PIN_P20,
+  .pgm_pulses = 1,
+  .pgm_vpp_always_on = 0,
+  .f_can_blank_check = 1,
+  .f_blank_check_value = 1,
+  .f_2364_compat_pinout = 0,
+  .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
+};
+
 const IC ics[] PROGMEM = {
   {
     MANUFACTURER("CYPRESS"),
@@ -613,29 +655,61 @@ const IC ics[] PROGMEM = {
       .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
     }
   },
+
   {
-    MANUFACTURER("GENERIC"),
+    MANUFACTURER("AMD"),
+    NAME("AM2732"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("EUROTECHNIQUE"),
+    NAME("ET2732Q"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("EUROTECHNIQUE"),
+    NAME("ETC2732Q"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("FUJITSU"),
+    NAME("MBM2732"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("FUJITSU"),
+    NAME("MB8532"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("HITACHI"),
+    NAME("HN462732G"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("INTEL"),
     NAME("2732"),
-    .device_definition = {
-      .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
-      .ctrl_pins_read_h = {},
-      .vpp = VOLT(25, 0),
-      .pgm_pw_us = 50000,
-      .pgm_vcc_extra = 0,
-      .pgm_intial_single_pass = 0,
-      .pgm_overprogram_5v_vcc = 0,
-      .pgm_overprogram_ignore_verify = 0,
-      .pgm_overprogram_multiply_n = 0,
-      .pgm_overprogram_after = 0,
-      .pgm_overprogram_pw = 0,
-      .pgm_vpp_pin = PGM_VPP_PIN_P20,
-      .pgm_pulses = 1,
-      .pgm_vpp_always_on = 0,
-      .f_can_blank_check = 1,
-      .f_blank_check_value = 1,
-      .f_2364_compat_pinout = 0,
-      .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
-    }
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("MITSUBISHI"),
+    NAME("M5L2732K"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("RFT"),
+    NAME("U2732"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("NEC"),
+    NAME("D2732"),
+    .device_definition = GENERIC_2732
+  },
+  {
+    MANUFACTURER("TOSHIBA"),
+    NAME("TMM2732D"),
+    .device_definition = GENERIC_2732
   },
   {
     MANUFACTURER("TI"),
@@ -662,28 +736,54 @@ const IC ics[] PROGMEM = {
     }
   },
   {
-    MANUFACTURER("GENERIC"),
+    MANUFACTURER("NTE"),
+    NAME("NTE2732A"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("AMD"),
+    NAME("AM2732A"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("FUJITSU"),
+    NAME("MBM2732A"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("HITACHI"),
+    NAME("HN482732AG"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("INTEL"),
     NAME("2732A"),
-    .device_definition = {
-      .adr_pins = { 8, 7, 6, 5, 4, 3, 2, 1, 23, 22, 19, 21 },
-      .ctrl_pins_read_h = {},
-      .vpp = VOLT(21, 0),
-      .pgm_pw_us = 50000,
-      .pgm_vcc_extra = 0,
-      .pgm_intial_single_pass = 0,
-      .pgm_overprogram_5v_vcc = 0,
-      .pgm_overprogram_ignore_verify = 0,
-      .pgm_overprogram_multiply_n = 0,
-      .pgm_overprogram_after = 0,
-      .pgm_overprogram_pw = 0,
-      .pgm_vpp_pin = PGM_VPP_PIN_P20,
-      .pgm_pulses = 1,
-      .pgm_vpp_always_on = 0,
-      .f_can_blank_check = 1,
-      .f_blank_check_value = 1,
-      .f_2364_compat_pinout = 0,
-      .pgm_variant = PGM_VARIANT_P18_PULSED_NEGATIVE
-    }
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("NEC"),
+    NAME("uPD2732A"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("ROCKWELL"),
+    NAME("R87C32"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("SIEMENS"),
+    NAME("SAB2732A"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("ST"),
+    NAME("M2732A"),
+    .device_definition = GENERIC_2732A
+  },
+  {
+    MANUFACTURER("FUJITSU"),
+    NAME("MBM27C32A"),
+    .device_definition = GENERIC_2732A
   },
   {
     MANUFACTURER("NATIONAL"),

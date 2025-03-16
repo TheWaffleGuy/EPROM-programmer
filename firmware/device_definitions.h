@@ -762,7 +762,7 @@ const IC ics[] PROGMEM = {
   },
   {
     MANUFACTURER("NEC"),
-    NAME("uPD2732A"),
+    NAME("D2732A"),
     .device_definition = GENERIC_2732A
   },
   {

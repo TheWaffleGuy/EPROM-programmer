@@ -236,8 +236,18 @@ class MainFrame(wx.Frame):
         self.serial = None
 
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnOpen' not implemented!")
-        event.Skip()
+        with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*.*",
+                        style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return
+
+            pathname = fileDialog.GetPath()
+            try:
+                with open(pathname, 'rb') as file:
+                    self.upload(file)
+            except IOError:
+                wx.LogError("Cannot open file '%s'." % newfile)
 
     def OnSave(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnSave' not implemented!")
@@ -282,6 +292,28 @@ class MainFrame(wx.Frame):
                 self.debug_text_ctrl.Remove(self.debug_text_ctrl.GetLastPosition() - 1, self.debug_text_ctrl.GetLastPosition())
         else:
             self.debug_text_ctrl.AppendText(event.data.decode('UTF-8', 'replace'))
+
+    def print_record(self, type, data, address):
+        if data is None:
+            data = bytearray()
+        record_length = len(data) + 3; # 2 bytes for address, 1 for checksum
+        chksum = ~ ( sum(data) + record_length + ( address & 0xFF ) + ( address >> 8 ) ) & 0xFF
+        data_str = data.hex().upper()
+        self.serial.write(f"{type}{record_length:02X}{address:04X}{data_str}{chksum:02X}\n".encode('UTF-8', 'replace'))
+
+    def upload(self, file):
+        count = 0
+        header = bytes('HDR', 'iso-8859-1')
+        self.print_record("S0", header, 0)
+
+        data = file.read(32)
+        while data:
+            self.print_record("S1", data, 32*count)
+            count += 1
+            data = file.read(32)
+
+        self.print_record("S5", None, count)
+        self.print_record("S9", None, 0)
 
     def ComPortRxThread(self):
         while self.alive.is_set():

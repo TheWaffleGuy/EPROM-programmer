@@ -7,6 +7,9 @@
 #include "device.h"
 #include "firmware.h"
 
+#define VCC_REGULATOR_REFERENCE_VOLTAGE VOLT(1, 250)
+#define VPP_REGULATOR_REFERENCE_VOLTAGE VOLT(1, 250)
+
 #define VCC_EN_PORT PORTD
 #define VCC_EN_PIN 6
 
@@ -596,7 +599,7 @@ void setVCC(uint8_t volt, uint8_t calibrated) {
   if(calibrated) {
     offset = ( ( VCC_CAL_HIGH - volt ) * v_offset.vcc_low + ( volt - VCC_CAL_LOW ) * v_offset.vcc_high ) / ( VCC_CAL_HIGH - VCC_CAL_LOW );
   }
-  volt -= VOLT(1, 250);
+  volt -= VCC_REGULATOR_REFERENCE_VOLTAGE;
   uint16_t data = 0b1011000000000000 | ( (volt << 4) + offset );
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));
@@ -611,7 +614,7 @@ void setVPP(uint8_t volt, uint8_t calibrated) {
   if(calibrated) {
     offset = ( ( VPP_CAL_HIGH - volt ) * v_offset.vpp_low + ( volt - VPP_CAL_LOW ) * v_offset.vpp_high ) / ( VPP_CAL_HIGH - VPP_CAL_LOW );
   }
-  volt -= VOLT(1, 250);
+  volt -= VPP_REGULATOR_REFERENCE_VOLTAGE;
   uint16_t data = 0b0011000000000000 | ( (volt << 4) + offset );
 
   SPI.beginTransaction(SPISettings(F_CPU / 2, MSBFIRST, SPI_MODE0));

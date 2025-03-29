@@ -8,6 +8,7 @@ import wx
 import wx.lib.newevent
 import serial
 import threading
+import queue
 from tool import find_programmer, get_com_port, DeviceError
 
 # begin wxGlade: dependencies
@@ -235,6 +236,8 @@ class MainFrame(wx.Frame):
         self.thread = None
         self.serial = None
 
+        self.txQueue = queue.Queue()
+
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*.*",
                         style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
@@ -254,6 +257,7 @@ class MainFrame(wx.Frame):
         event.Skip()
 
     def OnExit(self, event):  # wxGlade: MainFrame.<event_handler>
+        self.StopTxThread()
         self.StopRxThread()
         if self.serial is not None:
             self.serial.close()
@@ -264,13 +268,13 @@ class MainFrame(wx.Frame):
         event.Skip()
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
-        self.serial.write('R\n'.encode('UTF-8', 'replace'))
+        self.txQueue.put('R\n')
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
-        self.serial.write('B\n'.encode('UTF-8', 'replace'))
+        self.txQueue.put('B\n')
 
     def OnDeviceVerify(self, event):  # wxGlade: MainFrame.<event_handler>
-        self.serial.write('C\n'.encode('UTF-8', 'replace'))
+        self.txQueue.put('C\n')
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnDeviceProgram' not implemented!")
@@ -279,10 +283,10 @@ class MainFrame(wx.Frame):
     def OnDebugText(self, event):  # wxGlade: MainFrame.<event_handler>
         code = event.GetKeyCode()
         if code == 13:
-            self.serial.write(b'\n')
+            self.txQueue.put('\n')
         else:
             char = chr(code)
-            self.serial.write(char.encode('UTF-8', 'replace'))
+            self.txQueue.put(char)
         event.StopPropagation()
 
     def OnSerialRx(self, event):  # wxGlade: MainFrame.<event_handler>
@@ -299,7 +303,7 @@ class MainFrame(wx.Frame):
         record_length = len(data) + 3; # 2 bytes for address, 1 for checksum
         chksum = ~ ( sum(data) + record_length + ( address & 0xFF ) + ( address >> 8 ) ) & 0xFF
         data_str = data.hex().upper()
-        self.serial.write(f"{type}{record_length:02X}{address:04X}{data_str}{chksum:02X}\n".encode('UTF-8', 'replace'))
+        self.txQueue.put(f"{type}{record_length:02X}{address:04X}{data_str}{chksum:02X}\n")
 
     def upload(self, file):
         count = 0
@@ -315,6 +319,23 @@ class MainFrame(wx.Frame):
         self.print_record("S5", None, count)
         self.print_record("S9", None, 0)
 
+    def ComPortTxThread(self):
+        while True:
+            try:
+                item = self.txQueue.get()
+                self.serial.write(item.encode('UTF-8', 'replace'))
+                self.txQueue.task_done()
+            except queue.ShutDown:
+                break
+
+    def StartTxThread(self):
+        self.txThread = threading.Thread(target=self.ComPortTxThread, daemon = True)
+        self.txThread.start()
+
+    def StopTxThread(self):
+        self.txQueue.shutdown()
+        self.txThread.join()
+
     def ComPortRxThread(self):
         while self.alive.is_set():
             b = self.serial.read(self.serial.in_waiting or 1)
@@ -323,8 +344,7 @@ class MainFrame(wx.Frame):
                 wx.PostEvent(self, SerialRxEvent(data=b))
 
     def StartRxThread(self):
-        self.thread = threading.Thread(target=self.ComPortRxThread)
-        self.thread.daemon = True
+        self.thread = threading.Thread(target=self.ComPortRxThread, daemon = True)
         self.alive.set()
         self.thread.start()
 
@@ -341,6 +361,7 @@ class MainFrame(wx.Frame):
             self.serial = serial.Serial(com_port, 38400, timeout=1)
             self.alive = threading.Event()
             self.StartRxThread()
+            self.StartTxThread()
         except DeviceError as de:
             with ErrorFrame(self, -1, "", error_message=str(de)) as dialog:
                 dialog.CenterOnParent()

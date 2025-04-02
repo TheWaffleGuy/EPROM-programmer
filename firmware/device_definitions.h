@@ -559,7 +559,7 @@ const IC ics[] PROGMEM = {
       .pgm_variant = PGM_VARIANT_VPP_PULSED_POSITIVE
     }
   },
-  { //Assumed to be same algorithm as CY7C264. Untested!
+  { //Same algorithm as CY7C264
     MANUFACTURER("CYPRESS"),
     NAME("CY7C244"),
     .device_definition = {

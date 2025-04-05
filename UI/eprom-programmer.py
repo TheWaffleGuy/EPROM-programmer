@@ -20,7 +20,105 @@ SerialRxEvent, EVT_SERIALRX = wx.lib.newevent.NewEvent()
 SERIALRX = wx.NewEventType()
 # end wxGlade
 
+import wx.lib.mixins.listctrl as listmix
 
+class AutoSizingListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
+    def __init__(self, parent, ID, pos=wx.DefaultPosition,
+                 size=wx.DefaultSize, style=0):
+        wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
+        listmix.ListCtrlAutoWidthMixin.__init__(self)
+        self.setResizeColumn(0)
+
+
+class SelectDeviceDialog(wx.Dialog):
+    def __init__(self, *args, **kwds):
+        wx.Dialog.__init__(self, *args, **kwds)
+        # begin wxGlade: SelectDeviceDialog.__init__
+        kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_DIALOG_STYLE
+        wx.Dialog.__init__(self, *args, **kwds)
+        self.SetTitle("Select a device")
+
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+
+        sizer_1.Add((0, 10), 0, 0, 0)
+
+        filter_devices_sizer = wx.WrapSizer(wx.HORIZONTAL)
+        sizer_1.Add(filter_devices_sizer, 0, wx.ALIGN_CENTER_HORIZONTAL, 0)
+
+        filter_devices_label = wx.StaticText(self, wx.ID_ANY, "Filter Devices")
+        filter_devices_sizer.Add(filter_devices_label, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        self.filter_devices_text_ctrl = wx.TextCtrl(self, wx.ID_ANY, "")
+        self.filter_devices_text_ctrl.SetMinSize((200, -1))
+        filter_devices_sizer.Add(self.filter_devices_text_ctrl, 0, 0, 0)
+
+        sizer_1.Add((0, 10), 0, 0, 0)
+
+        device_list_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_1.Add(device_list_sizer, 1, wx.EXPAND, 0)
+
+        device_list_sizer.Add((10, 0), 0, 0, 0)
+
+        self.device_list_ctrl = AutoSizingListCtrl(self, wx.ID_ANY, style=wx.LC_HRULES | wx.LC_NO_HEADER | wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_VRULES)
+        self.device_list_ctrl.InsertColumn(0, "Device", format=wx.LIST_FORMAT_LEFT, width=-1)
+        device_list_sizer.Add(self.device_list_ctrl, 1, 0, 0)
+
+        device_list_sizer.Add((10, 0), 0, 0, 0)
+
+        select_device_button_sizer = wx.StdDialogButtonSizer()
+        sizer_1.Add(select_device_button_sizer, 0, wx.ALIGN_RIGHT | wx.ALL, 4)
+
+        self.button_OK = wx.Button(self, wx.ID_OK, "")
+        self.button_OK.Enable(False)
+        self.button_OK.SetDefault()
+        select_device_button_sizer.AddButton(self.button_OK)
+
+        self.button_CANCEL = wx.Button(self, wx.ID_CANCEL, "")
+        select_device_button_sizer.AddButton(self.button_CANCEL)
+
+        select_device_button_sizer.Realize()
+
+        self.SetSizer(sizer_1)
+        sizer_1.Fit(self)
+
+        self.SetAffirmativeId(self.button_OK.GetId())
+        self.SetEscapeId(self.button_CANCEL.GetId())
+
+        self.Layout()
+
+        self.filter_devices_text_ctrl.Bind(wx.EVT_TEXT, self.OnFilter)
+        self.device_list_ctrl.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.onListItemSelect)
+        self.device_list_ctrl.Bind(wx.EVT_LIST_ITEM_FOCUSED, self.onListItemFocused)
+        # end wxGlade
+
+        self.items = []
+
+    def OnAddRow(self, text):
+        self.items.append(text)
+        index = self.device_list_ctrl.InsertItem(self.device_list_ctrl.GetItemCount(), text)
+        self.device_list_ctrl.SetItem(index, 0, text)
+
+    def onListItemSelect(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
+        self.EndModal(wx.ID_OK)
+
+    def GetSelectedDevice(self):
+        selected_index = self.device_list_ctrl.GetFirstSelected()
+        if selected_index != -1:
+            return self.device_list_ctrl.GetItemText(selected_index)
+
+    def OnFilter(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
+        filter_text = self.filter_devices_text_ctrl.GetValue().lower()
+        self.device_list_ctrl.DeleteAllItems()
+        for item in self.items:
+            if filter_text in item.lower():
+                self.device_list_ctrl.InsertItem(self.device_list_ctrl.GetItemCount(), item)
+        self.button_OK.Enable(False)
+
+    def onListItemFocused(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
+        self.button_OK.Enable(True)
+
+
+# end of class SelectDeviceDialog
 class ErrorFrame(wx.Dialog):
     def __init__(self, *args, **kwds):
         error_message_str = kwds["error_message"]
@@ -264,8 +362,13 @@ class MainFrame(wx.Frame):
         self.Destroy()
 
     def OnDeviceSelect(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnDeviceSelect' not implemented!")
-        event.Skip()
+        with SelectDeviceDialog(self) as dlg:
+            dlg.OnAddRow("Example Device")
+            dlg.OnAddRow("Another example Device")
+            dlg.OnAddRow("Third example Device")
+            result = dlg.ShowModal()
+            if result == wx.ID_OK:
+                print(dlg.GetSelectedDevice())
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
         self.txQueue.put('R\n')

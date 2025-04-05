@@ -95,8 +95,7 @@ class SelectDeviceDialog(wx.Dialog):
 
     def OnAddRow(self, text):
         self.items.append(text)
-        index = self.device_list_ctrl.InsertItem(self.device_list_ctrl.GetItemCount(), text)
-        self.device_list_ctrl.SetItem(index, 0, text)
+        self.device_list_ctrl.InsertItem(self.device_list_ctrl.GetItemCount(), text)
 
     def onListItemSelect(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
         self.EndModal(wx.ID_OK)

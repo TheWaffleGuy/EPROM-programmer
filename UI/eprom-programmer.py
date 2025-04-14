@@ -11,6 +11,7 @@ import threading
 import queue
 from tool import find_programmer, get_com_port, DeviceError
 from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices
+import re
 
 processor = CommandProcessor()
 
@@ -215,10 +216,14 @@ class MainFrame(wx.Frame):
         self.SetToolBar(self.frame_toolbar)
         self.frame_toolbar.Realize()
         # Tool Bar end
-        person_label = wx.StaticText(self.frame_toolbar, -1, "Selected Device:",
-                                     wx.Point (0, 0)) 
-        person_combo = wx.ComboBox(self.frame_toolbar, wx.ID_ANY)
-        self.frame_toolbar.AddControl(person_label)
+        selected_device_label = wx.StaticText(self.frame_toolbar, -1, "Selected Device:",
+                                     wx.Point (0, 0))
+        self.frame_toolbar.AddControl(selected_device_label)
+        self.selected_device = wx.StaticText(self.frame_toolbar, -1, "Selected Device:",
+                                     wx.Point (0, 0))
+        select_device_font = wx.Font(wx.FontInfo().Bold())
+        self.selected_device.SetFont(select_device_font)
+        self.frame_toolbar.AddControl(self.selected_device)
 
         sizer_1 = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -372,7 +377,9 @@ class MainFrame(wx.Frame):
             processor.execute_commands([ListDevices()], self.txQueue, lambda result: self.addAlternatives(dlg, result[0]))
             result = dlg.ShowModal()
             if result == wx.ID_OK:
-                self.txQueue.put("t" + dlg.GetSelectedDevice().split(')', 1)[0] + "\n")
+                device_id, device_name = dlg.GetSelectedDevice().split(')', 1)
+                self.txQueue.put("t" + device_id + "\n")
+                self.selected_device.SetLabel(re.sub(' +', ' ', device_name))
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
         processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result: print(result[1]))

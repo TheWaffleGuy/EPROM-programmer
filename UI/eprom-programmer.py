@@ -73,7 +73,7 @@ class AutoSizingListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
                  size=wx.DefaultSize, style=0):
         wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
-        self.setResizeColumn(0)
+        self.setResizeColumn('LAST')
 
 
 class SelectDeviceDialog(wx.Dialog):
@@ -105,8 +105,11 @@ class SelectDeviceDialog(wx.Dialog):
 
         device_list_sizer.Add((10, 0), 0, 0, 0)
 
-        self.device_list_ctrl = AutoSizingListCtrl(self, wx.ID_ANY, style=wx.LC_HRULES | wx.LC_NO_HEADER | wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_VRULES)
-        self.device_list_ctrl.InsertColumn(0, "Device", format=wx.LIST_FORMAT_LEFT, width=-1)
+        self.device_list_ctrl = AutoSizingListCtrl(self, wx.ID_ANY, style=wx.LC_HRULES | wx.LC_REPORT | wx.LC_SINGLE_SEL | wx.LC_VRULES)
+        self.device_list_ctrl.SetMinSize((300, -1))
+        self.device_list_ctrl.InsertColumn(0, "ID", format=wx.LIST_FORMAT_LEFT, width=0)
+        self.device_list_ctrl.InsertColumn(1, "Manufacturer", format=wx.LIST_FORMAT_LEFT, width=-1)
+        self.device_list_ctrl.InsertColumn(2, "Name", format=wx.LIST_FORMAT_LEFT, width=-1)
         device_list_sizer.Add(self.device_list_ctrl, 1, 0, 0)
 
         device_list_sizer.Add((10, 0), 0, 0, 0)
@@ -133,15 +136,24 @@ class SelectDeviceDialog(wx.Dialog):
         self.Layout()
 
         self.filter_devices_text_ctrl.Bind(wx.EVT_TEXT, self.OnFilter)
+        self.device_list_ctrl.Bind(wx.EVT_LIST_COL_BEGIN_DRAG, self.onColBeginDrag)
         self.device_list_ctrl.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.onListItemSelect)
         self.device_list_ctrl.Bind(wx.EVT_LIST_ITEM_FOCUSED, self.onListItemFocused)
         # end wxGlade
 
         self.items = []
 
+    def insert_item(self, item):
+        id, device = item.split(')', 1)
+        manufacturer, name = device.split('-', 1)
+        item_count = self.device_list_ctrl.GetItemCount()
+        self.device_list_ctrl.InsertItem(item_count, id.strip())
+        self.device_list_ctrl.SetItem(item_count, 1, manufacturer.strip())
+        self.device_list_ctrl.SetItem(item_count, 2, name.strip())
+
     def OnAddRow(self, text):
         self.items.append(text)
-        self.device_list_ctrl.InsertItem(self.device_list_ctrl.GetItemCount(), text)
+        self.insert_item(text)
 
     def onListItemSelect(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
         self.EndModal(wx.ID_OK)
@@ -149,19 +161,22 @@ class SelectDeviceDialog(wx.Dialog):
     def GetSelectedDevice(self):
         selected_index = self.device_list_ctrl.GetFirstSelected()
         if selected_index != -1:
-            return self.device_list_ctrl.GetItemText(selected_index)
+            return self.device_list_ctrl.GetItemText(selected_index, 0), self.device_list_ctrl.GetItemText(selected_index, 1) + ' - ' + self.device_list_ctrl.GetItemText(selected_index, 2)
 
     def OnFilter(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
         filter_text = self.filter_devices_text_ctrl.GetValue().lower()
         self.device_list_ctrl.DeleteAllItems()
         for item in self.items:
             if filter_text in item.lower():
-                self.device_list_ctrl.InsertItem(self.device_list_ctrl.GetItemCount(), item)
+                self.insert_item(item)
         self.button_OK.Enable(False)
 
     def onListItemFocused(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
         self.button_OK.Enable(True)
 
+
+    def onColBeginDrag(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
+        event.Veto()
 
 # end of class SelectDeviceDialog
 class ErrorFrame(wx.Dialog):
@@ -423,15 +438,16 @@ class MainFrame(wx.Frame):
     def addAlternatives(self, dlg, alternatives):
         for alternative in alternatives:
             dlg.OnAddRow(alternative)
+        dlg.device_list_ctrl.SetColumnWidth(1, wx.LIST_AUTOSIZE)
 
     def OnDeviceSelect(self, event):  # wxGlade: MainFrame.<event_handler>
         with SelectDeviceDialog(self) as dlg:
             processor.execute_commands([ListDevices()], self.txQueue, lambda result, status: self.addAlternatives(dlg, result[0]))
             result = dlg.ShowModal()
             if result == wx.ID_OK:
-                device_id, device_name = dlg.GetSelectedDevice().split(')', 1)
+                device_id, device_name = dlg.GetSelectedDevice()
                 self.txQueue.put("t" + device_id + "\n")
-                self.selected_device.SetLabel(re.sub(' +', ' ', device_name))
+                self.selected_device.SetLabel(device_name)
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
         processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result, status: print(result[1]))

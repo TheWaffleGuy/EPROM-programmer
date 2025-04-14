@@ -10,7 +10,7 @@ import serial
 import threading
 import queue
 from tool import find_programmer, get_com_port, DeviceError
-from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices
+from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices, BlankCheck, Verify
 import re
 
 processor = CommandProcessor()
@@ -26,6 +26,48 @@ SERIALRX = wx.NewEventType()
 
 import wx.lib.mixins.listctrl as listmix
 
+
+class InfoFrame(wx.Dialog):
+    def __init__(self, *args, **kwds):
+        info_message_str = kwds["info_message"]
+        del kwds["info_message"]
+
+        # begin wxGlade: InfoFrame.__init__
+        kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_DIALOG_STYLE
+        wx.Dialog.__init__(self, *args, **kwds)
+        self.SetTitle("Info")
+
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+
+        info_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_1.Add(info_sizer, 0, wx.ALL | wx.EXPAND, 4)
+
+        info_image = wx.StaticBitmap(self, wx.ID_ANY, wx.ArtProvider.GetBitmap(wx.ART_INFORMATION, wx.ART_MESSAGE_BOX, (36, 36)))
+        info_sizer.Add(info_image, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        info_message = wx.StaticText(self, wx.ID_ANY, "")
+        info_message.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "Sans"))
+        info_message.SetLabel(info_message_str)
+        info_sizer.Add(info_message, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        button_sizer = wx.StdDialogButtonSizer()
+        sizer_1.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.ALL, 4)
+
+        self.button_OK = wx.Button(self, wx.ID_OK, "")
+        self.button_OK.SetDefault()
+        button_sizer.AddButton(self.button_OK)
+
+        button_sizer.Realize()
+
+        self.SetSizer(sizer_1)
+        sizer_1.Fit(self)
+
+        self.SetAffirmativeId(self.button_OK.GetId())
+
+        self.Layout()
+        # end wxGlade
+
+# end of class InfoFrame
 class AutoSizingListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
     def __init__(self, parent, ID, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, style=0):
@@ -343,6 +385,11 @@ class MainFrame(wx.Frame):
 
         self.txQueue = queue.Queue()
 
+    def display_info(self, info):
+        with InfoFrame(self, -1, "", info_message=info) as dialog:
+            dialog.CenterOnParent()
+            dialog.ShowModal()
+
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*.*",
                         style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
@@ -385,10 +432,10 @@ class MainFrame(wx.Frame):
         processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result: print(result[1]))
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
-        self.txQueue.put('B\n')
+        processor.execute_commands([BlankCheck()], self.txQueue, lambda result: self.display_info(result[0]))
 
     def OnDeviceVerify(self, event):  # wxGlade: MainFrame.<event_handler>
-        self.txQueue.put('C\n')
+        processor.execute_commands([Verify()], self.txQueue, lambda result: self.display_info(result[0]))
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnDeviceProgram' not implemented!")

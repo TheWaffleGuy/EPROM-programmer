@@ -2,7 +2,6 @@ from enum import Enum
 
 class CommandStatus(Enum):
     FINISHED = "finished"
-    CANCELLED = "cancelled"
     ERROR = "error"
     CONTINUE = "continue"
 
@@ -55,9 +54,9 @@ class CommandProcessor:
                 else:
                     self.txQueue.put(self.commands[self.current_command_index].get_command() + "\n")
             case CommandStatus.ERROR:
-                print("Error occurred.")
-            case CommandStatus.CANCELLED:
-                print("Processing cancelled.")
+                self.result.append(result)
+                self.callback(self.result)
+                self.reset()
             case CommandStatus.CONTINUE:
                 pass
 
@@ -114,3 +113,41 @@ class ListDevices(Command):
 
     def get_command(self):
         return "L"
+
+class BlankCheck(Command):
+    def __init__(self):
+        self.result = ""
+
+    def process(self, input_string):
+        if input_string == self.get_command() and len(self.result) == 0:
+            return CommandStatus.CONTINUE, None
+        if input_string == "OK!":
+            return CommandStatus.FINISHED, input_string
+        if len(self.result) == 0:
+            self.result += input_string + "\n"
+            return CommandStatus.CONTINUE, None
+        else:
+            self.result += input_string
+            return CommandStatus.ERROR, self.result
+
+    def get_command(self):
+        return "B"
+
+class Verify(Command):
+    def __init__(self):
+        self.result = ""
+
+    def process(self, input_string):
+        if input_string == self.get_command() and len(self.result) == 0:
+            return CommandStatus.CONTINUE, None
+        if input_string == "OK!":
+            return CommandStatus.FINISHED, input_string
+        if len(self.result) == 0:
+            self.result += input_string + "\n"
+            return CommandStatus.CONTINUE, None
+        else:
+            self.result += input_string
+            return CommandStatus.ERROR, self.result
+
+    def get_command(self):
+        return "C"

@@ -10,6 +10,9 @@ import serial
 import threading
 import queue
 from tool import find_programmer, get_com_port, DeviceError
+from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices
+
+processor = CommandProcessor()
 
 # begin wxGlade: dependencies
 import wx.grid
@@ -360,17 +363,19 @@ class MainFrame(wx.Frame):
             self.serial.close()
         self.Destroy()
 
+    def addAlternatives(self, dlg, alternatives):
+        for alternative in alternatives:
+            dlg.OnAddRow(alternative)
+
     def OnDeviceSelect(self, event):  # wxGlade: MainFrame.<event_handler>
         with SelectDeviceDialog(self) as dlg:
-            dlg.OnAddRow("Example Device")
-            dlg.OnAddRow("Another example Device")
-            dlg.OnAddRow("Third example Device")
+            processor.execute_commands([ListDevices()], self.txQueue, lambda result: self.addAlternatives(dlg, result[0]))
             result = dlg.ShowModal()
             if result == wx.ID_OK:
-                print(dlg.GetSelectedDevice())
+                self.txQueue.put("t" + dlg.GetSelectedDevice().split(')', 1)[0] + "\n")
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
-        self.txQueue.put('R\n')
+        processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result: print(result[1]))
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
         self.txQueue.put('B\n')
@@ -396,8 +401,11 @@ class MainFrame(wx.Frame):
             (_, xpos, _) = self.debug_text_ctrl.PositionToXY(self.debug_text_ctrl.GetInsertionPoint())
             if xpos > 0:
                 self.debug_text_ctrl.Remove(self.debug_text_ctrl.GetLastPosition() - 1, self.debug_text_ctrl.GetLastPosition())
-        else:
-            self.debug_text_ctrl.AppendText(event.data.decode('UTF-8', 'replace'))
+            processor.remove_last_character()
+            return
+        char = event.data.decode('UTF-8', 'replace')
+        self.debug_text_ctrl.AppendText(char)
+        processor.append_character(char)
 
     def print_record(self, type, data, address):
         if data is None:
@@ -478,6 +486,7 @@ class EpromProgrammerApp(wx.App):
         self.SetTopWindow(self.frame)
         self.frame.Show()
         self.frame.StartSerial()
+        self.frame.txQueue.put('\b' * 80)
         return True
 
 # end of class EpromProgrammerApp

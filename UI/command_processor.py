@@ -49,13 +49,13 @@ class CommandProcessor:
                 self.result.append(result)
                 self.current_command_index += 1
                 if self.current_command_index >= len(self.commands):
-                    self.callback(self.result)
+                    self.callback(self.result, status)
                     self.reset()
                 else:
                     self.txQueue.put(self.commands[self.current_command_index].get_command() + "\n")
             case CommandStatus.ERROR:
                 self.result.append(result)
-                self.callback(self.result)
+                self.callback(self.result, status)
                 self.reset()
             case CommandStatus.CONTINUE:
                 pass
@@ -151,3 +151,16 @@ class Verify(Command):
 
     def get_command(self):
         return "C"
+
+class Info(Command):
+
+    def process(self, input_string):
+        if input_string == self.get_command():
+            return CommandStatus.CONTINUE, None
+        if input_string.startswith("Currently selected device is:"):
+            return CommandStatus.FINISHED, input_string.split(":")[1].split('(')[0].strip()
+        else:
+            return CommandStatus.FINISHED, 'No device selected'
+
+    def get_command(self):
+        return "I"

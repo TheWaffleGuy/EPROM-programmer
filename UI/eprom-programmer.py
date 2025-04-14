@@ -10,7 +10,7 @@ import serial
 import threading
 import queue
 from tool import find_programmer, get_com_port, DeviceError
-from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices, BlankCheck, Verify
+from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices, BlankCheck, Verify, CommandStatus, Info
 import re
 
 processor = CommandProcessor()
@@ -261,7 +261,7 @@ class MainFrame(wx.Frame):
         selected_device_label = wx.StaticText(self.frame_toolbar, -1, "Selected Device:",
                                      wx.Point (0, 0))
         self.frame_toolbar.AddControl(selected_device_label)
-        self.selected_device = wx.StaticText(self.frame_toolbar, -1, "Selected Device:",
+        self.selected_device = wx.StaticText(self.frame_toolbar, -1, "",
                                      wx.Point (0, 0))
         select_device_font = wx.Font(wx.FontInfo().Bold())
         self.selected_device.SetFont(select_device_font)
@@ -390,6 +390,11 @@ class MainFrame(wx.Frame):
             dialog.CenterOnParent()
             dialog.ShowModal()
 
+    def display_error(self, error):
+        with ErrorFrame(self, -1, "", error_message=error) as dialog:
+            dialog.CenterOnParent()
+            dialog.ShowModal()
+
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*.*",
                         style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
@@ -421,7 +426,7 @@ class MainFrame(wx.Frame):
 
     def OnDeviceSelect(self, event):  # wxGlade: MainFrame.<event_handler>
         with SelectDeviceDialog(self) as dlg:
-            processor.execute_commands([ListDevices()], self.txQueue, lambda result: self.addAlternatives(dlg, result[0]))
+            processor.execute_commands([ListDevices()], self.txQueue, lambda result, status: self.addAlternatives(dlg, result[0]))
             result = dlg.ShowModal()
             if result == wx.ID_OK:
                 device_id, device_name = dlg.GetSelectedDevice().split(')', 1)
@@ -429,13 +434,13 @@ class MainFrame(wx.Frame):
                 self.selected_device.SetLabel(re.sub(' +', ' ', device_name))
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result: print(result[1]))
+        processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result, status: print(result[1]))
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([BlankCheck()], self.txQueue, lambda result: self.display_info(result[0]))
+        processor.execute_commands([BlankCheck()], self.txQueue, lambda result, status: self.display_info(result[0]))
 
     def OnDeviceVerify(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([Verify()], self.txQueue, lambda result: self.display_info(result[0]))
+        processor.execute_commands([Verify()], self.txQueue, lambda result, status: self.display_info(result[0]) if CommandStatus.FINISHED == status else self.display_error(result[0]))
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnDeviceProgram' not implemented!")
@@ -527,9 +532,7 @@ class MainFrame(wx.Frame):
             self.StartRxThread()
             self.StartTxThread()
         except DeviceError as de:
-            with ErrorFrame(self, -1, "", error_message=str(de)) as dialog:
-                dialog.CenterOnParent()
-                dialog.ShowModal()
+            self.display_error(str(de))
             self.OnExit(None)
 
 # end of class MainFrame
@@ -541,6 +544,7 @@ class EpromProgrammerApp(wx.App):
         self.frame.Show()
         self.frame.StartSerial()
         self.frame.txQueue.put('\b' * 80)
+        processor.execute_commands([Info()], self.frame.txQueue, lambda result, status: self.frame.selected_device.SetLabel((result[0])))
         return True
 
 # end of class EpromProgrammerApp

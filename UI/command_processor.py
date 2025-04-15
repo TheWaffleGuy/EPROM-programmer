@@ -74,6 +74,8 @@ class ReadDevice(Command):
     def process(self, input_string):
         if input_string == self.get_command():
             return CommandStatus.CONTINUE, None
+        if input_string.startswith("No device selected"):
+            return CommandStatus.ERROR, "No device selected"
         if input_string == "OK!":
             return CommandStatus.FINISHED, None
     
@@ -121,6 +123,8 @@ class BlankCheck(Command):
     def process(self, input_string):
         if input_string == self.get_command() and len(self.result) == 0:
             return CommandStatus.CONTINUE, None
+        if input_string.startswith("No device selected"):
+            return CommandStatus.ERROR, "No device selected"
         if input_string == "OK!":
             return CommandStatus.FINISHED, input_string
         if len(self.result) == 0:
@@ -140,6 +144,8 @@ class Verify(Command):
     def process(self, input_string):
         if input_string == self.get_command() and len(self.result) == 0:
             return CommandStatus.CONTINUE, None
+        if input_string.startswith("No device selected"):
+            return CommandStatus.ERROR, "No device selected"
         if input_string == "OK!":
             return CommandStatus.FINISHED, input_string
         if len(self.result) == 0:
@@ -157,10 +163,10 @@ class Info(Command):
     def process(self, input_string):
         if input_string == self.get_command():
             return CommandStatus.CONTINUE, None
+        if input_string.startswith("No device selected"):
+            return CommandStatus.ERROR, "No device selected"
         if input_string.startswith("Currently selected device is:"):
             return CommandStatus.FINISHED, input_string.split(":")[1].split('(')[0].strip()
-        else:
-            return CommandStatus.FINISHED, 'No device selected'
 
     def get_command(self):
         return "I"

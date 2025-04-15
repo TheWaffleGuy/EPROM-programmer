@@ -450,13 +450,13 @@ class MainFrame(wx.Frame):
                 self.selected_device.SetLabel(device_name)
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result, status: print(result[1]))
+        processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result, status: print(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([BlankCheck()], self.txQueue, lambda result, status: self.display_info(result[0]))
+        processor.execute_commands([BlankCheck()], self.txQueue, lambda result, status: self.display_info(result[-1]))
 
     def OnDeviceVerify(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([Verify()], self.txQueue, lambda result, status: self.display_info(result[0]) if CommandStatus.FINISHED == status else self.display_error(result[0]))
+        processor.execute_commands([Verify()], self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
         print("Event handler 'OnDeviceProgram' not implemented!")

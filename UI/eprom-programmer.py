@@ -402,13 +402,13 @@ class MainFrame(wx.Frame):
         checkbox_sizer = wx.BoxSizer(wx.HORIZONTAL)
         options_sizer.Add(checkbox_sizer, 0, wx.EXPAND, 0)
 
-        self.verify_checkbox_copy = wx.CheckBox(self, wx.ID_ANY, "Verify")
-        self.verify_checkbox_copy.SetValue(1)
-        checkbox_sizer.Add(self.verify_checkbox_copy, 0, wx.ALL | wx.EXPAND, 4)
+        self.blank_check_checkbox = wx.CheckBox(self, wx.ID_ANY, "Blank Check")
+        self.blank_check_checkbox.SetValue(1)
+        checkbox_sizer.Add(self.blank_check_checkbox, 0, wx.ALL | wx.EXPAND, 4)
 
-        self.blank_check_checkbox_copy = wx.CheckBox(self, wx.ID_ANY, "Blank Check")
-        self.blank_check_checkbox_copy.SetValue(1)
-        checkbox_sizer.Add(self.blank_check_checkbox_copy, 0, wx.ALL | wx.EXPAND, 4)
+        self.verify_checkbox = wx.CheckBox(self, wx.ID_ANY, "Verify")
+        self.verify_checkbox.SetValue(1)
+        checkbox_sizer.Add(self.verify_checkbox, 0, wx.ALL | wx.EXPAND, 4)
 
         vcc_sizer = wx.BoxSizer(wx.HORIZONTAL)
         options_sizer.Add(vcc_sizer, 0, wx.EXPAND, 0)
@@ -457,13 +457,18 @@ class MainFrame(wx.Frame):
             dialog.ShowModal()
 
     def display_write_device_prompt(self, info):
-        with WriteDevicePrompt(self, -1, "", message=info) as dialog:
+        with WriteDevicePrompt(self, -1, "", message=f"Do you want to continuing programming {info}?") as dialog:
             dialog.CenterOnParent()
             res = dialog.ShowModal()
             if res == wx.ID_OK:
-                processor.execute_commands([WriteDevice()], self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
-            else:
-                self.txQueue.put("N\n")
+                commands = []
+                if self.blank_check_checkbox.IsChecked():
+                    commands.append(BlankCheck())
+                commands.append(WriteDevicePromptCommand())
+                commands.append(WriteDevice())
+                if self.verify_checkbox.IsChecked():
+                    commands.append(Verify())
+                processor.execute_commands(commands, self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*.*",
@@ -514,7 +519,7 @@ class MainFrame(wx.Frame):
         processor.execute_commands([Verify()], self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([WriteDevicePromptCommand()], self.txQueue, lambda result, status: self.display_write_device_prompt(result[-1]))
+        processor.execute_commands([Info()], self.txQueue, lambda result, status: self.display_write_device_prompt(result[-1]))
 
     def OnDebugText(self, event):  # wxGlade: MainFrame.<event_handler>
         code = event.GetKeyCode()

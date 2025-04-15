@@ -49,8 +49,10 @@ class CommandProcessor:
                 self.result.append(result)
                 self.current_command_index += 1
                 if self.current_command_index >= len(self.commands):
-                    self.callback(self.result, status)
+                    l_result = self.result
+                    l_callback = self.callback
                     self.reset()
+                    l_callback(l_result, status)
                 else:
                     self.txQueue.put(self.commands[self.current_command_index].get_command() + "\n")
             case CommandStatus.ERROR:
@@ -81,6 +83,30 @@ class ReadDevice(Command):
     
     def get_command(self):
         return "R"
+
+
+class WriteDevicePromptCommand(Command):
+    def process(self, input_string):
+        if input_string == self.get_command():
+            return CommandStatus.CONTINUE, None
+        if input_string.startswith("No device selected"):
+            return CommandStatus.ERROR, "No device selected"
+        return CommandStatus.FINISHED, input_string.split('[')[0].strip()
+
+    def get_command(self):
+        return "W"
+
+class WriteDevice(Command):
+    def process(self, input_string):
+        if input_string == self.get_command():
+            return CommandStatus.CONTINUE, None
+        if input_string == "OK!":
+            return CommandStatus.FINISHED, input_string
+        else:
+            return CommandStatus.ERROR, input_string
+
+    def get_command(self):
+        return "Y"
 
 class DownloadData(Command):
     def __init__(self):

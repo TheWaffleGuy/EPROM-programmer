@@ -10,7 +10,7 @@ import serial
 import threading
 import queue
 from tool import find_programmer, get_com_port, DeviceError
-from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices, BlankCheck, Verify, CommandStatus, Info
+from command_processor import CommandProcessor, ReadDevice, DownloadData, ListDevices, BlankCheck, Verify, CommandStatus, Info, WriteDevicePromptCommand, WriteDevice
 import re
 
 processor = CommandProcessor()
@@ -27,6 +27,53 @@ SERIALRX = wx.NewEventType()
 import wx.lib.mixins.listctrl as listmix
 
 
+
+class WriteDevicePrompt(wx.Dialog):
+    def __init__(self, *args, **kwds):
+        message_str = kwds["message"]
+        del kwds["message"]
+
+        # begin wxGlade: WriteDevicePrompt.__init__
+        kwds["style"] = kwds.get("style", 0) | wx.DEFAULT_DIALOG_STYLE
+        wx.Dialog.__init__(self, *args, **kwds)
+        self.SetTitle("Continue programming device")
+
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+
+        info_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_1.Add(info_sizer, 0, wx.ALL | wx.EXPAND, 4)
+
+        info_image = wx.StaticBitmap(self, wx.ID_ANY, wx.ArtProvider.GetBitmap(wx.ART_INFORMATION, wx.ART_MESSAGE_BOX, (36, 36)))
+        info_sizer.Add(info_image, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        info_message = wx.StaticText(self, wx.ID_ANY, "")
+        info_message.SetFont(wx.Font(12, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "Sans"))
+        info_message.SetLabel(message_str)
+        info_sizer.Add(info_message, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        button_sizer = wx.StdDialogButtonSizer()
+        sizer_1.Add(button_sizer, 0, wx.ALIGN_RIGHT | wx.ALL, 4)
+
+        self.button_CANCEL = wx.Button(self, wx.ID_CANCEL, "")
+        self.button_CANCEL.SetDefault()
+        button_sizer.AddButton(self.button_CANCEL)
+
+        self.button_OK = wx.Button(self, wx.ID_OK, "")
+        self.button_OK.SetDefault()
+        button_sizer.AddButton(self.button_OK)
+
+        button_sizer.Realize()
+
+        self.SetSizer(sizer_1)
+        sizer_1.Fit(self)
+
+        self.SetAffirmativeId(self.button_OK.GetId())
+        self.SetEscapeId(self.button_CANCEL.GetId())
+
+        self.Layout()
+        # end wxGlade
+
+# end of class WriteDevicePrompt
 class InfoFrame(wx.Dialog):
     def __init__(self, *args, **kwds):
         info_message_str = kwds["info_message"]
@@ -410,6 +457,15 @@ class MainFrame(wx.Frame):
             dialog.CenterOnParent()
             dialog.ShowModal()
 
+    def display_write_device_prompt(self, info):
+        with WriteDevicePrompt(self, -1, "", message=info) as dialog:
+            dialog.CenterOnParent()
+            res = dialog.ShowModal()
+            if res == wx.ID_OK:
+                processor.execute_commands([WriteDevice()], self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
+            else:
+                self.txQueue.put("N\n")
+
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*.*",
                         style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
@@ -459,8 +515,7 @@ class MainFrame(wx.Frame):
         processor.execute_commands([Verify()], self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnDeviceProgram' not implemented!")
-        event.Skip()
+        processor.execute_commands([WriteDevicePromptCommand()], self.txQueue, lambda result, status: self.display_write_device_prompt(result[-1]))
 
     def OnDebugText(self, event):  # wxGlade: MainFrame.<event_handler>
         code = event.GetKeyCode()

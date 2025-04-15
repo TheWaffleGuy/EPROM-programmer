@@ -136,7 +136,9 @@ class ListDevices(Command):
         if input_string == "OK!":
             return CommandStatus.FINISHED, self.device_list
         else:
-            self.device_list += [input_string]
+            id, device = input_string.split(')', 1)
+            manufacturer, name = device.split('-', 1)
+            self.device_list += [{'id': id.strip(), 'manufacturer': manufacturer.strip(), 'name': name.strip()}]
             return CommandStatus.CONTINUE, None
 
     def get_command(self):

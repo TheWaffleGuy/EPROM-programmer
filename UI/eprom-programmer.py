@@ -191,16 +191,14 @@ class SelectDeviceDialog(wx.Dialog):
         self.items = []
 
     def insert_item(self, item):
-        id, device = item.split(')', 1)
-        manufacturer, name = device.split('-', 1)
         item_count = self.device_list_ctrl.GetItemCount()
-        self.device_list_ctrl.InsertItem(item_count, id.strip())
-        self.device_list_ctrl.SetItem(item_count, 1, manufacturer.strip())
-        self.device_list_ctrl.SetItem(item_count, 2, name.strip())
+        self.device_list_ctrl.InsertItem(item_count, item['id'])
+        self.device_list_ctrl.SetItem(item_count, 1, item['manufacturer'])
+        self.device_list_ctrl.SetItem(item_count, 2, item['name'])
 
-    def OnAddRow(self, text):
-        self.items.append(text)
-        self.insert_item(text)
+    def OnAddRow(self, item):
+        self.items.append(item)
+        self.insert_item(item)
 
     def onListItemSelect(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
         self.EndModal(wx.ID_OK)
@@ -211,10 +209,11 @@ class SelectDeviceDialog(wx.Dialog):
             return self.device_list_ctrl.GetItemText(selected_index, 0), self.device_list_ctrl.GetItemText(selected_index, 1) + ' - ' + self.device_list_ctrl.GetItemText(selected_index, 2)
 
     def OnFilter(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
-        filter_text = self.filter_devices_text_ctrl.GetValue().lower()
+        filter_text = self.filter_devices_text_ctrl.GetValue().upper()
+        search_terms = [term for term in filter_text.split(' ') if term != '' and term != '-']
         self.device_list_ctrl.DeleteAllItems()
         for item in self.items:
-            if filter_text in item.lower():
+            if all(term in item['manufacturer'] or term in item['name'] for term in search_terms):
                 self.insert_item(item)
         self.button_OK.Enable(False)
 

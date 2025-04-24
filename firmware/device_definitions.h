@@ -1070,6 +1070,11 @@ const IC ics[] PROGMEM = {
     }
   },
   {
+    MANUFACTURER("TI"),
+    NAME("TMS2508"),
+    .device_definition = GENERIC_2758_L
+  },
+  {
     MANUFACTURER("INTEL"),
     NAME("2758"),
     .device_definition = GENERIC_2758_L

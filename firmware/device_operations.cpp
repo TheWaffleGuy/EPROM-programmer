@@ -148,12 +148,12 @@ static void enable_device_output() {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { DEVICE_ENABLE_PORT &= ~(1 << DEVICE_ENABLE_PIN); }
 }
 
-static void turn_vpp_on(uint8_t pin_id) {
-  if(pin_id == PGM_VPP_PIN_P19) {
+static void turn_vpp_on() {
+  if(selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P19) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P19_EN_PIN; }
-  } else if(pin_id == PGM_VPP_PIN_P20) {
+  } else if(selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P20) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P20_EN_PIN; }
-  } else if (pin_id == PGM_VPP_PIN_P21) {
+  } else if (selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P21) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P21_EN_PIN; }
   }
 }
@@ -306,7 +306,7 @@ static void pgm_variant_vpp_pulsed_positive(uint8_t data, uint16_t address, uint
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);
-  turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
+  turn_vpp_on();
   delayMicroseconds(pw);
   if(tens_of_ms) {
     delay(tens_of_ms * 10);
@@ -330,7 +330,7 @@ static void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
-  turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
+  turn_vpp_on();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   enable_device_output();
   delayMicroseconds(pw);
@@ -382,7 +382,7 @@ static void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
-  turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
+  turn_vpp_on();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
   delayMicroseconds(pw);
@@ -533,7 +533,7 @@ void write_data() {
 
   if(verified && selected_ic.device_definition.pgm_vpp_always_on) {
       delayMicroseconds(SETUP_HOLD_TIME_US);
-      turn_vpp_on(selected_ic.device_definition.pgm_vpp_pin);
+      turn_vpp_on();
       delay(20);
   }
 

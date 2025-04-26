@@ -442,6 +442,7 @@ class MainFrame(wx.Frame):
         self.SetMinSize(self.Size)
 
         self.thread = None
+        self.txThread = None
         self.serial = None
 
         self.txQueue = queue.Queue()
@@ -636,7 +637,9 @@ class MainFrame(wx.Frame):
 
     def StopTxThread(self):
         self.txQueue.shutdown()
-        self.txThread.join()
+        if self.txThread is not None:
+            self.txThread.join()
+            self.txThread = None
 
     def ComPortRxThread(self):
         while self.alive.is_set():

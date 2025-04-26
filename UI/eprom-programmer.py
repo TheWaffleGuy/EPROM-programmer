@@ -446,7 +446,7 @@ class MainFrame(wx.Frame):
 
         self.txQueue = queue.Queue()
 
-        self.buffer = []
+        self.buffer = None
 
     def display_info(self, info):
         with InfoFrame(self, -1, "", info_message=info) as dialog:
@@ -472,6 +472,25 @@ class MainFrame(wx.Frame):
                     commands.append(Verify())
                 processor.execute_commands(commands, self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
+    def parse_srec(self, srec):
+        self.buffer = bytearray()
+        for record_number, line in enumerate(srec.split('\n')):
+            if line.startswith('S1') or line.startswith('S5')  or line.startswith('S9'):
+                byte_count = int(line[2:4], 16)
+                checksum = int(line[-2:], 16)
+                data_bytes = bytearray.fromhex(line[8:-2])
+
+                if len(data_bytes) + 3 != byte_count:
+                    self.display_error(f"Error: Byte count mismatch on record: {record_number + 1}")
+                    return
+
+                if checksum != ~sum(bytearray.fromhex(line[2:-2])) & 0xFF:
+                    self.display_error(f"Error: Checksum mismatch on record: {record_number + 1}")
+                    return
+
+                self.buffer.extend(data_bytes)
+        self.update_buffer_grid()
+
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
         with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*",
                         style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
@@ -489,8 +508,19 @@ class MainFrame(wx.Frame):
                 wx.LogError("Cannot open file '%s'." % newfile)
 
     def OnSave(self, event):  # wxGlade: MainFrame.<event_handler>
-        print("Event handler 'OnSave' not implemented!")
-        event.Skip()
+        if not self.buffer:
+            self.display_info("No data to save")
+            return
+
+        with wx.FileDialog(self, "Save File", wildcard="All files (*.*)|*",
+                    style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                return
+
+            pathname = fileDialog.GetPath()
+            with open(pathname, 'wb') as file:
+                file.write(self.buffer)
 
     def OnExit(self, event):  # wxGlade: MainFrame.<event_handler>
         self.StopTxThread()
@@ -514,7 +544,7 @@ class MainFrame(wx.Frame):
                 self.selected_device.SetLabel(device_name)
 
     def OnDeviceRead(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result, status: print(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
+        processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result, status: self.parse_srec(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
         processor.execute_commands([BlankCheck()], self.txQueue, lambda result, status: self.display_info(result[-1]))

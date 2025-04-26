@@ -446,6 +446,8 @@ class MainFrame(wx.Frame):
 
         self.txQueue = queue.Queue()
 
+        self.buffer = []
+
     def display_info(self, info):
         with InfoFrame(self, -1, "", info_message=info) as dialog:
             dialog.CenterOnParent()
@@ -471,7 +473,7 @@ class MainFrame(wx.Frame):
                 processor.execute_commands(commands, self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnOpen(self, event):  # wxGlade: MainFrame.<event_handler>
-        with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*.*",
+        with wx.FileDialog(self, "Open file", wildcard="All files (*.*)|*",
                         style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
@@ -480,7 +482,9 @@ class MainFrame(wx.Frame):
             pathname = fileDialog.GetPath()
             try:
                 with open(pathname, 'rb') as file:
-                    self.upload(file)
+                    self.buffer = file.read(8192)
+                self.upload_buffer()
+                self.update_buffer_grid()
             except IOError:
                 wx.LogError("Cannot open file '%s'." % newfile)
 
@@ -549,19 +553,43 @@ class MainFrame(wx.Frame):
         data_str = data.hex().upper()
         self.txQueue.put(f"{type}{record_length:02X}{address:04X}{data_str}{chksum:02X}\n")
 
-    def upload(self, file):
-        count = 0
+    def upload_buffer(self):
+        rec_data_length = 32
+        num_recs = (len(self.buffer) + rec_data_length - 1) // rec_data_length
+
         header = bytes('HDR', 'iso-8859-1')
         self.print_record("S0", header, 0)
 
-        data = file.read(32)
-        while data:
-            self.print_record("S1", data, 32*count)
-            count += 1
-            data = file.read(32)
+        for i in range(num_recs):
+            data = self.buffer[i*rec_data_length:(i+1)*rec_data_length]
+            self.print_record("S1", data, i*rec_data_length)
 
-        self.print_record("S5", None, count)
+        self.print_record("S5", None, num_recs)
         self.print_record("S9", None, 0)
+
+    def update_buffer_grid(self):
+        data_columns = 16
+        num_rows = max(20, (len(self.buffer) + data_columns - 1) // data_columns)
+        self.ChangeGridRows(num_rows)
+
+        for row in range(num_rows):
+            address = row * data_columns
+            self.buffer_grid.SetCellValue(row, 0, f"{address:04X}")
+            for col in range(data_columns):
+                if address + col < len(self.buffer):
+                    byte = self.buffer[address + col]
+                    self.buffer_grid.SetCellValue(row, col + 1, f"{byte:02X}")
+                else:
+                    self.buffer_grid.SetCellValue(row, col + 1, "  ")
+            self.buffer_grid.SetCellValue(row, data_columns + 1, ''.join(chr(b) if 32 <= b <= 126 else '.' for b in self.buffer[address:address+data_columns]))
+
+    def ChangeGridRows(self, new_row_count):
+        current_row_count = self.buffer_grid.GetNumberRows()
+        
+        if new_row_count < current_row_count:
+            self.buffer_grid.DeleteRows(new_row_count, current_row_count - new_row_count)
+        elif new_row_count > current_row_count:
+            self.buffer_grid.AppendRows(new_row_count - current_row_count)
 
     def ComPortTxThread(self):
         while True:

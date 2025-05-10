@@ -667,9 +667,11 @@ class MainFrame(wx.Frame):
             self.alive = threading.Event()
             self.StartRxThread()
             self.StartTxThread()
+            return True
         except DeviceError as de:
             self.display_error(str(de))
             self.OnExit(None)
+            return False
 
 # end of class MainFrame
 
@@ -678,9 +680,10 @@ class EpromProgrammerApp(wx.App):
         self.frame = MainFrame(None, wx.ID_ANY, "")
         self.SetTopWindow(self.frame)
         self.frame.Show()
-        self.frame.StartSerial()
-        self.frame.txQueue.put('\b' * 80)
-        processor.execute_commands([Info()], self.frame.txQueue, lambda result, status: self.frame.selected_device.SetLabel((result[0])))
+        serial_started = self.frame.StartSerial()
+        if serial_started:
+            self.frame.txQueue.put('\b' * 80)
+            processor.execute_commands([Info()], self.frame.txQueue, lambda result, status: self.frame.selected_device.SetLabel((result[0])))
         return True
 
 # end of class EpromProgrammerApp

@@ -1,7 +1,7 @@
 (kicad_sch
-	(version 20231120)
+	(version 20250114)
 	(generator "eeschema")
-	(generator_version "8.0")
+	(generator_version "9.0")
 	(uuid "8c5576b1-cb3e-4456-837b-2f47818a03ab")
 	(paper "A4")
 	(lib_symbols)
@@ -138,6 +138,10 @@
 	(sheet
 		(at 115.57 54.61)
 		(size 50.8 26.67)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -167,53 +171,53 @@
 		)
 		(pin "~{SS}" input
 			(at 115.57 59.69 180)
+			(uuid "538da700-d12e-4b05-97b5-72306672aa6a")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "538da700-d12e-4b05-97b5-72306672aa6a")
 		)
 		(pin "SCK" input
 			(at 115.57 63.5 180)
+			(uuid "ebd99fd4-609f-4572-9c62-aeaff849442d")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "ebd99fd4-609f-4572-9c62-aeaff849442d")
 		)
 		(pin "MOSI" input
 			(at 115.57 67.31 180)
+			(uuid "5f4a7b70-9633-4f17-a534-184676cab2ce")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "5f4a7b70-9633-4f17-a534-184676cab2ce")
 		)
 		(pin "VCC" output
 			(at 166.37 60.96 0)
+			(uuid "3c47749f-9931-4400-af34-e93e939885c5")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "3c47749f-9931-4400-af34-e93e939885c5")
 		)
 		(pin "VPP" output
 			(at 166.37 74.93 0)
+			(uuid "2aa36dc9-95c5-4e36-95d6-9d84195bb7ba")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "2aa36dc9-95c5-4e36-95d6-9d84195bb7ba")
 		)
 		(instances
 			(project "EPROM-programmer"
@@ -226,6 +230,10 @@
 	(sheet
 		(at 52.07 54.61)
 		(size 50.8 26.67)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -255,53 +263,53 @@
 		)
 		(pin "MOSI" output
 			(at 102.87 67.31 0)
+			(uuid "a363731a-4b08-428d-b7de-357c261a0f1c")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "a363731a-4b08-428d-b7de-357c261a0f1c")
 		)
 		(pin "SCK" output
 			(at 102.87 63.5 0)
+			(uuid "8cac3bb8-75d0-4bd5-bbe3-a329eb7063cd")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "8cac3bb8-75d0-4bd5-bbe3-a329eb7063cd")
 		)
 		(pin "~{DAC_SS}" output
 			(at 102.87 59.69 0)
+			(uuid "9dfd1fb2-c725-444b-a718-554e3b430be1")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify right)
 			)
-			(uuid "9dfd1fb2-c725-444b-a718-554e3b430be1")
 		)
 		(pin "VCC" input
 			(at 52.07 60.96 180)
+			(uuid "860e94d7-2aa7-444c-acf4-e27692b773ff")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "860e94d7-2aa7-444c-acf4-e27692b773ff")
 		)
 		(pin "VPP" input
 			(at 52.07 67.31 180)
+			(uuid "e8df3922-46a0-4630-960c-dd9f0b1cc83c")
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "e8df3922-46a0-4630-960c-dd9f0b1cc83c")
 		)
 		(instances
 			(project "EPROM-programmer"
@@ -316,4 +324,5 @@
 			(page "1")
 		)
 	)
+	(embedded_fonts no)
 )

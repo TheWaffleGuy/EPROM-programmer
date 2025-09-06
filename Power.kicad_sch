@@ -5293,7 +5293,7 @@
 		)
 		(uuid "feebd9bf-a5e6-4cbe-87f8-06653895468e")
 	)
-	(label "12V_IN"
+	(label "9V_IN"
 		(at 43.18 34.29 180)
 		(effects
 			(font
@@ -8058,7 +8058,7 @@
 				(hide yes)
 			)
 		)
-		(property "Value" "12V"
+		(property "Value" "9V"
 			(at 69.85 34.798 0)
 			(effects
 				(font

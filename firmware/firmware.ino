@@ -89,10 +89,27 @@ void print_help() {
   Serial.println("X [0/1]: Toggle \"2364 mode\"");
 }
 
+PGM_P strnstr_P_ram(PGM_P pgm_str, const char* ram_str, size_t n) {
+  if (n == 0) {
+    return pgm_str;
+  }
+
+  char first_ram_char = *ram_str;
+  char pgm_char;
+
+  while ((pgm_char = pgm_read_byte(pgm_str))) {
+    if (pgm_char == first_ram_char && strncmp_P(ram_str, pgm_str, n) == 0) {
+      return pgm_str;
+    }
+    pgm_str++;
+  }
+
+  return NULL;
+}
+
 void list_devices() {
   char *arg;
   uint8_t has_search_arg;
-  char arg_copy[sizeof(line)];
 
   arg = line + 1;
   while(*arg && isspace(*arg)) arg++;
@@ -107,19 +124,29 @@ void list_devices() {
 
   for (uint8_t i = 0; i < num_ics; i++) {
     if (has_search_arg) {
-      strcpy(arg_copy, arg);
-      char manufacturer[sizeof(ics[i].manufacturer)];
-      char name[sizeof(ics[i].name)];
-
-      strcpy_P(manufacturer, ics[i].manufacturer);
-      strcpy_P(name, ics[i].name);
-
       uint8_t match = 1;
-      char* token = strtok(arg_copy, " ");
-      while (token != NULL && match) {
-        match = strcmp(token, "-") == 0 || strstr(manufacturer, token) || strstr(name, token);
-        token = strtok(NULL, " ");
+      const char* p = arg;
+      const char* token_start = p;
+
+      while (*p != '\0' && match) {
+        while (*p != ' ' && *p != '\0') {
+          p++;
+        }
+
+        size_t token_len = p - token_start;
+
+        int is_dash = token_len == 1 && *token_start == '-';
+
+        match = is_dash ||
+                strnstr_P_ram(ics[i].manufacturer, token_start, token_len) ||
+                strnstr_P_ram(ics[i].name,         token_start, token_len);
+
+        while (*p == ' ') {
+          p++;
+        }
+        token_start = p;
       }
+
       if (!match) {
         continue;
       }

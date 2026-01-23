@@ -189,6 +189,7 @@ class SelectDeviceDialog(wx.Dialog):
         # end wxGlade
 
         self.items = []
+        self.Bind(wx.EVT_SIZE, lambda e: (self.autosize_then_fill_last(), e.Skip()))
 
     def insert_item(self, item):
         item_count = self.device_list_ctrl.GetItemCount()
@@ -223,6 +224,45 @@ class SelectDeviceDialog(wx.Dialog):
 
     def onColBeginDrag(self, event):  # wxGlade: SelectDeviceDialog.<event_handler>
         event.Veto()
+
+    def autosize_then_fill_last(self):
+        lc = self.device_list_ctrl
+        col_count = lc.GetColumnCount()
+        if col_count == 0:
+            return
+
+        for c in range(col_count):
+            lc.SetColumnWidth(c, wx.LIST_AUTOSIZE_USEHEADER)
+
+        lc.SetColumnWidth(0, 0)
+
+        if lc.GetItemCount() == 0:
+            return
+
+        client_w = lc.GetClientSize().GetWidth()
+        if client_w <= 0:
+            return
+
+        total = sum(lc.GetColumnWidth(c) for c in range(col_count))
+
+        columns_fit_widthin_space = total < client_w
+
+        if columns_fit_widthin_space:
+            last = col_count - 1
+            if last > 0:
+                lc.SetColumnWidth(last, lc.GetColumnWidth(last) + (client_w - total))
+        else:
+            # Scale columns
+            ratio = client_w / float(total)
+            min_w = 30
+            for c in range(1, col_count):  # skip hidden id col
+                lc.SetColumnWidth(c, max(min_w, int(lc.GetColumnWidth(c) * ratio)))
+
+            # Fix potential gap caused by rounding by truncating last column
+            total = sum(lc.GetColumnWidth(c) for c in range(col_count))
+            if total > client_w:
+                last = col_count - 1
+                lc.SetColumnWidth(last, max(min_w, lc.GetColumnWidth(last) - (total - client_w)))
 
 # end of class SelectDeviceDialog
 class ErrorFrame(wx.Dialog):
@@ -533,7 +573,7 @@ class MainFrame(wx.Frame):
     def addAlternatives(self, dlg, alternatives):
         for alternative in alternatives:
             dlg.OnAddRow(alternative)
-        dlg.device_list_ctrl.SetColumnWidth(1, wx.LIST_AUTOSIZE)
+        dlg.autosize_then_fill_last()
 
     def OnDeviceSelect(self, event):  # wxGlade: MainFrame.<event_handler>
         with SelectDeviceDialog(self) as dlg:

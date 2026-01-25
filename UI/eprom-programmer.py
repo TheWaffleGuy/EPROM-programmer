@@ -612,9 +612,10 @@ class MainFrame(wx.Frame):
                 self.debug_text_ctrl.Remove(self.debug_text_ctrl.GetLastPosition() - 1, self.debug_text_ctrl.GetLastPosition())
             processor.remove_last_character()
             return
-        char = event.data.decode('UTF-8', 'replace')
-        self.debug_text_ctrl.AppendText(char)
-        processor.append_character(char)
+        chars = event.data.decode('UTF-8', 'replace')
+        self.debug_text_ctrl.AppendText(chars)
+        for char in chars:
+            processor.append_character(char)
 
     def print_record(self, type, data, address):
         if data is None:

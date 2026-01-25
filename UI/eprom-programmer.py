@@ -699,6 +699,10 @@ class MainFrame(wx.Frame):
             self.thread.join()
             self.thread = None
 
+    def display_error_and_exit(self, error):
+        self.display_error(error)
+        self.OnExit(None)
+
     def StartSerial(self):
         try:
             programmer = find_programmer()
@@ -709,8 +713,7 @@ class MainFrame(wx.Frame):
             self.StartTxThread()
             return True
         except DeviceError as de:
-            self.display_error(str(de))
-            self.OnExit(None)
+            wx.CallAfter(self.display_error_and_exit, str(de))
             return False
 
 # end of class MainFrame

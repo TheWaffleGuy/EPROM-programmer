@@ -571,6 +571,8 @@ class MainFrame(wx.Frame):
         self.Destroy()
 
     def addAlternatives(self, dlg, alternatives):
+        if not dlg or not dlg.IsShown():
+            return
         for alternative in alternatives:
             dlg.OnAddRow(alternative)
         dlg.autosize_then_fill_last()

@@ -766,6 +766,11 @@ const IC ics[] PROGMEM = {
     .device_definition = GENERIC_2732A
   },
   {
+    MANUFACTURER("ITAUCOM"),
+    NAME("ICM2732A"),
+    .device_definition = GENERIC_2732A
+  },
+  {
     MANUFACTURER("NEC"),
     NAME("D2732A"),
     .device_definition = GENERIC_2732A
@@ -898,6 +903,11 @@ const IC ics[] PROGMEM = {
     .device_definition = GENERIC_2716
   },
   {
+    MANUFACTURER("ITAUCOM"),
+    NAME("ICM2716"),
+    .device_definition = GENERIC_2716
+  },
+  {
     MANUFACTURER("MITSUBISHI"),
     NAME("M5L2716K"),
     .device_definition = GENERIC_2716
@@ -965,11 +975,6 @@ const IC ics[] PROGMEM = {
   {
     MANUFACTURER("TOSHIBA"),
     NAME("TMM323D"),
-    .device_definition = GENERIC_2716
-  },
-  {
-    MANUFACTURER("ST"),
-    NAME("M2716A"),
     .device_definition = GENERIC_2716
   },
   {

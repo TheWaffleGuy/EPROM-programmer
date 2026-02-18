@@ -491,6 +491,8 @@ void write_data() {
   uint8_t write_data;
   uint8_t verified = 1;
   void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw);
+  uint8_t progress_mask = selected_ic.device_definition.pgm_overprogram_after ? 255 : 127;
+  uint8_t has_printed_dot = 0;
 
   //Set up voltages
   if(selected_ic.device_definition.pgm_vcc_extra != 0) {
@@ -565,6 +567,10 @@ void write_data() {
         verified = write_data == portRead(2); // Port C
       }
     }
+    if ( ((address - address_start) & progress_mask) == (progress_mask) ) {
+      Serial.print(".");
+      has_printed_dot = 1;
+    }
   }
   //Overprogram section if it should be done after the main programming loop
   if (verified && selected_ic.device_definition.pgm_overprogram_after) {
@@ -576,6 +582,10 @@ void write_data() {
     for (address = address_start; address <= address_end; address++) {
       write_data = buffer[address];
       pgm_variant(write_data, address, pw);
+      if ( ((address - address_start) & progress_mask) == (progress_mask) ) {
+        Serial.print(".");
+        has_printed_dot = 1;
+      }
     }
   }
 
@@ -583,6 +593,10 @@ void write_data() {
   delay(20);
   turn_device_off();
   resetVCCandVPP();
+
+  if(has_printed_dot) {
+    Serial.println();
+  }
 
   if (!verified) {
     Serial.print("Error: write failed at address: ");

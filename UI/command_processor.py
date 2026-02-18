@@ -100,6 +100,8 @@ class WriteDevice(Command):
     def process(self, input_string):
         if input_string == self.get_command():
             return CommandStatus.CONTINUE, None
+        if bool(input_string) and all(ch == "." for ch in input_string):
+            return CommandStatus.CONTINUE, None
         if input_string == "OK!":
             return CommandStatus.FINISHED, input_string
         else:

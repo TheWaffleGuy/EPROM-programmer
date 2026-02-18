@@ -206,6 +206,40 @@ void print_buffer() {
   print_record("S9", NULL, 0, 0);
 }
 
+void print_volt(int volt) {
+    int whole = volt / 8;
+    int rem8 = volt % 8;
+    int frac = (rem8 * 1000) / 8;
+    Serial.print(whole, DEC);
+
+    if(frac == 0) {
+      return;
+    }
+
+    Serial.print(".");
+
+    while(frac % 10 == 0) {
+      frac /= 10;
+    }
+
+    Serial.print(frac, DEC);
+}
+
+void print_dev() {
+  Serial.print(selected_ic.manufacturer);
+  Serial.print(" - ");
+  Serial.print(selected_ic.name);
+  if(selected_ic.device_definition.f_2364_compat_pinout && is_2364_mode) {
+    Serial.print(" (2364 mode)");
+  }
+  Serial.println();
+  Serial.print("Size: ");
+  Serial.print(0x01 << selected_ic_size, DEC);
+  Serial.print("x8, VPP: ");
+  print_volt(selected_ic.device_definition.vpp);
+  Serial.println("V");
+}
+
 void select_device() {
   char *arg;
   char *arg_tmp;
@@ -250,13 +284,7 @@ void select_device() {
   }
 
   Serial.print("Selected: ");
-  Serial.print(selected_ic.manufacturer);
-  Serial.print(" - ");
-  Serial.print(selected_ic.name);
-  if(selected_ic.device_definition.f_2364_compat_pinout && is_2364_mode) {
-    Serial.print(" (2364 mode)");
-  }
-  Serial.println();
+  print_dev();
   Serial.println("OK!");
 }
 
@@ -267,13 +295,7 @@ void print_device_info() {
   }
 
   Serial.print("Currently selected device is: ");
-  Serial.print(selected_ic.manufacturer);
-  Serial.print(" - ");
-  Serial.print(selected_ic.name);
-  if(selected_ic.device_definition.f_2364_compat_pinout && is_2364_mode) {
-    Serial.print(" (2364 mode)");
-  }
-  Serial.println();
+  print_dev();
   Serial.println("OK!");
 }
 

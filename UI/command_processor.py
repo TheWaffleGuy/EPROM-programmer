@@ -187,6 +187,15 @@ class Verify(Command):
         return "C"
 
 class Info(Command):
+    def _parse_kv_string(self, input_string):
+        result = {}
+        for item in [it.strip() for it in input_string.split(",") if it.strip()]:
+            if ":" in item:
+                key, val = item.split(":", 1)
+                result[key.strip()] = val.strip()
+            else:
+                result[item] = ""
+        return result
 
     def process(self, input_string):
         if input_string == self.get_command():
@@ -194,7 +203,11 @@ class Info(Command):
         if input_string.startswith("No device selected"):
             return CommandStatus.ERROR, "No device selected"
         if input_string.startswith("Currently selected device is:"):
-            return CommandStatus.FINISHED, input_string.split(":")[1].split('(')[0].strip()
+            self.manufacturer_name = input_string.split(":")[1].split('(')[0].strip()
+            return CommandStatus.CONTINUE, None
+        else:
+            extra_info = self._parse_kv_string(input_string)
+            return CommandStatus.FINISHED, self.manufacturer_name
 
     def get_command(self):
         return "I"

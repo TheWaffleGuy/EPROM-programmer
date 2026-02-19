@@ -4,6 +4,7 @@ class CommandStatus(Enum):
     FINISHED = "finished"
     ERROR = "error"
     CONTINUE = "continue"
+    PROGRESS = "progress"
 
 class CommandProcessor:
     _instance = None
@@ -19,6 +20,7 @@ class CommandProcessor:
         self.current_command_index = 0
         self.current_string = ""
         self.callback = lambda *args: None
+        self.progress_callback = lambda *args: None
         self.txQueue = None
         self.result = []
 
@@ -30,13 +32,20 @@ class CommandProcessor:
         else:
             self.current_string += char
 
+            if self.current_command_index < len(self.commands):
+                event = self.commands[self.current_command_index]
+                status, result = event.check_progress(self.current_string)
+                if status == CommandStatus.PROGRESS:
+                    self.progress_callback(self.current_command_index, len(self.commands), result)
+
     def remove_last_character(self):
         self.current_string = self.current_string[:-1]
 
-    def execute_commands(self, commands, txQueue, callback = lambda *args: None):
+    def execute_commands(self, commands, txQueue, callback = lambda *args: None, progress_callback = lambda *args: None):
         self.commands = commands
         self.current_command_index = 0
         self.callback = callback
+        self.progress_callback = progress_callback
         self.txQueue = txQueue
         txQueue.put(self.commands[self.current_command_index].get_command() + "\n")
 
@@ -65,6 +74,10 @@ class CommandProcessor:
 class Command:
     def process(self, input_string):
         pass
+
+    def check_progress(self, current_string):
+        return CommandStatus.CONTINUE, None
+
     def command(self):
         pass
 
@@ -97,6 +110,9 @@ class WriteDevicePromptCommand(Command):
         return "W"
 
 class WriteDevice(Command):
+    def __init__(self):
+        self.total_steps = 64
+
     def process(self, input_string):
         if input_string == self.get_command():
             return CommandStatus.CONTINUE, None
@@ -106,6 +122,11 @@ class WriteDevice(Command):
             return CommandStatus.FINISHED, input_string
         else:
             return CommandStatus.ERROR, input_string
+
+    def check_progress(self, current_string):
+        if bool(current_string) and all(ch == "." for ch in current_string):
+            return CommandStatus.PROGRESS, (len(current_string), self.total_steps)
+        return CommandStatus.CONTINUE, None
 
     def get_command(self):
         return "Y"

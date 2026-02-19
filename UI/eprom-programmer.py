@@ -467,6 +467,18 @@ class MainFrame(wx.Frame):
 
         sizer_2.Add((0, 10), 0, 0, 0)
 
+        progress_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_2.Add(progress_sizer, 0, wx.ALL | wx.EXPAND, 0)
+
+        self.progress_label = wx.StaticText(self, wx.ID_ANY, "Ready", style=wx.ALIGN_CENTER_HORIZONTAL)
+        progress_sizer.Add(self.progress_label, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 4)
+
+        self.progress_gauge = wx.Gauge(self, wx.ID_ANY, 100)
+        self.progress_gauge.Hide()
+        progress_sizer.Add(self.progress_gauge, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 4)
+
+        sizer_2.Add((0, 10), 0, 0, 0)
+
         sizer_1.Add((10, 0), 0, 0, 0)
 
         self.SetSizer(sizer_1)
@@ -504,14 +516,54 @@ class MainFrame(wx.Frame):
             dialog.CenterOnParent()
             res = dialog.ShowModal()
             if res == wx.ID_OK:
-                commands = []
-                if self.blank_check_checkbox.IsChecked():
-                    commands.append(BlankCheck())
-                commands.append(WriteDevicePromptCommand())
-                commands.append(WriteDevice())
-                if self.verify_checkbox.IsChecked():
-                    commands.append(Verify())
-                processor.execute_commands(commands, self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
+                self.write_device()
+
+    def write_device(self):
+        commands = []
+        if self.blank_check_checkbox.IsChecked():
+            commands.append(BlankCheck())
+        commands.append(WriteDevicePromptCommand())
+        commands.append(WriteDevice())
+        if self.verify_checkbox.IsChecked():
+            commands.append(Verify())
+
+        self.progress_gauge.SetValue(0)
+        self.progress_label.SetLabel("Programming...")
+        wx.CallAfter(self.display_progress_gauge)
+
+        def progress_cb(cmd_idx, total_cmds, prog_data):
+            if cmd_idx != 2:
+                return
+            wx.CallAfter(self.update_progress, cmd_idx, total_cmds, prog_data)
+
+        def done_cb(result, status):
+            self.progress_gauge.Hide()
+            wx.CallAfter(self.progress_label.SetLabel, "Ready")
+
+            if CommandStatus.FINISHED == status:
+                wx.CallAfter(self.display_info, result[-1])
+            else:
+                wx.CallAfter(self.display_error, result[-1])
+
+        processor.execute_commands(commands, self.txQueue, done_cb, progress_cb)
+
+    def display_progress_gauge(self):
+        if not self.progress_gauge.IsShown():
+            self.progress_gauge.Show(True)
+            parent = self.progress_gauge.GetParent()
+            if parent:
+                sizer = parent.GetSizer()
+                if sizer:
+                    sizer.Layout()
+
+    def update_progress(self, cmd_idx, total_cmds, prog_data):
+        if not prog_data:
+            return
+
+        current, total = prog_data
+
+        self.progress_gauge.SetRange(total)
+        self.progress_gauge.SetValue(current)
 
     def parse_srec(self, srec):
         self.buffer = bytearray()

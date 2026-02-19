@@ -24,6 +24,8 @@
 #define DEVICE_ENABLE_PORT PORTD
 #define DEVICE_ENABLE_PIN 7
 
+#define PROGRESS_DOT_TARGET 64
+
 uint8_t port_a;
 uint8_t port_b;
 
@@ -483,6 +485,15 @@ static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   delayMicroseconds(3);
 }
 
+static void __attribute__((always_inline)) inline progress_update(uint16_t total_events, uint16_t *acc, uint8_t *printed_dots) {
+    *acc += PROGRESS_DOT_TARGET;
+    if (*acc >= total_events) {
+        Serial.print(".");
+        (*printed_dots)++;
+        *acc -= total_events;
+    }
+}
+
 void write_data() {
   uint8_t pulse_number;
   uint16_t address_start = 0;
@@ -491,8 +502,12 @@ void write_data() {
   uint8_t write_data;
   uint8_t verified = 1;
   void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw);
-  uint8_t progress_mask = selected_ic.device_definition.pgm_overprogram_after ? 255 : 127;
-  uint8_t has_printed_dot = 0;
+  uint16_t total_events;
+  uint16_t acc = 0;
+  uint8_t printed_dots = 0;
+
+  total_events = address_end - address_start + 1;
+  if (selected_ic.device_definition.pgm_overprogram_after) total_events *= 2;
 
   //Set up voltages
   if(selected_ic.device_definition.pgm_vcc_extra != 0) {
@@ -567,11 +582,10 @@ void write_data() {
         verified = write_data == portRead(2); // Port C
       }
     }
-    if ( ((address - address_start) & progress_mask) == (progress_mask) ) {
-      Serial.print(".");
-      has_printed_dot = 1;
-    }
+
+    progress_update(total_events, &acc, &printed_dots);
   }
+
   //Overprogram section if it should be done after the main programming loop
   if (verified && selected_ic.device_definition.pgm_overprogram_after) {
     uint16_t pw = ( selected_ic.device_definition.pgm_overprogram_pw * selected_ic.device_definition.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
@@ -582,11 +596,14 @@ void write_data() {
     for (address = address_start; address <= address_end; address++) {
       write_data = buffer[address];
       pgm_variant(write_data, address, pw);
-      if ( ((address - address_start) & progress_mask) == (progress_mask) ) {
-        Serial.print(".");
-        has_printed_dot = 1;
-      }
+
+      progress_update(total_events, &acc, &printed_dots);
     }
+  }
+
+  while (printed_dots < PROGRESS_DOT_TARGET) {
+    Serial.print(".");
+    printed_dots++;
   }
 
   turn_vpp_off();
@@ -594,9 +611,7 @@ void write_data() {
   turn_device_off();
   resetVCCandVPP();
 
-  if(has_printed_dot) {
-    Serial.println();
-  }
+  Serial.println();
 
   if (!verified) {
     Serial.print("Error: write failed at address: ");

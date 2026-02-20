@@ -518,14 +518,21 @@ class MainFrame(wx.Frame):
             if res == wx.ID_OK:
                 self.write_device()
 
+    def get_vcc_numeric(self):
+        if self.vcc_5_radio_btn.GetValue():
+            return 5
+        if self.vcc_10_radio_btn.GetValue():
+            return 10
+        return 0
+
     def write_device(self):
         commands = []
         if self.blank_check_checkbox.IsChecked():
-            commands.append(BlankCheck())
+            commands.append(BlankCheck(self.get_vcc_numeric()))
         commands.append(WriteDevicePromptCommand())
         commands.append(WriteDevice())
         if self.verify_checkbox.IsChecked():
-            commands.append(Verify())
+            commands.append(Verify(self.get_vcc_numeric()))
 
         self.progress_gauge.SetValue(0)
         self.progress_label.SetLabel("Programming...")
@@ -644,10 +651,10 @@ class MainFrame(wx.Frame):
         processor.execute_commands([ReadDevice(), DownloadData()], self.txQueue, lambda result, status: self.parse_srec(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnDeviceBlankCheck(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([BlankCheck()], self.txQueue, lambda result, status: self.display_info(result[-1]))
+        processor.execute_commands([BlankCheck(self.get_vcc_numeric())], self.txQueue, lambda result, status: self.display_info(result[-1]))
 
     def OnDeviceVerify(self, event):  # wxGlade: MainFrame.<event_handler>
-        processor.execute_commands([Verify()], self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
+        processor.execute_commands([Verify(self.get_vcc_numeric())], self.txQueue, lambda result, status: self.display_info(result[-1]) if CommandStatus.FINISHED == status else self.display_error(result[-1]))
 
     def OnDeviceProgram(self, event):  # wxGlade: MainFrame.<event_handler>
         processor.execute_commands([Info()], self.txQueue, lambda result, status: self.display_write_device_prompt(result[-1]))

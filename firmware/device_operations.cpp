@@ -208,9 +208,12 @@ void read_device() {
   Serial.println("OK!");
 }
 
-void blank_check() {
+void blank_check(uint8_t margin) {
   uint8_t data;
   uint8_t blank_value;
+  uint8_t voltages[3];
+  uint8_t num_voltages;
+  uint16_t current_address;
 
   if(selected_ic.name[0] == '\0') {
     Serial.println("No device selected. Select a device with \"t\"");
@@ -231,65 +234,118 @@ void blank_check() {
     blank_value = 0xFF;
   }
 
-  turn_device_on();
+  voltages[0] = VOLT(5, 0);
+  num_voltages = 1;
 
-  portMode(2, INPUT); // Port C
-
-  for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
-    set_address(current_address);
-    __asm__ __volatile__ ("rjmp .+0" "\n\t");
-    __asm__ __volatile__ ("rjmp .+0" "\n\t");
-    data = portRead(2); // Port C
-    if(data != blank_value) {
-      turn_device_off();
-      Serial.println("Device not blank!");
-      write_byte(data);
-      Serial.print(" read at address: ");
-      write_2byte(current_address);
-      Serial.println();
-      return;
-    }
+  if (margin == 5) {
+    voltages[0] = VOLT(4, 750);
+    voltages[1] = VOLT(5, 0);
+    voltages[2] = VOLT(5, 250);
+    num_voltages = 3;
+  } else if (margin == 10) {
+    voltages[0] = VOLT(4, 500);
+    voltages[1] = VOLT(5, 0);
+    voltages[2] = VOLT(5, 500);
+    num_voltages = 3;
   }
 
-  turn_device_off();
+  bool is_blank = true;
 
-  Serial.println("OK!");
+  for (uint8_t v = 0; v < num_voltages && is_blank; v++) {
+    setVCC(voltages[v], 1);
+    turn_device_on();
+    portMode(2, INPUT); // Port C
+
+    for(current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
+      set_address(current_address);
+      __asm__ __volatile__ ("rjmp .+0" "\n\t");
+      __asm__ __volatile__ ("rjmp .+0" "\n\t");
+      data = portRead(2); // Port C
+
+      is_blank = data == blank_value;
+      if(!is_blank) {
+        break;
+      }
+    }
+
+    turn_device_off();
+  }
+
+  resetVCCandVPP();
+
+  if (is_blank) {
+    Serial.println("OK!");
+  } else {
+    Serial.println("Device not blank!");
+    write_byte(data);
+    Serial.print(" read at address: ");
+    write_2byte(current_address);
+    Serial.println();
+  }
 }
 
-void compare_data() {
+void compare_data(uint8_t margin) {
   uint8_t data;
+  uint8_t voltages[3];
+  uint8_t num_voltages;
+  uint16_t current_address;
 
   if(selected_ic.name[0] == '\0') {
     Serial.println("No device selected. Select a device with \"t\"");
     return;
   }
 
-  turn_device_on();
+  num_voltages = 1;
+  voltages[0] = VOLT(5, 0);
 
-  portMode(2, INPUT); // Port C
-
-  for(uint16_t current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
-    set_address(current_address);
-    __asm__ __volatile__ ("rjmp .+0" "\n\t");
-    __asm__ __volatile__ ("rjmp .+0" "\n\t");
-    data = portRead(2); // Port C
-    if(data != buffer[current_address]) {
-      turn_device_off();
-      Serial.println("Device data does not match current buffer!");
-      Serial.print("Device data: ");
-      write_byte(data);
-      Serial.print(", buffer data: ");
-      write_byte(buffer[current_address]);
-      Serial.print(" read at address: ");
-      write_2byte(current_address);
-      Serial.println();
-      return;
-    }
+  if (margin == 5) {
+    voltages[0] = VOLT(4, 750);
+    voltages[1] = VOLT(5, 0);
+    voltages[2] = VOLT(5, 250);
+    num_voltages = 3;
+  } else if (margin == 10) {
+    voltages[0] = VOLT(4, 500);
+    voltages[1] = VOLT(5, 0);
+    voltages[2] = VOLT(5, 500);
+    num_voltages = 3;
   }
 
-  turn_device_off();
+  bool is_match = true;
 
-  Serial.println("OK!");
+  for (uint8_t v = 0; v < num_voltages && is_match; v++) {
+    setVCC(voltages[v], 1);
+    turn_device_on();
+    portMode(2, INPUT); // Port C
+
+    for(current_address = 0; current_address < 1U << selected_ic_size; current_address++) {
+      set_address(current_address);
+      __asm__ __volatile__ ("rjmp .+0" "\n\t");
+      __asm__ __volatile__ ("rjmp .+0" "\n\t");
+      data = portRead(2); // Port C
+
+      is_match = data == buffer[current_address];
+      if(!is_match) {
+        break;
+      }
+    }
+
+    turn_device_off();
+  }
+
+  resetVCCandVPP();
+
+  if (is_match) {
+    Serial.println("OK!");
+  } else {
+    Serial.println("Device data does not match current buffer!");
+    Serial.print("Device data: ");
+    write_byte(data);
+    Serial.print(", buffer data: ");
+    write_byte(buffer[current_address]);
+    Serial.print(" read at address: ");
+    write_2byte(current_address);
+    Serial.println();
+  }
 }
 
 

@@ -168,8 +168,9 @@ class ListDevices(Command):
         return "L"
 
 class BlankCheck(Command):
-    def __init__(self):
+    def __init__(self, vcc_margin=0):
         self.result = ""
+        self.vcc_margin = vcc_margin
 
     def process(self, input_string):
         if input_string == self.get_command() and len(self.result) == 0:
@@ -186,11 +187,12 @@ class BlankCheck(Command):
             return CommandStatus.ERROR, self.result
 
     def get_command(self):
-        return "B"
+        return f"B{self.vcc_margin}"
 
 class Verify(Command):
-    def __init__(self):
+    def __init__(self, vcc_margin=0):
         self.result = ""
+        self.vcc_margin = vcc_margin
 
     def process(self, input_string):
         if input_string == self.get_command() and len(self.result) == 0:
@@ -207,7 +209,7 @@ class Verify(Command):
             return CommandStatus.ERROR, self.result
 
     def get_command(self):
-        return "C"
+        return f"C{self.vcc_margin}"
 
 class Info(Command):
     def _parse_kv_string(self, input_string):

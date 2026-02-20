@@ -81,8 +81,8 @@ void print_help() {
   Serial.println("D: Download data from buffer");
   Serial.println("W: Write buffer to device");
   Serial.println("R: Read device to buffer");
-  Serial.println("C: Compare buffer with device");
-  Serial.println("B: Blank-check the device");
+  Serial.println("C [0|5|10]: Compare device to buffer. Arg adds additional verification at +/-%V");
+  Serial.println("B [0|5|10]: Blank-check device. Arg adds additional verification at +/-%V");
   Serial.println("T [device number]: Select type of device");
   Serial.println("I: Info about currently selected device");
   Serial.println("V: Calibrate VCC and VPP voltages");
@@ -495,6 +495,34 @@ void toggle_2364_mode() {
   Serial.println("OK!");
 }
 
+bool parse_margin_arg(const char* arg, uint8_t* margin) {
+  while (*arg && isspace(*arg)) arg++;
+
+  if (*arg == '\0') {
+    *margin = 0;
+    return true;
+  }
+
+  if (!isdigit(*arg)) return false;
+
+  int val = atoi(arg);
+
+  while (*arg && isdigit(*arg)) arg++;
+
+  if (*arg == '%') arg++;
+
+  while (*arg && isspace(*arg)) arg++;
+
+  if (*arg != '\0') return false;
+
+  if (val == 0 || val == 5 || val == 10) {
+    *margin = val;
+    return true;
+  }
+
+  return false;
+}
+
 struct srec_state srec;
 
 void srec_data_read (struct srec_state *srec,
@@ -592,12 +620,24 @@ void loop() {
           case 'r':
             read_device();
             break;
-          case 'c':
-            compare_data();
+          case 'c': {
+            uint8_t margin;
+            if (parse_margin_arg(line + 1, &margin)) {
+              compare_data(margin);
+            } else {
+              Serial.println("Error: Invalid margin! Use 0, 5, or 10");
+            }
             break;
-          case 'b':
-            blank_check();
+          }
+          case 'b': {
+            uint8_t margin;
+            if (parse_margin_arg(line + 1, &margin)) {
+              blank_check(margin);
+            } else {
+              Serial.println("Error: Invalid margin! Use 0, 5, or 10");
+            }
             break;
+          }
           case 't':
             select_device();
             break;

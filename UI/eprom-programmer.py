@@ -531,8 +531,10 @@ class MainFrame(wx.Frame):
         self.progress_label.SetLabel("Programming...")
         wx.CallAfter(self.display_progress_gauge)
 
+        write_cmd_idx = next((i for i, v in enumerate(commands) if type(v) is WriteDevice))
+
         def progress_cb(cmd_idx, total_cmds, prog_data):
-            if cmd_idx != 2:
+            if cmd_idx != write_cmd_idx:
                 return
             wx.CallAfter(self.update_progress, cmd_idx, total_cmds, prog_data)
 

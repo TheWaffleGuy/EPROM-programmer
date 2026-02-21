@@ -75,18 +75,23 @@ bool is_hex(char *string) {
 
 void print_help() {
   Serial.println("Eprom programmer help");
-  Serial.println("H: This help menu");
-  Serial.println("L [search string]: List devices");
-  Serial.println("S[srec data]: Upload SREC to buffer");
-  Serial.println("D: Download data from buffer");
-  Serial.println("W: Write buffer to device");
-  Serial.println("R: Read device to buffer");
-  Serial.println("C [0|5|10]: Compare device to buffer. Arg adds additional verification at +/-%V");
-  Serial.println("B [0|5|10]: Blank-check device. Arg adds additional verification at +/-%V");
-  Serial.println("T [device number]: Select type of device");
-  Serial.println("I: Info about currently selected device");
-  Serial.println("V: Calibrate VCC and VPP voltages");
-  Serial.println("X [0/1]: Toggle \"2364 mode\"");
+  Serial.println("H           : Show this help menu");
+  Serial.println("L [str ...] : List devices. Optional space-separated strings filter by");
+  Serial.println("              manufacturer and device name; all strings must match.");
+  Serial.println("T <index>   : Select device by index (listed by L). Index is 0-based, hex.");
+  Serial.println("I           : Show info about the selected device.");
+  Serial.println("S<SREC>     : Upload S-records into buffer. The leading 'S' is part of the first");
+  Serial.println("              S-record. Records accepted until an S9 record is received.");
+  Serial.println("D           : Download buffer in S-record format.");
+  Serial.println("R           : Read entire selected device into the buffer.");
+  Serial.println("W           : Write entire buffer to the selected device.");
+  Serial.println("C [0|5|10]  : Compare device to buffer. Verifies at 5V by default. If an");
+  Serial.println("              argument is given, additional compares run at 5V +/- that percent.");
+  Serial.println("B [0|5|10]  : Blank-check device. Checks at 5V by default. If an");
+  Serial.println("              argument is given, additional checks run at 5V +/- that percent.");
+  Serial.println("V           : Calibrate VCC and VPP programming voltages.");
+  Serial.println("X <0|1>     : Set 2364 compatibility mode. Remaps address pins for");
+  Serial.println("              2364-compatible EPROMs so they work as drop-in replacements.");
 }
 
 PGM_P strnstr_P_ram(PGM_P pgm_str, const char* ram_str, size_t n) {

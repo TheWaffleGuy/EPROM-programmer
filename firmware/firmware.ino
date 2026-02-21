@@ -500,32 +500,30 @@ void toggle_2364_mode() {
   Serial.println("OK!");
 }
 
-bool parse_margin_arg(const char* arg, uint8_t* margin) {
+uint8_t parse_margin_arg() {
+  char *arg;
+  uint8_t res = 0;
+
+  arg = line + 1;
   while (*arg && isspace(*arg)) arg++;
 
-  if (*arg == '\0') {
-    *margin = 0;
-    return true;
+  while (*arg && isdigit(*arg) && res < 10)
+  {
+    res = res * 10 + (*arg) - '0';
+    arg++;
   }
-
-  if (!isdigit(*arg)) return false;
-
-  int val = atoi(arg);
-
-  while (*arg && isdigit(*arg)) arg++;
 
   if (*arg == '%') arg++;
 
-  while (*arg && isspace(*arg)) arg++;
-
-  if (*arg != '\0') return false;
-
-  if (val == 0 || val == 5 || val == 10) {
-    *margin = val;
-    return true;
+  if(*arg != '\0') {
+    return 255;
   }
 
-  return false;
+  if (res == 0 || res == 5 || res == 10) {
+    return res;
+  }
+
+  return 255;
 }
 
 struct srec_state srec;
@@ -626,8 +624,8 @@ void loop() {
             read_device();
             break;
           case 'c': {
-            uint8_t margin;
-            if (parse_margin_arg(line + 1, &margin)) {
+            uint8_t margin = parse_margin_arg();
+            if (margin != 255) {
               compare_data(margin);
             } else {
               Serial.println("Error: Invalid margin! Use 0, 5, or 10");
@@ -635,8 +633,8 @@ void loop() {
             break;
           }
           case 'b': {
-            uint8_t margin;
-            if (parse_margin_arg(line + 1, &margin)) {
+            uint8_t margin = parse_margin_arg();
+            if (margin != 255) {
               blank_check(margin);
             } else {
               Serial.println("Error: Invalid margin! Use 0, 5, or 10");

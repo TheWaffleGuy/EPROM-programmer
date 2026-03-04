@@ -969,6 +969,11 @@ const IC ics[] PROGMEM = {
   },
   {
     MANUFACTURER("THOMSON"),
+    NAME("EF2516"),
+    .device_definition = GENERIC_2716
+  },
+  {
+    MANUFACTURER("THOMSON"),
     NAME("ET2716Q"),
     .device_definition = GENERIC_2716
   },

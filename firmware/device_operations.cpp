@@ -10,13 +10,22 @@
 #define VCC_REGULATOR_REFERENCE_VOLTAGE VOLT(1, 250)
 #define VPP_REGULATOR_REFERENCE_VOLTAGE VOLT(1, 250)
 
-#define VCC_EN_PORT PORTD
-#define VCC_EN_PIN 6
+// --- TPIC6C595 Definitions ---
+#define TPIC_OE_PORT PORTD
+#define TPIC_OE_DDR DDRD
+#define TPIC_OE_PIN 6
 
-#define VPP_EN_PORT PORTD
-#define VPP_P19_EN_PIN 5
-#define VPP_P20_EN_PIN 4
-#define VPP_P21_EN_PIN 3
+#define TPIC_RCLK_PORT PORTD
+#define TPIC_RCLK_DDR DDRD
+#define TPIC_RCLK_PIN 5
+
+#define TXD1_PIN 3
+#define XCK1_PIN 4
+
+#define TPIC_VPP_P21_BIT 0
+#define TPIC_VPP_P20_BIT 1
+#define TPIC_VPP_P19_BIT 2
+#define TPIC_VCC_BIT     3
 
 #define DAC_SS_PORT PORTD
 #define DAC_SS_PIN 2
@@ -25,12 +34,14 @@
 #define DEVICE_ENABLE_PIN 7
 
 #define PROGRESS_DOT_TARGET 64
+#define SETUP_HOLD_TIME_US 10
 
 uint8_t port_a;
 uint8_t port_b;
 
 uint16_t g_current_address = 0xFFFF;
 
+volatile uint8_t tpic_state = 0;
 
 extern voltage_offsets v_offset;
 extern uint8_t buffer[];
@@ -86,23 +97,67 @@ static void __attribute__((always_inline)) inline write_2byte(uint16_t byte2) {
   write_byte(data.val_split[0]);
 }
 
+// --- TPIC & Timing Helpers ---
+
+void update_tpic() {
+  while ( !( UCSR1A & (1<<UDRE1)) );
+  UDR1 = tpic_state;
+  while ( !( UCSR1A & (1<<TXC1)) );
+  UCSR1A |= (1 << TXC1);
+
+  TPIC_RCLK_PORT |= (1 << TPIC_RCLK_PIN);
+  TPIC_RCLK_PORT &= ~(1 << TPIC_RCLK_PIN);
+}
+
+void init_tpic6c595() {
+  TPIC_OE_PORT |= (1 << TPIC_OE_PIN);
+  TPIC_RCLK_PORT &= ~(1 << TPIC_RCLK_PIN);
+
+  TPIC_OE_DDR |= (1 << TPIC_OE_PIN);
+  TPIC_RCLK_DDR |= (1 << TPIC_RCLK_PIN);
+  DDRD |= (1 << TXD1_PIN) | (1 << XCK1_PIN);
+
+  UBRR1 = 3;
+  UCSR1C = (1 << UMSEL11) | (1 << UMSEL10);
+  UCSR1B = (1 << TXEN1);
+
+  tpic_state = 0;
+  update_tpic();
+
+  TPIC_OE_PORT &= ~(1 << TPIC_OE_PIN);
+}
+
+static void symmetrical_wait(uint16_t start_ticks, uint32_t pw_us) {
+    uint32_t target_ticks = ( (pw_us - 3) * 5) / 2;
+    uint32_t elapsed = 0;
+    uint16_t last_tcnt = start_ticks;
+
+    while (elapsed < target_ticks) {
+        uint16_t current_tcnt = TCNT3;
+        elapsed += (uint16_t)(current_tcnt - last_tcnt);
+        last_tcnt = current_tcnt;
+    }
+}
+
 void resetVCCandVPP() {
   setVCC(VOLT(5, 0), 1);
   setVPP(VOLT(1, 250), 0);
 }
 
 void device_operations_init() {
-    portMode(0, OUTPUT); // Port A
+  portMode(0, OUTPUT); // Port A
+
+  init_tpic6c595();
+
+  // Initialize Timer3 for precise, symmetrical microsecond delays (Prescaler 8 -> 2.5 MHz)
+  TCCR3A = 0;
+  TCCR3B = (1 << CS31);
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     //Lower 5 pins outputs Port B
     DDRB |= 0b00011111;
 
     DAC_SS_PORT |= 1 << DAC_SS_PIN;
-    VCC_EN_PORT &= ~(1 << VCC_EN_PIN);
-    VPP_EN_PORT &= ~(1 << VPP_P19_EN_PIN);
-    VPP_EN_PORT &= ~(1 << VPP_P20_EN_PIN);
-    VPP_EN_PORT &= ~(1 << VPP_P21_EN_PIN);
 
     //Upper 6 pins outputs Port D
     DDRD |= 0b11111100;
@@ -151,22 +206,28 @@ static void enable_device_output() {
 }
 
 static void turn_vpp_on() {
-  if(selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P19) {
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P19_EN_PIN; }
-  } else if(selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P20) {
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P20_EN_PIN; }
-  } else if (selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P21) {
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT |= 1 << VPP_P21_EN_PIN; }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    if(selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P19) {
+      tpic_state |= (1 << TPIC_VPP_P19_BIT);
+    } else if(selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P20) {
+      tpic_state |= (1 << TPIC_VPP_P20_BIT);
+    } else if (selected_ic.device_definition.pgm_vpp_pin == PGM_VPP_PIN_P21) {
+      tpic_state |= (1 << TPIC_VPP_P21_BIT);
+    }
   }
+  update_tpic();
 }
 
 static void turn_vpp_off() {
-  uint8_t vpp_off_mask = ~(1 << VPP_P19_EN_PIN | 1 << VPP_P20_EN_PIN | 1 << VPP_P21_EN_PIN);
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VPP_EN_PORT &= vpp_off_mask; }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    tpic_state &= ~((1 << TPIC_VPP_P19_BIT) | (1 << TPIC_VPP_P20_BIT) | (1 << TPIC_VPP_P21_BIT));
+  }
+  update_tpic();
 }
 
 static void turn_device_on() {
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT |= 1 << VCC_EN_PIN; }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { tpic_state |= (1 << TPIC_VCC_BIT); }
+  update_tpic();
   delay(100);
   //Some devices requires one address transition after initial power-up to reset the outputs.
   set_address(1);
@@ -181,8 +242,8 @@ static void turn_device_off() {
     PORTB &= 0b11100000; //Lower 5 bits used for address
   }
   g_current_address = 0xFFFF;
-
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { VCC_EN_PORT &= ~(1 << VCC_EN_PIN); }
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { tpic_state &= ~(1 << TPIC_VCC_BIT); }
+  update_tpic();
   delay(100);
 }
 
@@ -348,41 +409,26 @@ void compare_data(uint8_t margin) {
   }
 }
 
-
-#define SETUP_HOLD_TIME_US 10
-
-static void pgm_variant_vpp_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
-  uint8_t tens_of_ms = 0;
-  pw -= 3;
-  if(pw > 10000) {
-    tens_of_ms = pw / 10000;
-    pw %= 10000;
-  }
+static void pgm_variant_vpp_pulsed_positive(uint8_t data, uint16_t address, uint32_t pw) {
   disable_device_output();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);
+
+  uint16_t start_ticks = TCNT3;
   turn_vpp_on();
-  delayMicroseconds(pw);
-  if(tens_of_ms) {
-    delay(tens_of_ms * 10);
-  }
+  symmetrical_wait(start_ticks, pw);
   turn_vpp_off();
+
   delayMicroseconds(SETUP_HOLD_TIME_US);
   portMode(2, INPUT); // Port C
   enable_device_output();
   delayMicroseconds(3);
 }
 
-static void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
-  uint8_t tens_of_ms = 0;
-  pw -= 3;
-  if(pw > 10000) {
-    tens_of_ms = pw / 10000;
-    pw %= 10000;
-  }
+static void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint32_t pw) {
   disable_device_output();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
@@ -390,12 +436,12 @@ static void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint
   portWrite(2, data); // Port C
   turn_vpp_on();
   delayMicroseconds(SETUP_HOLD_TIME_US);
+
+  uint16_t start_ticks = TCNT3;
   enable_device_output();
-  delayMicroseconds(pw);
-  if(tens_of_ms) {
-    delay(tens_of_ms * 10);
-  }
+  symmetrical_wait(start_ticks, pw);
   disable_device_output();
+
   turn_vpp_off();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   portMode(2, INPUT); // Port C
@@ -403,37 +449,25 @@ static void pgm_variant_p20_pulsed_negative(uint8_t data, uint16_t address, uint
   delayMicroseconds(3);
 }
 
-static void pgm_variant_p18_pulsed_negative_p19_verify(uint8_t data, uint16_t address, uint16_t pw) {
-  uint8_t tens_of_ms = 0;
-  pw -= 3;
-  if(pw > 10000) {
-    tens_of_ms = pw / 10000;
-    pw %= 10000;
-  }
+static void pgm_variant_p18_pulsed_negative_p19_verify(uint8_t data, uint16_t address, uint32_t pw) {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 4; }; //19 high
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);
+
+  uint16_t start_ticks = TCNT3;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
-  delayMicroseconds(pw);
-  if(tens_of_ms) {
-    delay(tens_of_ms * 10);
-  }
+  symmetrical_wait(start_ticks, pw);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
+
   delayMicroseconds(SETUP_HOLD_TIME_US);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 4); }; //19 low
   portMode(2, INPUT); // Port C
   delayMicroseconds(3);
 }
 
-static void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint16_t pw) {
-  uint8_t tens_of_ms = 0;
-  pw -= 3;
-  if(pw > 10000) {
-    tens_of_ms = pw / 10000;
-    pw %= 10000;
-  }
+static void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint32_t pw) {
   disable_device_output();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
@@ -442,12 +476,12 @@ static void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint
   portWrite(2, data); // Port C
   turn_vpp_on();
   delayMicroseconds(SETUP_HOLD_TIME_US);
+
+  uint16_t start_ticks = TCNT3;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
-  delayMicroseconds(pw);
-  if(tens_of_ms) {
-    delay(tens_of_ms * 10);
-  }
+  symmetrical_wait(start_ticks, pw);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
+
   delayMicroseconds(SETUP_HOLD_TIME_US);
   turn_vpp_off();
   delayMicroseconds(SETUP_HOLD_TIME_US);
@@ -457,25 +491,19 @@ static void pgm_variant_p18_pulsed_negative(uint8_t data, uint16_t address, uint
   delayMicroseconds(3);
 }
 
-static void pgm_variant_p18_pulsed_positive(uint8_t data, uint16_t address, uint16_t pw) {
-  uint8_t tens_of_ms = 0;
-  pw -= 3;
-  if(pw > 10000) {
-    tens_of_ms = pw / 10000;
-    pw %= 10000;
-  }
+static void pgm_variant_p18_pulsed_positive(uint8_t data, uint16_t address, uint32_t pw) {
   disable_device_output();
   delayMicroseconds(SETUP_HOLD_TIME_US);
   set_address(address);
   portMode(2, OUTPUT); // Port C
   portWrite(2, data); // Port C
   delayMicroseconds(SETUP_HOLD_TIME_US);
+
+  uint16_t start_ticks = TCNT3;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 2; }; //18 high
-  delayMicroseconds(pw);
-  if(tens_of_ms) {
-    delay(tens_of_ms * 10);
-  }
+  symmetrical_wait(start_ticks, pw);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 2); }; //18 low
+
   delayMicroseconds(SETUP_HOLD_TIME_US);
   portMode(2, INPUT); // Port C
   enable_device_output();
@@ -498,16 +526,11 @@ static uint8_t reverse_bits(uint8_t num)
     return reverse_num;
 }
 
-static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
+static void pgm_variant_cypress(uint8_t data, uint16_t address, uint32_t pw) {
   static uint8_t latched_adr = 0xFF;
   union { uint16_t val; uint8_t val_split[2]; } adr;
   adr.val = address;
-  uint8_t tens_of_ms = 0;
-  pw -= 3;
-  if(pw > 10000) {
-    tens_of_ms = pw / 10000;
-    pw %= 10000;
-  }
+
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 0; }; //23 high
   delayMicroseconds(3);
   if (adr.val_split[1] != latched_adr) {
@@ -529,12 +552,12 @@ static void pgm_variant_cypress(uint8_t data, uint16_t address, uint16_t pw) {
   delayMicroseconds(3);
   portWrite(0, reverse_bits(adr.val_split[0]));
   delayMicroseconds(3);
+
+  uint16_t start_ticks = TCNT3;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 1); }; //22 low
-  delayMicroseconds(pw);
-  if(tens_of_ms) {
-    delay(tens_of_ms * 10);
-  }
+  symmetrical_wait(start_ticks, pw);
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB |= 1 << 1; }; //22 high
+
   delayMicroseconds(3);
   portMode(2, INPUT); // Port C
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) { PORTB &= ~(1 << 0); }; //23 low
@@ -557,7 +580,7 @@ void write_data() {
   uint16_t address;
   uint8_t write_data;
   uint8_t verified = 1;
-  void (*pgm_variant)(uint8_t data, uint16_t address, uint16_t pw);
+  void (*pgm_variant)(uint8_t data, uint16_t address, uint32_t pw);
   uint16_t total_events;
   uint16_t acc = 0;
   uint8_t printed_dots = 0;
@@ -621,7 +644,8 @@ void write_data() {
     } while (!verified && pulse_number < selected_ic.device_definition.pgm_pulses);
     //Overprogram section if it should be done in the main programming loop
     if (selected_ic.device_definition.pgm_overprogram_pw > 0 && (verified || selected_ic.device_definition.pgm_overprogram_ignore_verify) && !selected_ic.device_definition.pgm_overprogram_after) {
-      uint16_t pw = ( selected_ic.device_definition.pgm_overprogram_pw * selected_ic.device_definition.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+      uint32_t pw = ( (uint32_t)selected_ic.device_definition.pgm_overprogram_pw * selected_ic.device_definition.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+
       if(selected_ic.device_definition.pgm_overprogram_multiply_n) {
         pw *= pulse_number;
       }
@@ -644,7 +668,8 @@ void write_data() {
 
   //Overprogram section if it should be done after the main programming loop
   if (verified && selected_ic.device_definition.pgm_overprogram_after) {
-    uint16_t pw = ( selected_ic.device_definition.pgm_overprogram_pw * selected_ic.device_definition.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+    uint32_t pw = ( (uint32_t)selected_ic.device_definition.pgm_overprogram_pw * selected_ic.device_definition.pgm_pw_us ) / 2; //pgm_overprogram_pw is in half-units
+
     if(selected_ic.device_definition.pgm_overprogram_5v_vcc) {
       setVCC(VOLT(5, 0), 1);
       delayMicroseconds(1000);
